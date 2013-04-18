@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div id="Header">VG Labbook</div>
+    <div id="Header">{{ flatpage.title }}</div>
     <div id="Menu">
         {% block sidebar %}
         <ul>
@@ -24,7 +24,7 @@
     </div>
 
     <div id="Content">
-        {% block content %}{% endblock %}
+        {{ flatpage.content }}
     </div>
 </body>
 </html>

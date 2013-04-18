@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Latest Measurements</h2>
+    <div class="general"><a href="../../admin/vg/measurement/add">Add new Measurement</a><br />
+    <a href="../../admin/vg/measurement/">Go to Measurement admin page</a><br />
+    </div><br />
+    <table>
+        <tr>
+            <td><strong>ID</strong</td>
+            <td><strong>Date and time</strong</td>
+            <td><strong>Substance</strong</td>
+            <td><strong>Description</strong</td>
+            <td><strong>Scantype</strong</td>
+            <td><strong>Raw file</strong</td>
+            <td><strong>Calibrate</strong</td>
+            <td><strong>Edit</strong</td>
+        </tr>
+        {% for m in object_list %}
+        <tr>
+            <td><p><a href="{{ m.id }}">{{ m.id }}</a></p></td>
+            <td><p><a href="{{ m.id }}">{{ m.time }}</a></p></td>
+            <td><p>{{ m.substance }}</p></td>
+            <td><p>{{ m.description|truncatewords:15 }}</p></td>
+            <td><p>{{ m.scantype }}</p></td>
+            <td><p><a href="{{ m.datafile.url }}">Download</a></p></td>
+            <td>{% if m.scantype == 'ES' %}<p><a href="{{ m.id }}/cal/">Choose</a></p>{% endif %}</td>
+            <td><p><a href="../../admin/vg/measurement/{{ m.id }}">Edit</a></p></td>
+        </tr>
+        {% endfor %}
+    </ul>
+{% endblock %}

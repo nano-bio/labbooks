@@ -10,21 +10,19 @@
 </head>
 
 <body>
-    <div id="Header">VG Labbook</div>
+    <div id="Header">{{ flatpage.title }}</div>
     <div id="Menu">
         {% block sidebar %}
         <ul>
-            <li><a href="/vg/">Home</a></li>
-            <li><a href="/admin/vg/">Admin</a></li>
-            <li><a href="/vg/view/">Measurements</a></li>
-            <li><a href="/vg/cal/">Calibrations</a></li>
-            <li><a href="/vg/journal/">Technical Journal</a></li>
+            <li><a href="vg/">VG</a></li>
+            <li><a href="admin/">Admin</a></li>
         </ul>
         {% endblock %}
     </div>
 
     <div id="Content">
-        {% block content %}{% endblock %}
+        {{ flatpage.content }}
     </div>
 </body>
 </html>
+

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Choose calibration to apply</h2>
+    <table>
+        <tr>
+            <td><strong>ID</strong</td>
+            <td><strong>Date and time</strong</td>
+            <td><strong>Comments</strong</td>
+            <td><strong>p0</strong</td>
+            <td><strong>p1</strong</td>
+            <td><strong>p2</strong</td>
+        </tr>
+        {% for c in object_list %}
+        <tr>
+            <td><p><a href="{{ c.id }}">{{ c.id }}</a></p></td>
+            <td><p><a href="{{ c.id }}">{{ c.time }}</a></p></td>
+            <td><p>{{ c.comments }}</p></td>
+            <td><p>{{ c.p0 }}</p></td>
+            <td><p>{{ c.p1 }}</p></td>
+            <td><p>{{ c.p2 }}</p></td>
+        </tr>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,36 @@
+#This file was exported from VG labbook and has the id: {{ m.id }}
+#http://138.232.72.25/vg/view/{{ m.id }}
+#Measurement details:
+#Operator {{ m.operator }}
+#Time {{ m.time }}
+#EE {{ m.electron_energy }}
+#Substance {{ m.substance }}
+#Description {{ m.description }}
+#Channeltron {{ m.channeltron }}
+#IB Temp {{ m.ionblock_temperature }}
+#Trap current {{ m.trap_current }}
+#Filament current {{ m.filament_current }}
+#Pressure IB {{ m.pressure_ionblock }}
+#Pressure Ana {{ m.pressure_analyzer }}
+#Pressure background {{ m.background_pressure }}
+#Repeller {{ m.ion_repeller }}
+#Focus Coarse 1 {{ m.focus_coarse_1 }}
+#Focues Coarse 2 {{ m.focus_coarse_2 }}
+#Focus Fine 1 {{ m.focus_fine_1 }}
+#Focus Fine 2 {{ m.focus_fine_2 }}
+#Deflector 1 {{ m.deflector_1 }}
+#Deflector 2 {{ m.deflector_2 }}
+#Ion Energy {{ m.ion_energy }}
+#Y-Focus {{ m.y_focus }}
+#X-Deflect {{ m.x_deflect }}
+#Z-Deflect {{ m.z_deflect }}
+#Curve 1 {{ m.curve_1 }}
+#Rotate 1 {{ m.rotate_1 }}
+#Z-Deflect 1 {{ m.z_deflect_1 }}
+#Z-Focus 1 {{ m.z_focus_1 }}
+#Curve 2 {{ m.curve_2 }}
+#Rotate 2 {{ m.rotate_2 }}
+#Z-Deflect 2 {{ m.z_deflect_2 }}
+#Z-Focus 2 {{ m.z_focus_2 }}
+
+{{ m.filecontents }}
