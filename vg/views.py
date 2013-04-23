@@ -54,7 +54,8 @@ def exportmeasurement(request, id):
 
     #make it download
     resp = HttpResponse(html, content_type='text/plain')
-    resp['Content-Disposition'] = 'attachment; filename=%s' % m.datafile.name
+    #we need to encode the filename in ascii. replace weird characters with closest approx.
+    resp['Content-Disposition'] = 'attachment; filename=%s' % m.datafile.name.encode('ascii', 'replace')
     return resp
 
 def calibratedata(measurement, calibration, formatstring = '[%s, %s]'):
@@ -104,11 +105,12 @@ def exportcalibratedmeasurement(request, m_id, c_id):
     m.filecontents = '\r\n'.join(m.data)
 
     t = get_template('exportcalibrated.txt')
-    c = Context({'m' : m})
+    c = Context({'m' : m, 'c' : c})
     html = t.render(c)
 
     #make it download
     resp = HttpResponse(html, content_type='text/plain')
-    resp['Content-Disposition'] = 'attachment; filename=%s' % m.datafile.name
+    #we need to encode the filename in ascii. replace weird characters with closest approx.
+    resp['Content-Disposition'] = 'attachment; filename=%s' % m.datafile.name.encode('ascii', 'replace')
     return resp
 

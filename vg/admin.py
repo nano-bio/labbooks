@@ -113,7 +113,8 @@ class MeasurementAdmin(admin.ModelAdmin):
             #walk through all fields of the model
             for item in s.__dict__:
                 if item not in forbidden_items:
-                    redirect_address += item + '=' + str(s.__dict__[item]) + '&'
+                    if s.__dict__[item] is not None:
+                        redirect_address += item + '=' + str(s.__dict__[item]) + '&'
 
             #redirect to newly created address
             return HttpResponseRedirect(redirect_address)
