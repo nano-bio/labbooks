@@ -6,6 +6,7 @@
 #EE {{ m.electron_energy }}
 #Substance {{ m.substance }}
 #Description {{ m.description }}
+#Polarity {{ m.polarity }}
 #Channeltron {{ m.channeltron }}
 #IB Temp {{ m.ionblock_temperature }}
 #Trap current {{ m.trap_current }}

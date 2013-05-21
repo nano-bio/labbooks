@@ -10,6 +10,11 @@ SCANTYPES = (
     (MIKESCAN, 'MIKE-Scan'),
 )
 
+POLARITIES = (
+    ('NEG', 'Negative'),
+    ('POS', 'Positive'),
+)
+
 class Operator(models.Model):
     firstname = models.CharField(max_length = 50)
     lastname = models.CharField(max_length = 50)
@@ -23,6 +28,7 @@ class Measurement(models.Model):
     time = models.DateTimeField(auto_now = False, auto_now_add = False)
     datafile = models.FileField(upload_to = 'vg/%Y/%m/%d/%H/%M/%S/')
     scantype = models.CharField(max_length = 20, choices = SCANTYPES, default = ENERGYSCAN)
+    polarity = models.CharField(max_length = 3, choices = POLARITIES, default = 'NEG')
     electron_energy = models.FloatField(blank = True, null = True, verbose_name = 'Electron Energy (for MS)')
     substance = models.CharField(max_length = 100)
     description = models.CharField(max_length = 200)
@@ -82,7 +88,17 @@ class Calibration(models.Model):
             quadratic = 'Yes'
         return u'%s, %s, Quadratic: %s' % (self.id, self.time, quadratic)
 
+    class Meta:
+        ordering = ['-time']
+
 class JournalEntry(models.Model):
     time = models.DateTimeField(auto_now = False, auto_now_add = True)
     operator = models.ForeignKey('Operator')
     comment = models.TextField()
+    attachment = models.FileField(upload_to = 'vg/techjournal/', blank = True, default = '')
+
+    def __unicode__(self):
+        return u'%s, %s, %s: %s' % (self.id, self.time, self.operator, self.comment[:50])
+
+    class Meta:
+        ordering = ['-time']

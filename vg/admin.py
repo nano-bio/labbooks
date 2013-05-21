@@ -28,7 +28,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'datafile', 'scantype', 'substance', 'description', 'time')
+            'fields': ('operator', 'datafile', 'scantype', 'polarity', 'substance', 'description', 'time')
         }),
         ('Pressures', {
             'fields': ('pressure_ionblock', 'pressure_analyzer', 'background_pressure'),
