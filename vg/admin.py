@@ -24,7 +24,7 @@ class MeasurementAdmin(admin.ModelAdmin):
     save_on_top = True
     ordering = ('-time',)
 
-    actions = ['create_new_calibration', 'create_new_measurement_based_on_existing_one']
+    actions = ['create_new_quadratic_calibration', 'create_new_linear_calibration', 'create_new_measurement_based_on_existing_one']
 
     fieldsets = (
         ('General', {
@@ -52,7 +52,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         })
     )
 
-    def create_new_calibration(self, request, queryset):
+    def create_new_calibration(self, request, queryset, quadratic):
 
         if len(queryset) < 3:
             messages.error(request, 'Choose at least 3 Measurements to create a new calibration')
@@ -74,20 +74,26 @@ class MeasurementAdmin(admin.ModelAdmin):
             filename = settings.MEDIA_ROOT + 'vg/calibrations/' + str(new_cal.id) + '.pdf'
 
             #actually try some fitting
-            parameters, log = fitlib.SF6_calibration.do_SF6_calibration(filelist, showplots = False, quadratic = True, outputfile = filename)
+            parameters, log = fitlib.SF6_calibration.do_SF6_calibration(filelist, showplots = False, quadratic = quadratic, outputfile = filename)
 
             #create a FieldFile object
             f = open(filename)
             new_cal.calibration_plot.save(filename, File(f))
 
             #create an easily copy-pastable formula
-            formula = 'y = %s + %s*x + %s*x^2' % (parameters[0], parameters[1], parameters[2])
+            if quadratic is True:
+                formula = 'y = %s + %s*x + %s*x^2' % (parameters[0], parameters[1], parameters[2])
+            else:
+                formula = 'y = %s + %s*x' % (parameters[0], parameters[1])
 
             #fill our new calibration with the values retrieved from fitlib
             new_cal.logoutput = log
             new_cal.p0 = parameters[0]
             new_cal.p1 = parameters[1]
-            new_cal.p2 = parameters[2]
+            if quadratic is True:
+                new_cal.p2 = parameters[2]
+            else:
+                new_cal.p2 = 0
             new_cal.formula = formula
             new_cal.cal_base_file_1 = Measurement.objects.get(id = id_list[0])
             new_cal.cal_base_file_2 = Measurement.objects.get(id = id_list[1])
@@ -101,6 +107,15 @@ class MeasurementAdmin(admin.ModelAdmin):
 
         #the user probably wants to have a look at it. for now redirect to the admin-page
         return HttpResponseRedirect('../calibration/%s' % new_cal.id)
+
+    #the next two functions are merely wrappers for create_new_calibration()
+    #because action-functions cannot have any other arguments than self, request, queryset
+
+    def create_new_linear_calibration(self, request, queryset):
+        return self.create_new_calibration(request, queryset, False)
+
+    def create_new_quadratic_calibration(self, request, queryset):
+        return self.create_new_calibration(request, queryset, True)
 
     def create_new_measurement_based_on_existing_one(self, request, queryset):
         #we can only base it on one measurement
