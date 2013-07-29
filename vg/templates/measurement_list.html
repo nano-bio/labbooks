@@ -5,6 +5,23 @@
     <div class="general"><a href="../../admin/vg/measurement/add">Add new Measurement</a><br />
     <a href="../../admin/vg/measurement/">Go to Measurement admin page</a><br />
     </div><br />
+    {% if is_paginated %}
+    <div class="general">
+            <a href="?page=1">&lt;&lt; first &nbsp;&nbsp;</a>
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&lt; previous&nbsp;&nbsp;</a>
+            {% endif %}
+
+            <a href="#">Page {{ page_obj.number }} of {{ paginator.num_pages }}</a>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&nbsp;&nbsp; next &gt;</a>
+            {% endif %}
+
+            <a href="?page=last">&nbsp;&nbsp; last &gt;&gt;</a>
+    </div><br />
+    {% endif %}
     <table>
         <tr>
             <td><strong>ID</strong</td>
@@ -15,6 +32,9 @@
             <td><strong>Raw file</strong</td>
             <td><strong>Calibrate</strong</td>
             <td><strong>Edit</strong</td>
+        </tr>
+        </tr>
+          <td>&nbsp;</td>
         </tr>
         {% for m in object_list %}
         <tr>
@@ -28,5 +48,22 @@
             <td><p><a href="../../admin/vg/measurement/{{ m.id }}">Edit</a></p></td>
         </tr>
         {% endfor %}
-    </ul>
+    </table>
+    {% if is_paginated %}
+    <div class="general">
+            <a href="?page=1">&lt;&lt; first &nbsp;&nbsp;</a>
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&lt; previous&nbsp;&nbsp;</a>
+            {% endif %}
+
+            <a href="#">Page {{ page_obj.number }} of {{ paginator.num_pages }}</a>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&nbsp;&nbsp; next &gt;</a>
+            {% endif %}
+
+            <a href="?page=last">&nbsp;&nbsp; last &gt;&gt;</a>
+    </div><br />
+    {% endif %}
 {% endblock %}
