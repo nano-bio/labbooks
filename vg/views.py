@@ -1,10 +1,11 @@
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import Context, Template
 from django.template.loader import get_template
 from django.shortcuts import render_to_response, get_object_or_404
 
 import models
+from django.db import models as djangomodels
 
 import sys, os
 
@@ -13,6 +14,59 @@ sys.path.append('/var/opt')
 #MPLCONFIGDIR = '/var/opt/labbooks/.matplotlib/'
 os.environ['HOME'] = '/var/opt/labbooks/'
 import fitlib
+
+def retrieve_plotable_parameters():
+    #show all fields that are numbers and can be plotted
+    m = models.Measurement._meta.fields
+    fieldlist = []
+    for parameter in m:
+        if isinstance(parameter, djangomodels.fields.FloatField) or isinstance(parameter, djangomodels.fields.PositiveIntegerField):
+            fieldlist.append(parameter.name)
+
+    return fieldlist
+
+def list_plotable_parameters(request):
+    fieldlist = retrieve_plotable_parameters()
+
+    t = get_template('plotable_parameters_list.html')
+    c = Context({'fieldlist': fieldlist})
+    html = t.render(c)
+    return HttpResponse(html)
+
+def plot_parameters(request, parameter1 = 'ion_repeller', parameter2 = 'focus_coarse_1'):
+    #first we check whether the parameters are allowed
+    m = models.Measurement._meta.fields
+    fieldlist_allowed = []
+    for parameter in m:
+        if isinstance(parameter, djangomodels.fields.FloatField) or isinstance(parameter, djangomodels.fields.PositiveIntegerField):
+            fieldlist_allowed.append(parameter.name)
+
+    #if either is not allowed we send back an error 400 (bad request)
+    if parameter1 not in fieldlist_allowed or parameter2 not in fieldlist_allowed:
+        return HttpResponseBadRequest('Parameters not allowed!')
+
+    #browse through all measurements
+    measurements = models.Measurement.objects.all()
+
+    #create list of values
+    values = []
+    for m in measurements:
+        values.append('[' + str(getattr(m, parameter1)) + ', ' + str(getattr(m, parameter2)) + ']')
+
+    #double points don't have any use
+    valuepairs = set(values)
+    #we need a string anyway
+    values = ', '.join(valuepairs)
+
+    #get all the possible parameters
+    fieldlist = retrieve_plotable_parameters()
+
+    t = get_template('plot_parameters.html')
+    c = Context({'values': values, 'parameter1': parameter1, 'parameter2': parameter2, 'fieldlist': fieldlist})
+
+    html = t.render(c)
+
+    return HttpResponse(html)
 
 def showmeasurement(request, id):
     """ Generic display page for all measurements """

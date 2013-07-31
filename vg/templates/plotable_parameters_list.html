@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Choose parameter to plot</h2>
+    <table>
+        {% for field in fieldlist %}
+        <tr>
+            <td><p><a href="{{ field }}">{{ field }}</a></p></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
