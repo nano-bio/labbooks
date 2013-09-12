@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'vg',
     'django.contrib.flatpages',
     'south',
+    'clustof',
 )
 
 # A sample logging configuration. The only tangible logging

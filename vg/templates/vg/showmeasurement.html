@@ -1,9 +1,8 @@
-{% extends "base.html" %}
+{% extends "vg/base.html" %}
 
 {% block content %}
-    <h2>Measurement No. {{ m.id }} calibrated with Calibration No. {{ c.id }}</h2>
+    <h2>Measurement No. {{ m.id }}</h2>
     <div class="general" id="info">Data was taken on {{ m.time }} with substance: {{ m.substance }}</div>
-    <div class="general" id="info">Calibration was created on {{ c.time }}</div>
     <div id="placeholder" style="width:800px;height:400px"></div>
     <br />
     <div id="general" class="general">
@@ -30,10 +29,11 @@
     <br />
     <div id="actionbox" class="general">
       <a href="/admin/vg/measurement/{{ m.id }}">Edit / Delete log entry</a><br />
-      <a href="../../../{{ m.id }}">Show uncalibrated scan</a><br />
+      {% if m.scantype == 'ES' %}
+      <a href="cal/">Apply energy calibration to this scan</a><br />
+      {% endif %}
       <a href="{{ m.datafile.url }}">Download raw file</a><br />
-      <a href="../../../../export/{{ m.id }}">Export original data</a><br />
-      <a href="../../calexport/{{ c.id }}">Export calibrated data</a><br />
+      <a href="../../export/{{ m.id }}">Export original data</a><br />
     </div>
     <br />
     <div id="conditions" class="general">
@@ -68,7 +68,7 @@
          <td>{{ m.pressure_analyzer }}</td>
         </tr>
         <tr>
-         <td><strong>Background Pressure</strong></td>
+         <td><strong>Pressure Analyzer</strong></td>
          <td>{{ m.background_pressure }}</td>
         </tr>
       </table>

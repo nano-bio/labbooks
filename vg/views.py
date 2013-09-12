@@ -28,7 +28,7 @@ def retrieve_plotable_parameters():
 def list_plotable_parameters(request):
     fieldlist = retrieve_plotable_parameters()
 
-    t = get_template('plotable_parameters_list.html')
+    t = get_template('vg/plotable_parameters_list.html')
     c = Context({'fieldlist': fieldlist})
     html = t.render(c)
     return HttpResponse(html)
@@ -61,7 +61,7 @@ def plot_parameters(request, parameter1 = 'ion_repeller', parameter2 = 'focus_co
     #get all the possible parameters
     fieldlist = retrieve_plotable_parameters()
 
-    t = get_template('plot_parameters.html')
+    t = get_template('vg/plot_parameters.html')
     c = Context({'values': values, 'parameter1': parameter1, 'parameter2': parameter2, 'fieldlist': fieldlist})
 
     html = t.render(c)
@@ -74,7 +74,7 @@ def showmeasurement(request, id):
     m = models.Measurement.objects.get(id = id)
 
     #fetch file with fitlib
-    data = fitlib.fitlib.readfile(settings.MEDIA_ROOT + m.datafile.name)
+    data = fitlib.helplib.readfile(settings.MEDIA_ROOT + m.datafile.name)
 
     #data needs to be in the right format for flot library to plot
     m.data = []
@@ -85,7 +85,7 @@ def showmeasurement(request, id):
     m.data = ' ,'.join(m.data)
 
     #ready to render
-    t = get_template('showmeasurement.html')
+    t = get_template('vg/showmeasurement.html')
     c = Context({'m' : m})
     html = t.render(c)
     return HttpResponse(html)
@@ -102,7 +102,7 @@ def exportmeasurement(request, id):
     #assign the read lines to the context for the template
     m.filecontents = contents
 
-    t = get_template('export.txt')
+    t = get_template('vg/export.txt')
     c = Context({'m' : m})
     html = t.render(c)
 
@@ -114,7 +114,7 @@ def exportmeasurement(request, id):
 
 def calibratedata(measurement, calibration, formatstring = '[%s, %s]'):
     #fetch file with fitlib
-    data = fitlib.fitlib.readfile(settings.MEDIA_ROOT + measurement.datafile.name)
+    data = fitlib.helplib.readfile(settings.MEDIA_ROOT + measurement.datafile.name)
 
     #data needs to be in the right format for flot library to plot
     tempdata = []
@@ -138,7 +138,7 @@ def showcalibratedmeasurement(request, m_id, c_id):
     m.data = ' ,'.join(m.data)
 
     #ready to render
-    t = get_template('showcalmeasurement.html')
+    t = get_template('vg/showcalmeasurement.html')
     c = Context({'m' : m, 'c' : c})
     html = t.render(c)
     return HttpResponse(html)
@@ -158,7 +158,7 @@ def exportcalibratedmeasurement(request, m_id, c_id):
     #assign the read lines to the context for the template
     m.filecontents = '\r\n'.join(m.data)
 
-    t = get_template('exportcalibrated.txt')
+    t = get_template('vg/exportcalibrated.txt')
     c = Context({'m' : m, 'c' : c})
     html = t.render(c)
 

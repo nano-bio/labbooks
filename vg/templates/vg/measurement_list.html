@@ -1,0 +1,69 @@
+{% extends "vg/base.html" %}
+
+{% block content %}
+    <h2>Latest Measurements</h2>
+    <div class="general"><a href="../../admin/vg/measurement/add">Add new Measurement</a><br />
+    <a href="../../admin/vg/measurement/">Go to Measurement admin page</a><br />
+    </div><br />
+    {% if is_paginated %}
+    <div class="general">
+            <a href="?page=1">&lt;&lt; first &nbsp;&nbsp;</a>
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&lt; previous&nbsp;&nbsp;</a>
+            {% endif %}
+
+            <a href="#">Page {{ page_obj.number }} of {{ paginator.num_pages }}</a>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&nbsp;&nbsp; next &gt;</a>
+            {% endif %}
+
+            <a href="?page=last">&nbsp;&nbsp; last &gt;&gt;</a>
+    </div><br />
+    {% endif %}
+    <table>
+        <tr>
+            <td><strong>ID</strong</td>
+            <td><strong>Date and time</strong</td>
+            <td><strong>Substance</strong</td>
+            <td><strong>Description</strong</td>
+            <td><strong>Scantype</strong</td>
+            <td><strong>Raw file</strong</td>
+            <td><strong>Calibrate</strong</td>
+            <td><strong>Edit</strong</td>
+        </tr>
+        </tr>
+          <td>&nbsp;</td>
+        </tr>
+        {% for m in object_list %}
+        <tr>
+            <td><p><a href="{{ m.id }}">{{ m.id }}</a></p></td>
+            <td><p><a href="{{ m.id }}">{{ m.time }}</a></p></td>
+            <td><p>{{ m.substance }}</p></td>
+            <td><p>{{ m.description|truncatewords:15 }}</p></td>
+            <td><p>{{ m.scantype }}</p></td>
+            <td><p><a href="{{ m.datafile.url }}">Download</a></p></td>
+            <td>{% if m.scantype == 'ES' %}<p><a href="{{ m.id }}/cal/">Choose</a></p>{% endif %}</td>
+            <td><p><a href="../../admin/vg/measurement/{{ m.id }}">Edit</a></p></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% if is_paginated %}
+    <div class="general">
+            <a href="?page=1">&lt;&lt; first &nbsp;&nbsp;</a>
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&lt; previous&nbsp;&nbsp;</a>
+            {% endif %}
+
+            <a href="#">Page {{ page_obj.number }} of {{ paginator.num_pages }}</a>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&nbsp;&nbsp; next &gt;</a>
+            {% endif %}
+
+            <a href="?page=last">&nbsp;&nbsp; last &gt;&gt;</a>
+    </div><br />
+    {% endif %}
+{% endblock %}

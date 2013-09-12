@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "clustof/base.html" %}
 
 {% block content %}
     <h2>Insight Tool</h2>
@@ -24,7 +24,7 @@
 <script type="text/javascript">
 $(function () {
     var d2 = [{{ values }}];
-    plot = $.plot($("#placeholder"), [{ data: d2, color: "blue", points: {show: true}}], {legend: {margin : [15,15]}, crosshair: { mode: "xy" }, grid: { hoverable: true, autoHighlight: false }});
+    plot = $.plot($("#placeholder"), [{ data: d2, color: "blue", points: {show: true}}], {legend: {margin : [15,15]}, crosshair: { mode: "xy" }, grid: { hoverable: true, autoHighlight: false }, zoom: { interactive: true }, pan: { interactive: true }});
 
     var legends = $("#placeholder .legendLabel");
     legends.each(function () {

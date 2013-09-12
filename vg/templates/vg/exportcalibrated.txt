@@ -2,7 +2,7 @@
 #It has been calibrated using calibration {{ c.id }}
 #http://138.232.72.25/vg/view/{{ m.id }}/cal/{{ c.id }}
 #Calibration parameters:
-#y = {{ c.p0 }} + {{ c.p0 }}*x{% if c.p2 != '' %} + {{ c.p0 }}*x^2{% endif %}
+#y = {{ c.p0 }} + {{ c.p1 }}*x{% if c.p2 != '' %} + {{ c.p2 }}*x^2{% endif %}
 #Measurement details:
 #Operator {{ m.operator }}
 #Time {{ m.time }}
