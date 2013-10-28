@@ -1,7 +1,7 @@
 {% extends "vg/base.html" %}
 
 {% block content %}
-    <h2>Measurement No. {{ m.id }}</h2>
+    <h2><a href="../{{ m.lastid }}">&lt;&lt; {{ m.lastid }}</a> Measurement No. {{ m.id }} <a href="../{{ m.nextid }}">{{ m.nextid }} &gt;&gt;</a></h2>
     <div class="general" id="info">Data was taken on {{ m.time }} with substance: {{ m.substance }}</div>
     <div id="placeholder" style="width:800px;height:400px"></div>
     <br />

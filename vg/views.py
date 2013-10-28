@@ -12,7 +12,7 @@ import sys, os
 sys.path.append('/var/opt')
 
 #MPLCONFIGDIR = '/var/opt/labbooks/.matplotlib/'
-os.environ['HOME'] = '/var/opt/labbooks/'
+os.environ['HOME'] = '/home/josi/labbooks/'
 import fitlib
 
 def retrieve_plotable_parameters():
@@ -83,6 +83,17 @@ def showmeasurement(request, id):
         m.data.append('[%s, %s]' % (str(datapoint[0]), str(datapoint[1])))
 
     m.data = ' ,'.join(m.data)
+    
+    #get next and last scan for convenient switching
+    try:
+        m.nextid = models.Measurement.objects.filter(time__gt = m.time).order_by('time')[0:1].get().id
+    except models.Measurement.DoesNotExist:
+        m.nextid = m.id
+    
+    try:
+        m.lastid = models.Measurement.objects.filter(time__lt = m.time).order_by('-time')[0:1].get().id
+    except models.Measurement.DoesNotExist:
+        m.lastid = m.id
 
     #ready to render
     t = get_template('vg/showmeasurement.html')
