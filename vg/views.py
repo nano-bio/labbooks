@@ -11,8 +11,8 @@ import sys, os
 
 sys.path.append('/var/opt')
 
-#MPLCONFIGDIR = '/var/opt/labbooks/.matplotlib/'
-os.environ['HOME'] = '/home/josi/labbooks/'
+MPLCONFIGDIR = '/var/opt/labbooks/.matplotlib/'
+os.environ['HOME'] = '/var/opt/labbooks/'
 import fitlib
 
 def retrieve_plotable_parameters():
