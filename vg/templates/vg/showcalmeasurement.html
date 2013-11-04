@@ -4,7 +4,47 @@
     <h2>Measurement No. {{ m.id }} calibrated with Calibration No. {{ c.id }}</h2>
     <div class="general" id="info">Data was taken on {{ m.time }} with substance: {{ m.substance }}</div>
     <div class="general" id="info">Calibration was created on {{ c.time }}</div>
-    <div id="placeholder" style="width:800px;height:400px"></div>
+    <div style="height:400px">
+        <div id="placeholder" style="float:left; width:800px;height:400px"></div>
+        <div id="overview" style="float:right;width:250px; height:125px;"></div>
+        <div style="float:right" id="conditions" class="general">
+          <strong>Conditions:</strong><br />
+          <table>
+            <tr>
+              <td><strong>Electron Energy</strong></td>
+              <td>{{ m.electron_energy }}</td>
+            </tr>
+            <tr>
+             <td><strong>Channeltron</strong></td>
+             <td>{{ m.channeltron }}</td>
+            </tr>
+            <tr>
+             <td><strong>Ionblock Temperature</strong></td>
+             <td>{{ m.ionblock_temperature }}</td>
+            </tr>
+            <tr>
+             <td><strong>Trap Current</strong></td>
+             <td>{{ m.trap_current }}</td>
+            </tr>
+            <tr>
+             <td><strong>Filament Current</strong></td>
+             <td>{{ m.filament_current }}</td>
+            </tr>
+            <tr>
+             <td><strong>Pressure Ionblock</strong></td>
+             <td>{{ m.pressure_ionblock }}</td>
+            </tr>
+            <tr>
+             <td><strong>Pressure Analyzer</strong></td>
+             <td>{{ m.pressure_analyzer }}</td>
+            </tr>
+            <tr>
+             <td><strong>Pressure Analyzer</strong></td>
+             <td>{{ m.background_pressure }}</td>
+            </tr>
+          </table>
+        </div>
+    </div>
     <br />
     <div id="general" class="general">
       <strong>General information for this measurement:</strong><br />
@@ -25,6 +65,10 @@
          <td><strong>Polarity</strong></td>
          <td>{{ m.polarity }}</td>
         </tr>
+        <tr>
+         <td><strong>Gate time</strong></td>
+         <td>{{ m.gatetime }}</td>
+        </tr>
       </table>
     </div>
     <br />
@@ -34,44 +78,6 @@
       <a href="{{ m.datafile.url }}">Download raw file</a><br />
       <a href="../../../../export/{{ m.id }}">Export original data</a><br />
       <a href="../../calexport/{{ c.id }}">Export calibrated data</a><br />
-    </div>
-    <br />
-    <div id="conditions" class="general">
-      <strong>Conditions:</strong><br />
-      <table>
-        <tr>
-         <td><strong>Electron Energy</strong></td>
-         <td>{{ m.electron_energy }}</td>
-        </tr>
-        <tr>
-         <td><strong>Channeltron</strong></td>
-         <td>{{ m.channeltron }}</td>
-        </tr>
-        <tr>
-         <td><strong>Ionblock Temperature</strong></td>
-         <td>{{ m.ionblock_temperature }}</td>
-        </tr>
-        <tr>
-         <td><strong>Trap Current</strong></td>
-         <td>{{ m.trap_current }}</td>
-        </tr>
-        <tr>
-         <td><strong>Filament Current</strong></td>
-         <td>{{ m.filament_current }}</td>
-        </tr>
-        <tr>
-         <td><strong>Pressure Ionblock</strong></td>
-         <td>{{ m.pressure_ionblock }}</td>
-        </tr>
-        <tr>
-         <td><strong>Pressure Analyzer</strong></td>
-         <td>{{ m.pressure_analyzer }}</td>
-        </tr>
-        <tr>
-         <td><strong>Background Pressure</strong></td>
-         <td>{{ m.background_pressure }}</td>
-        </tr>
-      </table>
     </div>
     <br />
     <div class="general" id="lenses">
@@ -158,75 +164,8 @@
         </tr>
       </table> 
     </div>
-
-<script type="text/javascript">
-$(function () {
-    var d2 = [{{ m.data }}];
-    plot = $.plot($("#placeholder"), [{ label: "{{ m.substance }}-: 00.00 eV / 00.00",  data: d2, color: "blue"}], {legend: {margin : [15,15]}, crosshair: { mode: "xy" }, grid: { hoverable: true, autoHighlight: false }});
-
-    var legends = $("#placeholder .legendLabel");
-    legends.each(function () {
-        // fix the widths so they don't jump around
-        $(this).css('width', $(this).width());
-    });
-
-    var updateLegendTimeout = null;
-    var latestPosition = null;
-    
-    function updateLegend() {
-        updateLegendTimeout = null;
-        
-        var pos = latestPosition;
-        
-        var axes = plot.getAxes();
-        if (pos.x < axes.xaxis.min || pos.x > axes.xaxis.max ||
-            pos.y < axes.yaxis.min || pos.y > axes.yaxis.max)
-            return;
-
-        var i, j, dataset = plot.getData();
-        for (i = 0; i < dataset.length; ++i) {
-            var series = dataset[i];
-
-            // find the nearest points, x-wise
-            for (j = 0; j < series.data.length; ++j)
-                if (series.data[j][0] > pos.x)
-                    break;
-            
-            // now interpolate
-            var x, p1 = series.data[j - 1], p2 = series.data[j];
-            if (p1 == null)
-                x = p2[0];
-            else if (p2 == null)
-                x = p1[0];
-            else
-                x = p1[0] + (p2[0] - p1[0]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
-
-            // find the nearest points, y-wise
-            for (j = 0; j < series.data.length; ++j)
-                if (series.data[j][0] > pos.y)
-                    break;
-
-            // now interpolate
-            var y, p1 = series.data[j - 1], p2 = series.data[j];
-            if (p1 == null)
-                y = p2[0];
-            else if (p2 == null)
-                y = p1[0];
-            else
-                y = p1[0] + (p2[0] - p1[0]) * (pos.y - p1[0]) / (p2[0] - p1[0]);
-
-
-            legends.eq(i).text(series.label.replace(/:.*/, ": " + x.toFixed(2) + " eV / " + y.toFixed(2)));
-        }
-    }
-    
-    $("#placeholder").bind("plothover",  function (event, pos, item) {
-        latestPosition = pos;
-        if (!updateLegendTimeout)
-            updateLegendTimeout = setTimeout(updateLegend, 50);
-    });
-
-});
+<script src="http://ideadb.uibk.ac.at/files/js/plot.js"></script>
+<script>
+do_plots([{{ m.data }}], "{{ m.substance }}");
 </script>
-
 {% endblock %}

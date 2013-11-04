@@ -17,8 +17,8 @@ class MeasurementAdmin(admin.ModelAdmin):
         return obj.time.strftime('%d %m %Y, %H:%M')
     propertime.short_description = 'Time and date'
 
-    list_display = ('propertime', 'substance', 'description', 'scantype', 'datafile')
-    list_filter = ('operator', 'time', 'scantype')
+    list_display = ('propertime', 'substance', 'description', 'scantype', 'polarity', 'datafile')
+    list_filter = ('operator', 'time', 'scantype', 'polarity')
     search_fields = ('substance', 'description')
     save_as = True
     save_on_top = True
@@ -35,7 +35,7 @@ class MeasurementAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('VG settings', {
-            'fields': ('channeltron', 'ionblock_temperature', 'trap_current', 'filament_current', 'electron_energy'),
+            'fields': ('channeltron', 'ionblock_temperature', 'trap_current', 'filament_current', 'electron_energy', 'gatetime'),
             'classes': ('wide',)
         }),
         ('Voltages Ionsource', {

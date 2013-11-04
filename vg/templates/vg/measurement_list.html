@@ -29,6 +29,7 @@
             <td><strong>Substance</strong</td>
             <td><strong>Description</strong</td>
             <td><strong>Scantype</strong</td>
+            <td><strong>Polarity</strong</td>
             <td><strong>Raw file</strong</td>
             <td><strong>Calibrate</strong</td>
             <td><strong>Edit</strong</td>
@@ -43,6 +44,7 @@
             <td><p>{{ m.substance }}</p></td>
             <td><p>{{ m.description|truncatewords:15 }}</p></td>
             <td><p>{{ m.scantype }}</p></td>
+            <td><p>{{ m.polarity }}</p></td>
             <td><p><a href="{{ m.datafile.url }}">Download</a></p></td>
             <td>{% if m.scantype == 'ES' %}<p><a href="{{ m.id }}/cal/">Choose</a></p>{% endif %}</td>
             <td><p><a href="../../admin/vg/measurement/{{ m.id }}">Edit</a></p></td>

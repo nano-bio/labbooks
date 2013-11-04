@@ -29,6 +29,7 @@ class Measurement(models.Model):
     datafile = models.FileField(upload_to = 'vg/%Y/%m/%d/%H/%M/%S/')
     scantype = models.CharField(max_length = 20, choices = SCANTYPES, default = ENERGYSCAN)
     polarity = models.CharField(max_length = 3, choices = POLARITIES, default = 'NEG')
+    gatetime = models.FloatField(blank = True, null = True)
     electron_energy = models.FloatField(blank = True, null = True, verbose_name = 'Electron Energy (for MS)')
     substance = models.CharField(max_length = 100)
     description = models.CharField(max_length = 200)
@@ -92,7 +93,7 @@ class Calibration(models.Model):
         ordering = ['-time']
 
 class JournalEntry(models.Model):
-    time = models.DateTimeField(auto_now = False, auto_now_add = True)
+    time = models.DateTimeField(auto_now = False, auto_now_add = False)
     operator = models.ForeignKey('Operator')
     comment = models.TextField()
     attachment = models.FileField(upload_to = 'vg/techjournal/', blank = True, default = '')
@@ -102,3 +103,4 @@ class JournalEntry(models.Model):
 
     class Meta:
         ordering = ['-time']
+        verbose_name_plural = 'Journal Entries'
