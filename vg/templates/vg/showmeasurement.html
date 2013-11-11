@@ -45,120 +45,116 @@
         </div>
     </div>
     <br />
-    <div id="general" class="general">
-      <strong>General information for this measurement:</strong><br />
-      <table>
-        <tr>
-         <td><strong>Operator</strong></td>
-         <td>{{ m.operator.firstname }} {{ m.operator.lastname }}</td>
-        </tr>
-        <tr>
-         <td><strong>Substance</strong></td>
-         <td>{{ m.substance }}</td>
-        </tr>
-        <tr>
-         <td><strong>Description</strong></td>
-         <td>{{ m.description }}</td>
-        </tr>
-        <tr>
-         <td><strong>Polarity</strong></td>
-         <td>{{ m.polarity }}</td>
-        </tr>
-        <tr>
-         <td><strong>Gate time</strong></td>
-         <td>{{ m.gatetime }}</td>
-        </tr>
-      </table>
-    </div>
-    <br />
-    <div id="actionbox" class="general">
-      <a href="/admin/vg/measurement/{{ m.id }}">Edit / Delete log entry</a><br />
-      {% if m.scantype == 'ES' %}
-      <a href="cal/">Apply energy calibration to this scan</a><br />
-      {% endif %}
-      <a href="{{ m.datafile.url }}">Download raw file</a><br />
-      <a href="../../export/{{ m.id }}">Export original data</a><br />
+    <div class="general">
+      <div class="innerbox">
+        <strong>General information for this measurement:</strong><br />
+        <table>
+          <tr>
+           <td><strong>Operator</strong></td>
+           <td>{{ m.operator.firstname }} {{ m.operator.lastname }}</td>
+          </tr>
+          <tr>
+           <td><strong>Substance</strong></td>
+           <td>{{ m.substance }}</td>
+          </tr>
+          <tr>
+           <td><strong>Description</strong></td>
+           <td>{{ m.description }}</td>
+          </tr>
+          <tr>
+           <td><strong>Polarity</strong></td>
+           <td>{{ m.polarity }}</td>
+          </tr>
+          <tr>
+           <td><strong>Gate time</strong></td>
+           <td>{{ m.gatetime }}</td>
+          </tr>
+        </table>
+      </div>
+      <div id="actionbox" class="innerbox">
+        <strong>Actions:</strong><br />
+        <a href="/admin/vg/measurement/{{ m.id }}">Edit / Delete log entry</a><br />
+        {% if m.scantype == 'ES' %}
+        <a href="cal/">Apply energy calibration to this scan</a><br />
+        {% endif %}
+        <a href="{{ m.datafile.url }}">Download raw file</a><br />
+        <a href="../../export/{{ m.id }}">Export original data</a><br />
+      </div>
+      <div id="fitbox" class="innerbox">
+        <strong>Fits:</strong><br />
+        <a href="fit/1">Fit with 1 Gaussian</a><br />
+        <a href="fit/2">Fit with 2 Gaussians</a><br />
+        <a href="fit/3">Fit with 3 Gaussians</a><br />
+        <a href="fit/4">Fit with 4 Gaussians</a><br />
+        <a href="fit/5">Fit with 5 Gaussians</a><br />
+      </div>
     </div>
     <br />
     <div class="general" id="lenses">
       <table>
         <tr>
-          <td><strong>Ion Repeller</strong></td>
-          <td>{{ m.ion_repeller }}</td>
+          <td style="width:200px;"><strong>Lens:</strong></td>
+          <td style="width:100px;"><strong>Value:</strong></td>
+          <td style="width:200px;"><strong>Lens:</strong></td>
+          <td style="width:100px;"><strong>Value:</strong></td>
         </tr>
         <tr>
+          <td><strong>Ion Repeller</strong></td>
+          <td>{{ m.ion_repeller }}</td>
           <td><strong>Focus Coarse 1</strong></td>
           <td>{{ m.focus_coarse_1 }}</td>
         </tr>
         <tr>
           <td><strong>Focus Coarse 2</strong></td>
           <td>{{ m.focus_coarse_2 }}</td>
-        </tr>
-        <tr>
           <td><strong>Focus Fine 1</strong></td>
           <td>{{ m.focus_fine_1 }}</td>
         </tr>
         <tr>
           <td><strong>Focus Fine 2</strong></td>
           <td>{{ m.focus_fine_2 }}</td>
-        </tr>
-        <tr>
           <td><strong>Deflector 1</strong></td>
           <td>{{ m.deflector_1 }}</td>
         </tr>
         <tr>
           <td><strong>Deflector 2</strong></td>
           <td>{{ m.deflector_2 }}</td>
-        </tr>
-        <tr>
           <td><strong>Ion Energy</strong></td>
           <td>{{ m.ion_energy }}</td>
         </tr>
         <tr>
           <td><strong>Y-Focus</strong></td>
           <td>{{ m.y_focus }}</td>
-        </tr>
-        <tr>
           <td><strong>X-Deflect</strong></td>
           <td>{{ m.x_deflect }}</td>
         </tr>
         <tr>
           <td><strong>Z-Deflect</strong></td>
           <td>{{ m.z_deflect }}</td>
-        </tr>
-        <tr>
           <td><strong>Curve 1</strong></td>
           <td>{{ m.curve_1 }}</td>
         </tr>
         <tr>
           <td><strong>Rotate 1</strong></td>
           <td>{{ m.rotate_1 }}</td>
-        </tr>
-        <tr>
           <td><strong>Z-Deflect 1</strong></td>
           <td>{{ m.z_deflect_1 }}</td>
         </tr>
         <tr>
           <td><strong>Z-Focus 1</strong></td>
           <td>{{ m.z_focus_1 }}</td>
-        </tr>
-        <tr>
           <td><strong>Curve 2</strong></td>
           <td>{{ m.curve_2 }}</td>
         </tr>
         <tr>
           <td><strong>Rotate 2</strong></td>
           <td>{{ m.rotate_2 }}</td>
-        </tr>
-        <tr>
           <td><strong>Z-Deflect 2</strong></td>
           <td>{{ m.z_deflect_2 }}</td>
         </tr>
         <tr>
           <td><strong>Z-Focus 2</strong></td>
           <td>{{ m.z_focus_2 }}</td>
-        </tr>
-        <tr>
           <td><strong>Comments</strong></td>
           <td>{{ m.comments }}</td>
         </tr>
@@ -166,6 +162,6 @@
     </div>
 <script src="http://ideadb.uibk.ac.at/files/js/plot.js"></script>
 <script>
-do_plots([{{ m.data }}], "{{ m.substance }}");
+do_plots([{{ m.data }}], [], "{{ m.substance }}");
 </script>
 {% endblock %}

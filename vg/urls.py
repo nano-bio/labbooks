@@ -24,4 +24,7 @@ urlpatterns = patterns('',
     url(r'^insight/(?P<parameter1>\w+)/(?P<parameter2>\w+)/$', 'vg.views.plot_parameters'),
     url(r'^insight/$', lambda x: HttpResponseRedirect('ion_repeller/ion_energy/')),
     url(r'^insight/(?P<parameter1>\w+)/$', 'vg.views.plot_parameters'),
+    url(r'^view/(\d+)/fit/(\d+)/$', 'vg.views.fitmeasurement'),
+    url(r'^view/(\d+)/cal/(\d+)/fit/(\d+)/$', 'vg.views.fitcalmeasurement'),
+    url(r'^export_all_f_urls/$', 'vg.views.export_all_f_urls'),
 )

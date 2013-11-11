@@ -1,11 +1,10 @@
-function do_plots(d, substance) {
+function do_plots(data, fitteddata, substance) {
     var options = {legend: {margin : [15,15]}, crosshair: { mode: "xy" }, grid: { hoverable: true, autoHighlight: false }, selection: {mode: "xy"}};
 
-    var d2 = d;
-    var plot = $.plot($("#placeholder"), [{ label: substance+"-: 00.00 eV / 00.00",  data: d2, color: "blue"}], options);
+    var plot = $.plot($("#placeholder"), [{ label: substance+"-: 00.00 eV / 00.00",  data: data, color: "blue"}, { label: "Fit",  data: fitteddata, color: "red"}], options);
 
     // Create the overview plot
-    var  overview = $.plot($("#overview"), [{ label: substance,  data: d2, color: "blue"}], {legend: {show: false}, selection: {mode: "xy"}, xaxis: {ticks: 4}, yaxis: {ticks: 4}});
+    var  overview = $.plot($("#overview"), [{ label: substance,  data: data, color: "blue"}, { label: "Fit",  data: fitteddata, color: "red"}], {legend: {show: false}, selection: {mode: "xy"}, xaxis: {ticks: 4}, yaxis: {ticks: 4}});
 
     // this is for the legends of the main plot. has bugs, but not worth fixing atm.
 
@@ -86,7 +85,7 @@ function do_plots(d, substance) {
 
 	    // do the zooming
 
-	    plot = $.plot($("#placeholder"), [{ label: substance+"-: 00.00 eV / 00.00",  data: d2, color: "blue"}],
+	    plot = $.plot($("#placeholder"), [{ label: substance+"-: 00.00 eV / 00.00",  data: data, color: "blue"}, { label: "Fit",  data: fitteddata, color: "red"}],
 		    $.extend(true, {}, options, {
 			    xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
 			    yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
@@ -107,10 +106,10 @@ function do_plots(d, substance) {
     // if an unselected event happens, we want both plots to go back to normal (hence clear selection in overview)
     
     $("#overview").bind("plotunselected", function (event, ranges) {
-        plot = $.plot($("#placeholder"), [{ label: substance+"-: 00.00 eV / 00.00",  data: d2, color: "blue"}], options);
+        plot = $.plot($("#placeholder"), [{ label: substance+"-: 00.00 eV / 00.00",  data: data, color: "blue"}, { label: "Fit",  data: fitteddata, color: "red"}], options);
     });
     $("#placeholder").bind("plotunselected", function (event, ranges) {
-        plot = $.plot($("#placeholder"), [{ label: substance+"-: 00.00 eV / 00.00",  data: d2, color: "blue"}], options);
+        plot = $.plot($("#placeholder"), [{ label: substance+"-: 00.00 eV / 00.00",  data: data, color: "blue"}, { label: "Fit",  data: fitteddata, color: "red"}], options);
         overview.clearSelection(true)
     });
 };

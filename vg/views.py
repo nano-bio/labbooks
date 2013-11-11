@@ -123,18 +123,28 @@ def exportmeasurement(request, id):
     resp['Content-Disposition'] = 'attachment; filename=%s' % m.datafile.name.encode('ascii', 'replace')
     return resp
 
-def calibratedata(measurement, calibration, formatstring = '[%s, %s]'):
-    #fetch file with fitlib
-    data = fitlib.helplib.readfile(settings.MEDIA_ROOT + measurement.datafile.name)
-
+def format_for_plot(data):
     #data needs to be in the right format for flot library to plot
     tempdata = []
 
     for datapoint in data:
-        if calibration.p2 == '':
-            tempdata.append(formatstring % (str(calibration.p0 + calibration.p1*datapoint[0]), str(datapoint[1])))
-        elif calibration.p2 != '':
-            tempdata.append(formatstring % (str(calibration.p0 + calibration.p1*datapoint[0] + calibration.p2*datapoint[0]**2), str(datapoint[1])))
+        tempdata.append('[%s, %s]' % (str(datapoint[0]), str(datapoint[1])))
+
+    tempdata = ' ,'.join(tempdata)
+
+    return tempdata
+
+def calibrate(measurement, calibration):
+    #takes a measurement object and a calibration object and calibrates the data
+    tempdata = fitlib.helplib.readfile(settings.MEDIA_ROOT + measurement.datafile.name)
+
+    #calibrate
+    if calibration.p2 == '':
+        for datapoint in tempdata:
+            datapoint[0] = calibration.p0 + calibration.p1*datapoint[0]
+    elif calibration.p2 != '':
+        for datapoint in tempdata:
+            datapoint[0] = calibration.p0 + calibration.p1*datapoint[0] + calibration.p2*datapoint[0]**2
 
     return tempdata
 
@@ -145,8 +155,8 @@ def showcalibratedmeasurement(request, m_id, c_id):
     c = models.Calibration.objects.get(id = c_id)
 
     #calibrate
-    m.data = calibratedata(m, c)
-    m.data = ' ,'.join(m.data)
+    m.data = calibrate(m, c)
+    m.data = format_for_plot(m.data)
 
     #ready to render
     t = get_template('vg/showcalmeasurement.html')
@@ -164,10 +174,15 @@ def exportcalibratedmeasurement(request, m_id, c_id):
     c = models.Calibration.objects.get(id = c_id)
 
     #calibrate
-    m.data = calibratedata(m, c, '%s\t%s')
+    m.data = calibrate(m, c)
+    tempdata = []
+
+    # two tab-separated columns
+    for datapoint in m.data:
+        tempdata.append('%s\t%s' % (str(datapoint[0]), str(datapoint[1])))
 
     #assign the read lines to the context for the template
-    m.filecontents = '\r\n'.join(m.data)
+    m.filecontents = '\r\n'.join(tempdata)
 
     t = get_template('vg/exportcalibrated.txt')
     c = Context({'m' : m, 'c' : c})
@@ -179,3 +194,102 @@ def exportcalibratedmeasurement(request, m_id, c_id):
     resp['Content-Disposition'] = 'attachment; filename=%s' % m.datafile.name.encode('ascii', 'replace')
     return resp
 
+def fit_data(data, n_peaks):
+    #guess where the peaks could be -> offset is a 50th of the length to avoid
+    #artefacts in the beginning of the file
+    guesses = fitlib.fitlib.guess_ES_peaks(data, n_peaks, data[:,0].max()/50)
+
+    #fit
+    fitted_peaks, parameters = fitlib.fitlib.fitES(data, guesses)
+
+    #create a new array of datapoints for plotting
+    fitfunc = fitlib.fitlib.gaussfunctions(n_peaks)
+    fitteddata = fitlib.fitlib.data_from_fit_and_parameters(data, fitfunc, parameters)
+
+    return fitteddata, parameters
+
+def fitmeasurement(request, m_id, n_peaks):
+    """fits a measurement (m_id) with n_peaks peaks and shows it"""
+    #fetch from db
+    m = models.Measurement.objects.get(id = m_id)
+
+    #we want an integer
+    n_peaks = int(n_peaks)
+    
+    #fetch file with fitlib
+    data = fitlib.helplib.readfile(settings.MEDIA_ROOT + m.datafile.name)
+    
+    fitteddata, parameters = fit_data(data, n_peaks)
+    
+    m.peaks = []
+    #feed the template with peak information
+    for i in range(0, n_peaks):
+        m.peaks.append([parameters[i*3], parameters[i*3+1], parameters[i*3+2]])
+
+    #data needs to be in the right format for flot library to plot
+    m.data = format_for_plot(data)
+
+    #data needs to be in the right format for flot library to plot
+    m.fitteddata = format_for_plot(fitteddata)
+
+    #ready to render
+    t = get_template('vg/fitmeasurement.html')
+    c = Context({'m' : m})
+    html = t.render(c)
+    return HttpResponse(html)
+
+def fitcalmeasurement(request, m_id, c_id, n_peaks):
+    """fits a measurement (m_id) with n_peaks peaks and shows it"""
+    #fetch from db
+    m = models.Measurement.objects.get(id = m_id)
+    c = models.Calibration.objects.get(id = c_id)
+
+    #calibrate
+    data = calibrate(m, c)
+
+    #we want an integer
+    n_peaks = int(n_peaks)
+
+    fitteddata, parameters = fit_data(data, n_peaks)
+
+    m.peaks = []
+    #feed the template with peak information
+    for i in range(0, n_peaks):
+        m.peaks.append([parameters[i*3], parameters[i*3+1], parameters[i*3+2]])
+
+    #data needs to be in the right format for flot library to plot
+    m.data = format_for_plot(data)
+
+    #data needs to be in the right format for flot library to plot
+    m.fitteddata = format_for_plot(fitteddata)
+
+    #ready to render
+    t = get_template('vg/fitcalmeasurement.html')
+    c = Context({'m' : m, 'c' : c})
+    html = t.render(c)
+    return HttpResponse(html)
+
+def export_all_f_urls(request):
+    #this is mainly used for benchmarking the peak finding algorithm
+    #it returns a list of urls to F-/SF6 scans
+
+    cals = models.Calibration.objects.all()
+    output = []
+    
+    for cal in cals:
+        if cal.cal_base_file_1 is not None:
+            if cal.cal_base_file_1.description == 'F' and cal.cal_base_file_1.substance == 'SF6':
+                output.append(cal.cal_base_file_1.datafile.url)
+        if cal.cal_base_file_2 is not None:
+            if cal.cal_base_file_2.description == 'F' and cal.cal_base_file_2.substance == 'SF6':
+                output.append(cal.cal_base_file_2.datafile.url)
+        if cal.cal_base_file_3 is not None:
+            if cal.cal_base_file_3.description == 'F' and cal.cal_base_file_3.substance == 'SF6':
+                output.append(cal.cal_base_file_3.datafile.url)
+        if cal.cal_base_file_4 is not None:
+            if cal.cal_base_file_4.description == 'F' and cal.cal_base_file_4.substance == 'SF6':
+                output.append(cal.cal_base_file_4.datafile.url)
+
+    text = '\r\n'.join(output)
+            
+    return HttpResponse(text)

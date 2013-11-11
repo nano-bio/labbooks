@@ -75,18 +75,36 @@
       <div id="actionbox" class="innerbox">
         <strong>Actions:</strong><br />
         <a href="/admin/vg/measurement/{{ m.id }}">Edit / Delete log entry</a><br />
-        <a href="/vg/view/{{ m.id }}">Show uncalibrated scan</a><br />
+        {% if m.scantype == 'ES' %}
+        <a href="/vg/view/{{ m.id }}/cal/">Apply different energy calibration to this scan</a><br />
+        {% endif %}
         <a href="{{ m.datafile.url }}">Download raw file</a><br />
         <a href="/vg/export/{{ m.id }}">Export original data</a><br />
-        <a href="/vg/view/{{ m.id }}/calexport/{{ c.id }}">Export calibrated data</a><br />
+        <a href="/vg/view/{{ m.id }}/calexport/{{ c.id }}" >Export calibrated data</a><br />
       </div>
       <div id="fitbox" class="innerbox">
         <strong>Fits:</strong><br />
-        <a href="fit/1">Fit with 1 Gaussian</a><br />
-        <a href="fit/2">Fit with 2 Gaussians</a><br />
-        <a href="fit/3">Fit with 3 Gaussians</a><br />
-        <a href="fit/4">Fit with 4 Gaussians</a><br />
-        <a href="fit/5">Fit with 5 Gaussians</a><br />
+        <a href="../1" >Fit with 1 Gaussian</a><br />
+        <a href="../2" >Fit with 2 Gaussians</a><br />
+        <a href="../3" >Fit with 3 Gaussians</a><br />
+        <a href="../4" >Fit with 4 Gaussians</a><br />
+        <a href="../5" >Fit with 5 Gaussians</a><br />
+      </div>
+      <div id="peakbox" class="innerbox">
+        <table>
+          <tr>
+            <td><strong>Peak Height</strong></td>
+            <td><strong>Peak Position</strong></td>
+            <td><strong>Peak Width</strong></td>
+          </tr>
+          {% for peak in m.peaks %}
+          <tr>
+            {% for value in peak %}
+            <td>{{ value|floatformat:2 }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>
       </div>
     </div>
     <br />
@@ -152,17 +170,16 @@
           <td><strong>Z-Deflect 2</strong></td>
           <td>{{ m.z_deflect_2 }}</td>
         </tr>
-        </tr>
         <tr>
           <td><strong>Z-Focus 2</strong></td>
           <td>{{ m.z_focus_2 }}</td>
           <td><strong>Comments</strong></td>
           <td>{{ m.comments }}</td>
         </tr>
-      </table>
+      </table> 
     </div>
 <script src="http://ideadb.uibk.ac.at/files/js/plot.js"></script>
 <script>
-do_plots([{{ m.data }}], [], "{{ m.substance }}");
+do_plots([{{ m.data }}], [{{ m.fitteddata }}], "{{ m.substance }}");
 </script>
 {% endblock %}
