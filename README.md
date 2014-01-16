@@ -7,6 +7,10 @@ Requires django >= 1.4
 Changelog
 =========
 
+16.01.2014:
+
+* CLUSTOF/NEW: Show filename in CLUSTOF measurement list
+
 09.11.2013:
 
 * VG/NEW: vg/export_all_f_urls gives a list of URLs to all F-/SF6 scans used in calibrations

@@ -55,7 +55,7 @@ def readsettings(request):
                       'pressure_ion', 
                       'pressure_tof',
                       'temperature_he',
-                      'electron_energy',
+                      'electron_energy_set',
                       'ion_block',
                       'pusher',
                       'wehnelt',

@@ -43,7 +43,7 @@
             <td><p>{{ m.scantype }}</p></td>
             <td><p>{{ m.substance|truncatewords:25 }}</p></td>
             <td><p>{{ m.electron_energy }}</p></td>
-            <td><p><a href="/clustof/export/{{ m.id }}">Download</a></p></td>
+            <td><p><a href="/clustof/export/{{ m.id }}">{{ m.data_filename }}</a></p></td>
         </tr>
         {% endfor %}
     </table>
