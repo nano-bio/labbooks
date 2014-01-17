@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 from models import Measurement, JournalEntry, CurrentSetting
 from django.views.generic import ListView
 from django.http import HttpResponseRedirect

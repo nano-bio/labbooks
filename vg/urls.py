@@ -1,6 +1,4 @@
-from django.conf.urls.defaults import *
 from django.conf.urls import patterns, url, include
-from django.views.generic.date_based import archive_index
 from django.contrib import admin
 from django.views.generic import ListView
 from django.http import HttpResponseRedirect
@@ -16,7 +14,6 @@ urlpatterns = patterns('',
     url(r'^view/(\d+)/cal/(\d+)/$', 'vg.views.showcalibratedmeasurement'),
     url(r'^view/(\d+)/calexport/(\d+)/$', 'vg.views.exportcalibratedmeasurement'),
     url(r'^view/(\d+)/cal/$', ListView.as_view(model = Calibration, template_name = 'vg/choosecalibration_list.html')),
-    #url(r'^view/$', archive_index, {'queryset': Measurement.objects.all(), 'date_field': 'time', 'num_latest': 50, 'template_name': 'measurement_list.html'}),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^cal/$', ListView.as_view(model = Calibration, template_name = 'vg/calibration_list.html')),
     url(r'^journal/$', ListView.as_view(model = JournalEntry, template_name = 'vg/journalentry_list.html')),
