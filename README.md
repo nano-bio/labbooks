@@ -7,6 +7,11 @@ Requires django >= 1.4
 Changelog
 =========
 
+17.01.2014:
+
+* VG/CLUSTOF/FIX: Minor fixes for compatibility with Django 1.6.1
+* WIPPI/NEW: New WIPPI labbook. Currently testing.
+
 16.01.2014:
 
 * CLUSTOF/NEW: Show filename in CLUSTOF measurement list

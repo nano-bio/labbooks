@@ -1,0 +1,68 @@
+#This file was exported from WIPPI labbook and has the id: {{ m.id }}
+#It has been calibrated using calibration {{ c.id }}
+#http://138.232.72.25/wippi/view/{{ m.id }}/cal/{{ c.id }}
+#Calibration parameters:
+#y = {{ c.p0 }} + {{ c.p1 }}*x{% if c.p2 != '' %} + {{ c.p2 }}*x^2{% endif %}
+#Measurement details:
+#Operator {{ m.operator }}
+#Time {{ m.time }}
+#EE {{ m.electron_energy }}
+#Ion Energy {{ m.ion_energy }}
+#Substance {{ m.substance }}
+#Description {{ m.description }}
+#Polarity {{ m.polarity }}
+#Channeltron 1 {{ m.channeltron_1 }} kV
+#Channeltron 2 {{ m.channeltron_2 }} kV
+#Oven Temperature {{ m.oven_temperature }}
+#Chamber Temperature {{ m.chamber_temperature }}
+#Faraday Current {{ m.faraday_current }}
+#Filament Current {{ m.filament_current }}
+#Pressure Monochromator {{ m.pressure_monochromator }}
+#Pressure Pickup {{ m.pressure_pickup }}
+#Pressure Clustersource {{ m.pressure_cs }}
+#Background Pressure {{ m.background_pressure }}
+#Anode {{ m.anode }}
+#Optics Inside {{ m.optics_inside }}
+#Optics outside {{ m.optics_outside }}
+#Coil Volt xy {{ m.coil_voltage_xy }}
+#Coil Volt xz {{ m.coil_voltage_xz }}
+#Coil Volt yz {{ m.coil_voltage_yz }}
+#Coil Current XY {{ m.coil_current_xy }}
+#Coil Current XZ {{ m.coil_current_xz }}
+#Coil Current YZ {{ m.coil_current_yz }}
+#1a {{ m.lens_1a }}
+#1b {{ m.lens_1b }}
+#1c {{ m.lens_1c }}
+#A1 {{ m.lens_A1 }}
+#L2 {{ m.lens_L2 }}
+#L3 {{ m.lens_L3 }}
+#2a {{ m.lens_2a }}
+#2b {{ m.lens_2b }}
+#2c {{ m.lens_2c }}
+#L4 {{ m.lens_L4 }}
+#L5 {{ m.lens_L5 }}
+#D1 {{ m.lens_D1 }}
+#D2 {{ m.lens_D2 }}
+#Ua {{ m.lens_Ua }}
+#Ui {{ m.lens_Ui }}
+#UHK-Mitte {{ m.uhk_mitte }}
+#3a {{ m.lens_3a }}
+#3b {{ m.lens_3b }}
+#3c {{ m.lens_3c }}
+#A2 {{ m.lens_A2 }}
+#L6 {{ m.lens_L6 }}
+#L7 {{ m.lens_L7 }}
+#4a {{ m.lens_4a }}
+#4b {{ m.lens_4b }}
+#4c {{ m.lens_4c }}
+#L8 {{ m.lens_L8 }}
+#Uex-Mitte {{ m.uex_mitte }}
+#A3 {{ m.lens_A3 }}
+#L10 {{ m.lens_L10 }}
+#SU1 {{ m.lens_SU1 }}
+#SU2 {{ m.lens_SU2 }}
+#Comments = {{ m.comments }}
+#File contents start here. Be aware, that only the second (averaged) column is given.
+#The original file may contain several runs.
+
+{{ m.filecontents }}

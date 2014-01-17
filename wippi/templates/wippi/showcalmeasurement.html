@@ -1,0 +1,257 @@
+{% extends "wippi/base.html" %}
+
+{% block content %}
+    <h2>Measurement No. {{ m.id }} calibrated with Calibration No. {{ c.id }}</h2>
+    <div class="general" id="info">Data was taken on {{ m.time }} with substance: {{ m.substance }}</div>
+    <div class="general" id="info">Calibration was created on {{ c.time }}</div>
+    <div style="height:400px">
+        <div id="placeholder" style="float:left; width:800px;height:400px"></div>
+        <div id="overview" style="float:right;width:250px; height:125px;"></div>
+        <div style="float:right" id="conditions" class="general">
+          <strong>Conditions:</strong><br />
+          <table>
+            <tr>
+              <td><strong>Electron Energy</strong></td>
+              <td>{{ m.electron_energy }}</td>
+            </tr>
+            <tr>
+             <td><strong>Ion Energy</strong></td>
+             <td>{{ m.ion_energy }}</td>
+            </tr>
+            <tr>
+             <td><strong>Channeltron 1</strong></td>
+             <td>{{ m.channeltron_1 }}</td>
+            </tr>
+            <tr>
+             <td><strong>Channeltron 2</strong></td>
+             <td>{{ m.channeltron_2 }}</td>
+            </tr>
+            <tr>
+             <td><strong>Oven Temperature</strong></td>
+             <td>{{ m.oven_temperature }}</td>
+            </tr>
+            <tr>
+             <td><strong>Chamber Temperature</strong></td>
+             <td>{{ m.chamber_temperature }}</td>
+            </tr>
+            <tr>
+             <td><strong>Faraday Current</strong></td>
+             <td>{{ m.faraday_curent }}</td>
+            </tr>
+            <tr>
+             <td><strong>Filament Current</strong></td>
+             <td>{{ m.filament_current }}</td>
+            </tr>
+            <tr>
+             <td><strong>Emission</strong></td>
+             <td>{{ m.emission }}</td>
+            </tr>
+            <tr>
+             <td><strong>Energy Resolution</strong></td>
+             <td>{{ m.energy_resolution }}</td>
+            </tr>
+            <tr>
+             <td><strong>Mass Resolution</strong></td>
+             <td>{{ m.mass_resolution }}</td>
+            </tr>
+            <tr>
+             <td><strong>Pressure Monochromator</strong></td>
+             <td>{{ m.pressure_monochromator }}</td>
+            </tr>
+            <tr>
+             <td><strong>Pressure Pickup</strong></td>
+             <td>{{ m.pressure_pickup }}</td>
+            </tr>
+            <tr>
+             <td><strong>Pressure CS</strong></td>
+             <td>{{ m.pressure_cs }}</td>
+            </tr>
+            <tr>
+             <td><strong>Background Pressure</strong></td>
+             <td>{{ m.background_pressure }}</td>
+            </tr>
+          </table>
+        </div>
+    </div>
+    <br />
+    <div class="general">
+      <div class="innerbox">
+        <strong>General information for this measurement:</strong><br />
+        <table>
+          <tr>
+           <td><strong>Operator</strong></td>
+           <td>{{ m.operator.firstname }} {{ m.operator.lastname }}</td>
+          </tr>
+          <tr>
+           <td><strong>Substance</strong></td>
+           <td>{{ m.substance }}</td>
+          </tr>
+          <tr>
+           <td><strong>Description</strong></td>
+           <td>{{ m.description }}</td>
+          </tr>
+          <tr>
+           <td><strong>Polarity</strong></td>
+           <td>{{ m.polarity }}</td>
+          </tr>
+          <tr>
+           <td><strong>Gate time</strong></td>
+           <td>{{ m.gatetime }}</td>
+          </tr>
+        </table>
+      </div>
+      <div id="actionbox" class="innerbox">
+        <strong>Actions:</strong><br />
+        <a href="/admin/wippi/measurement/{{ m.id }}">Edit / Delete log entry</a><br />
+        <a href="/wippi/view/{{ m.id }}">Show uncalibrated scan</a><br />
+        <a href="{{ m.datafile.url }}">Download raw file</a><br />
+        <a href="/wippi/export/{{ m.id }}">Export original data</a><br />
+        <a href="/wippi/view/{{ m.id }}/calexport/{{ c.id }}">Export calibrated data</a><br />
+      </div>
+      <div id="fitbox" class="innerbox">
+        <strong>Fits:</strong><br />
+        <a href="fit/1">Fit with 1 Gaussian</a><br />
+        <a href="fit/2">Fit with 2 Gaussians</a><br />
+        <a href="fit/3">Fit with 3 Gaussians</a><br />
+        <a href="fit/4">Fit with 4 Gaussians</a><br />
+        <a href="fit/5">Fit with 5 Gaussians</a><br />
+      </div>
+    </div>
+    <br />
+    <div class="general" id="lenses">
+      <table>
+        <tr>
+          <td style="width:200px;"><strong>Lens:</strong></td>
+          <td style="width:100px;"><strong>Value:</strong></td>
+          <td style="width:200px;"><strong>Lens:</strong></td>
+          <td style="width:100px;"><strong>Value:</strong></td>
+          <td style="width:200px;"><strong>Lens:</strong></td>
+          <td style="width:100px;"><strong>Value:</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Anode</strong></td>
+          <td>{{ m.anode }}</td>
+          <td><strong>Def A</strong></td>
+          <td>{{ m.def_a }}</td>
+          <td><strong>Def I</strong></td>
+          <td>{{ m.def_i }}</td>
+        </tr>
+        <tr>
+          <td><strong>Optics Inside</strong></td>
+          <td>{{ m.optics_inside }}</td>
+          <td><strong>Optics Outside</strong></td>
+          <td>{{ m.optics_outside }}</td>
+          <td><strong></strong></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><strong>Coil Voltage XY</strong></td>
+          <td>{{ m.coil_voltage_xy }}</td>
+          <td><strong>Coil Voltage XZ</strong></td>
+          <td>{{ m.coil_voltage_xz }}</td>
+          <td><strong>Coil Voltage YZ</strong></td>
+          <td>{{ m.coil_voltage_yz }}</td>
+        </tr>
+        <tr>
+          <td><strong>Coil Current XY</strong></td>
+          <td>{{ m.coil_current_xy }}</td>
+          <td><strong>Coil Current XZ</strong></td>
+          <td>{{ m.coil_current_xz }}</td>
+          <td><strong>Coil Current YZ</strong></td>
+          <td>{{ m.coil_current_yz }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens 1a</strong></td>
+          <td>{{ m.lens_1a }}</td>
+          <td><strong>Lens 1b</strong></td>
+          <td>{{ m.lens_1a }}</td>
+          <td><strong>Lens 1c</strong></td>
+          <td>{{ m.lens_1c }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens A1</strong></td>
+          <td>{{ m.lens_A1 }}</td>
+          <td><strong>Lens L2</strong></td>
+          <td>{{ m.lens_L2 }}</td>
+          <td><strong>Lens L3</strong></td>
+          <td>{{ m.lens_L3 }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens 2a</strong></td>
+          <td>{{ m.lens_2a }}</td>
+          <td><strong>Lens 2b</strong></td>
+          <td>{{ m.lens_2a }}</td>
+          <td><strong>Lens 2c</strong></td>
+          <td>{{ m.lens_2c }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens L4</strong></td>
+          <td>{{ m.lens_L4 }}</td>
+          <td><strong>Lens L5</strong></td>
+          <td>{{ m.lens_L5 }}</td>
+          <td><strong>Lens D1</strong></td>
+          <td>{{ m.lens_D1 }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens D2</strong></td>
+          <td>{{ m.lens_D2 }}</td>
+          <td><strong>Lens Ua</strong></td>
+          <td>{{ m.lens_Ua }}</td>
+          <td><strong>Lens Ui</strong></td>
+          <td>{{ m.lens_Ui }}</td>
+        </tr>
+        <tr>
+          <td><strong>UHK Mitte</strong></td>
+          <td>{{ m.uhk_mitte }}</td>
+          <td><strong>Lens 3a</strong></td>
+          <td>{{ m.lens_3a }}</td>
+          <td><strong>Lens 3b</strong></td>
+          <td>{{ m.lens_3b }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens 3c</strong></td>
+          <td>{{ m.lens_3c }}</td>
+          <td><strong>Lens A2</strong></td>
+          <td>{{ m.lens_A2 }}</td>
+          <td><strong>Lens L6</strong></td>
+          <td>{{ m.lens_L6 }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens L7</strong></td>
+          <td>{{ m.lens_L7 }}</td>
+          <td><strong>Lens 4a</strong></td>
+          <td>{{ m.lens_4a }}</td>
+          <td><strong>Lens 4b</strong></td>
+          <td>{{ m.lens_4b }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens 4c</strong></td>
+          <td>{{ m.lens_4c }}</td>
+          <td><strong>Lens L8</strong></td>
+          <td>{{ m.lens_L8 }}</td>
+          <td><strong>Uex Mitte</strong></td>
+          <td>{{ m.uex_mitte }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens A3</strong></td>
+          <td>{{ m.lens_A3 }}</td>
+          <td><strong>Lens L10</strong></td>
+          <td>{{ m.lens_L10 }}</td>
+          <td><strong>Lens SK1</strong></td>
+          <td>{{ m.lens_SK1 }}</td>
+        </tr>
+        <tr>
+          <td><strong>Lens SK2</strong></td>
+          <td>{{ m.lens_SK2 }}</td>
+          <td><strong>Comments:</strong></td>
+          <td>{{ m.comments }}</td>
+          <td><strong></strong></td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+<script src="http://ideadb.uibk.ac.at/files/js/plot.js"></script>
+<script>
+do_plots([{{ m.data }}], [], "{{ m.substance }}");
+</script>
+{% endblock %}

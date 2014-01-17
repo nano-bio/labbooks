@@ -1,0 +1,94 @@
+{% extends "wippi/base.html" %}
+
+{% block content %}
+    <h2>Insight Tool</h2>
+    <div class="general" id="info">Plotting {{ parameter1 }} (x) against {{ parameter2 }} (y)</div>
+    <div id="placeholder" style="width:800px;height:400px"></div>
+    <br />
+
+    <div id="xbox" class="floater">
+        Change x-axis to:<br />
+        {% for field in fieldlist %}
+        <a href="../../{{ field }}/{{ parameter2 }}/">{% if field == parameter1 %}<i>{% endif %}{{ field }}{% if field == parameter1 %}</i>{% endif %}</a><br />
+        {% endfor %}
+    </div>
+
+    <div id="ybox" class="floater">
+        Change y-axis to:<br />
+        {% for field in fieldlist %}
+        <a href="../{{ field }}/">{% if field == parameter2 %}<i>{% endif %}{{ field }}{% if field == parameter2 %}</i>{% endif %}</a><br />
+        {% endfor %}
+    </div>
+
+
+<script type="text/javascript">
+$(function () {
+    var d2 = [{{ values }}];
+    plot = $.plot($("#placeholder"), [{ data: d2, color: "blue", points: {show: true}}], {legend: {margin : [15,15]}, crosshair: { mode: "xy" }, grid: { hoverable: true, autoHighlight: false }});
+
+    var legends = $("#placeholder .legendLabel");
+    legends.each(function () {
+        // fix the widths so they don't jump around
+        $(this).css('width', $(this).width());
+    });
+
+    var updateLegendTimeout = null;
+    var latestPosition = null;
+    
+    function updateLegend() {
+        updateLegendTimeout = null;
+        
+        var pos = latestPosition;
+        
+        var axes = plot.getAxes();
+        if (pos.x < axes.xaxis.min || pos.x > axes.xaxis.max ||
+            pos.y < axes.yaxis.min || pos.y > axes.yaxis.max)
+            return;
+
+        var i, j, dataset = plot.getData();
+        for (i = 0; i < dataset.length; ++i) {
+            var series = dataset[i];
+
+            // find the nearest points, x-wise
+            for (j = 0; j < series.data.length; ++j)
+                if (series.data[j][0] > pos.x)
+                    break;
+            
+            // now interpolate
+            var x, p1 = series.data[j - 1], p2 = series.data[j];
+            if (p1 == null)
+                x = p2[0];
+            else if (p2 == null)
+                x = p1[0];
+            else
+                x = p1[0] + (p2[0] - p1[0]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
+
+            // find the nearest points, y-wise
+            for (j = 0; j < series.data.length; ++j)
+                if (series.data[j][0] > pos.y)
+                    break;
+
+            // now interpolate
+            var y, p1 = series.data[j - 1], p2 = series.data[j];
+            if (p1 == null)
+                y = p2[0];
+            else if (p2 == null)
+                y = p1[0];
+            else
+                y = p1[0] + (p2[0] - p1[0]) * (pos.y - p1[0]) / (p2[0] - p1[0]);
+
+
+            legends.eq(i).text(series.label.replace(/:.*/, ": " + x.toFixed(2) + " eV / " + y.toFixed(2)));
+        }
+    }
+    
+    $("#placeholder").bind("plothover",  function (event, pos, item) {
+        latestPosition = pos;
+        if (!updateLegendTimeout)
+            updateLegendTimeout = setTimeout(updateLegend, 50);
+    });
+
+});
+</script>
+
+{% endblock %}

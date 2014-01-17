@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'south',
     'clustof',
+    'wippi',
 )
 
 # A sample logging configuration. The only tangible logging
