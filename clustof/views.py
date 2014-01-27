@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template
 from django.template import Context, Template
+from django.core import serializers
 
 import models
 from django.db import models as djangomodels
@@ -195,3 +196,21 @@ def plot_parameters(request, parameter1 = 'extraction_1', parameter2 = 'extracti
 def exportfile(request, id):
     m = get_object_or_404(Measurement, id = id)
     return HttpResponseRedirect('/clustof/export/files/' + m.data_filename.replace('D:\\Data\\', ''))
+
+def mjson(request, count = 20):
+    # takes the last count measurements and exports to JSON
+    data = serializers.serialize("json", Measurement.objects.order_by('-time').all()[:count])
+    return HttpResponse(data)
+
+def mcsv(request, count = 20):
+    # takes the last count measurements and exports to CSV
+    response = HttpResponse(content_type='text/csv')
+    #response = HttpResponse()
+
+    m = Measurement.objects.order_by('-time').all()[:count]
+    
+    t = get_template('clustof/mcsv.csv')
+    c = Context({'m': m})
+
+    response.write(t.render(c))
+    return response

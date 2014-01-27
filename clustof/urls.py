@@ -15,4 +15,6 @@ urlpatterns = patterns('',
     url(r'^journal/$', ListView.as_view(model = JournalEntry, template_name = 'clustof/journalentry_list.html')),
     url(r'^$', 'django.contrib.flatpages.views.flatpage', {'url': '/clustof/'}, name='clustofhome'),
     url(r'^export/(\d+)/$', 'clustof.views.exportfile'),
+    url(r'^json/(\d+)/$', 'clustof.views.mjson'),
+    url(r'^csv/(\d+)/$', 'clustof.views.mcsv'),
 )
