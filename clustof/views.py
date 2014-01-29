@@ -202,12 +202,12 @@ def mjson(request, count = 20):
     data = serializers.serialize("json", Measurement.objects.order_by('-time').all()[:count])
     return HttpResponse(data)
 
-def mcsv(request, count = 20):
+def mcsv(request, count = 20, offset = 0):
     # takes the last count measurements and exports to CSV
     response = HttpResponse(content_type='text/csv')
     #response = HttpResponse()
 
-    m = Measurement.objects.order_by('-time').all()[:count]
+    m = Measurement.objects.order_by('-time').all()[offset:count]
     
     t = get_template('clustof/mcsv.csv')
     c = Context({'m': m})

@@ -16,5 +16,7 @@ urlpatterns = patterns('',
     url(r'^$', 'django.contrib.flatpages.views.flatpage', {'url': '/clustof/'}, name='clustofhome'),
     url(r'^export/(\d+)/$', 'clustof.views.exportfile'),
     url(r'^json/(\d+)/$', 'clustof.views.mjson'),
+    url(r'^csv/(\d+)/(\d+)/$', 'clustof.views.mcsv'),
     url(r'^csv/(\d+)/$', 'clustof.views.mcsv'),
+    url(r'^csv/$', 'clustof.views.mcsv'),
 )
