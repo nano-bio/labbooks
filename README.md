@@ -7,6 +7,11 @@ Requires django >= 1.4
 Changelog
 =========
 
+27.01.2014:
+
+* CLUSTOF/NEW: Export to tab-separated and JSON for Eval Software
+* CLUSTOF/NEW: New fields evaluated_by and evaluation_file to quickly find unevaluated measurements
+
 17.01.2014:
 
 * VG/CLUSTOF/FIX: Minor fixes for compatibility with Django 1.6.1

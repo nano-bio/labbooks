@@ -12,7 +12,7 @@ class MeasurementAdmin(admin.ModelAdmin):
     propertime.short_description = 'Time and date'
 
     list_display = ('propertime', 'operator', 'scantype', 'substance', 'polarity', 'electron_energy')
-    list_filter = ('operator', 'time', 'scantype', 'polarity')
+    list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by')
     search_fields = ('substance', 'data_filename', 'tof_settings_file')
     save_as = True
     save_on_top = True
@@ -24,7 +24,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'data_filename', 'tof_settings_file', 'scantype', 'rating', 'time')
+            'fields': ('operator', 'data_filename', 'tof_settings_file', 'scantype', 'rating', 'time', 'evaluated_by', 'evaluation_file')
         }),
         ('Pressures', {
             'fields': ('pressure_cs', 'pressure_pu1', 'pressure_pu2', 'pressure_ion', 'pressure_tof'),

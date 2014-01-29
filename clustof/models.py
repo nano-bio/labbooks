@@ -58,6 +58,8 @@ class Measurement(models.Model):
     flagged = models.BooleanField()
     substance = models.TextField(max_length=1500)
     polarity = models.CharField(max_length = 3, choices = POLARITIES, default = 'NEG')
+    evaluated_by = models.CharField(max_length = 20, blank = True)
+    evaluation_file = models.FileField(upload_to = 'clustof/evaluations/', blank = True, default = '')
 
     def __unicode__(self):
         return u'%s, %s: %s ...' % (self.time, self.operator, self.substance[0:80])
