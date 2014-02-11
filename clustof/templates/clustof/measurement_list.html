@@ -25,11 +25,12 @@
     <table>
         <tr>
             <td><strong>ID</strong</td>
-            <td><strong>Date and time</strong</td>
+            <td><strong>Date</strong</td>
             <td><strong>Operator</strong</td>
             <td><strong>Scantype</strong</td>
             <td><strong>Substance</strong</td>
-            <td><strong>Electron Energy</strong</td>
+            <td><strong>Corr. EE (eV)</strong</td>
+            <td><strong>Nozzle Temp</strong</td>
             <td><strong>Export</strong</td>
         </tr>
         </tr>
@@ -38,12 +39,13 @@
         {% for m in object_list %}
         <tr>
             <td><p><a href="/admin/clustof/measurement/{{ m.id }}">{{ m.id }}</a></p></td>
-            <td><p><a href="/admin/clustof/measurement/{{ m.id }}">{{ m.time }}</a></p></td>
+            <td><p><a href="/admin/clustof/measurement/{{ m.id }}">{{ m.time|date:"d.m.Y H:i" }}</a></p></td>
             <td><p>{{ m.operator }}</p></td>
             <td><p>{{ m.scantype }}</p></td>
             <td><p>{{ m.substance|truncatewords:25 }}</p></td>
             <td><p>{{ m.electron_energy }}</p></td>
-            <td><p><a href="/clustof/export/{{ m.id }}">{{ m.data_filename }}</a></p></td>
+            <td><p>{{ m.temperature_he }}</p></td>
+            <td><p><a href="/clustof/export/{{ m.id }}">{{ m.data_filename|cut:"D:\Data\\" }}</a></p></td>
         </tr>
         {% endfor %}
     </table>

@@ -11,7 +11,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         return obj.time.strftime('%d %m %Y, %H:%M')
     propertime.short_description = 'Time and date'
 
-    list_display = ('propertime', 'operator', 'scantype', 'substance', 'polarity', 'electron_energy')
+    list_display = ('propertime', 'operator', 'scantype', 'substance', 'polarity', 'electron_energy', 'evaluated_by')
     list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by')
     search_fields = ('substance', 'data_filename', 'tof_settings_file')
     save_as = True

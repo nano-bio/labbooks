@@ -10,6 +10,7 @@ Changelog
 11.02.2014:
 
 * CLUSTOF/NEW: new feature to export file size of measurement (for IsotopeFit)
+* CLUSTOF/FIX: Add "evaluated by" field to admin
 
 30.01.2014:
 
