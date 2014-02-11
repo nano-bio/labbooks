@@ -8,6 +8,8 @@ from django.template.loader import get_template
 from django.template import Context, Template
 from django.core import serializers
 
+import os
+
 import models
 from django.db import models as djangomodels
 
@@ -196,6 +198,11 @@ def plot_parameters(request, parameter1 = 'extraction_1', parameter2 = 'extracti
 def exportfile(request, id):
     m = get_object_or_404(Measurement, id = id)
     return HttpResponseRedirect('/clustof/export/files/' + m.data_filename.replace('D:\\Data\\', ''))
+
+def exportfilesize(request, id):
+    m = get_object_or_404(Measurement, id = id)
+    fs = os.stat('/clustof/' + m.data_filename.replace('D:\\Data\\', '')).st_size
+    return HttpResponse(fs)
 
 def mjson(request, count = 20):
     # takes the last count measurements and exports to JSON

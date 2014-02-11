@@ -2,10 +2,18 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG).
-Requires django >= 1.4
+Requires django >= 1.4 (tested until 1.6.1)
 
 Changelog
 =========
+
+11.02.2014:
+
+* CLUSTOF/NEW: new feature to export file size of measurement (for IsotopeFit)
+
+30.01.2014:
+
+* CLUSTOF/FIX: Minor changes to measurement list template
 
 27.01.2014:
 
