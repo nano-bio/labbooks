@@ -204,6 +204,11 @@ def exportfilesize(request, id):
     fs = os.stat('/clustof/' + m.data_filename.replace('D:\\Data\\', '')).st_size
     return HttpResponse(fs)
 
+def exportfilename(request, id):
+    m = get_object_or_404(Measurement, id = id)
+    fs = m.data_filename.replace('D:\\Data\\', '')
+    return HttpResponse(fs)
+
 def mjson(request, count = 20):
     # takes the last count measurements and exports to JSON
     data = serializers.serialize("json", Measurement.objects.order_by('-time').all()[:count])
