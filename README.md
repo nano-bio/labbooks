@@ -2,14 +2,21 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG).
-Requires django >= 1.4 (tested until 1.6.1)
+Requires django >= 1.4 (tested until 1.6.2)
 
 Changelog
 =========
 
+01.04.2014:
+
+* ALL/FIX: Set max upload size to 200M for CLUSTOF evaluations
+
+17.02.2014:
+
+* CLUSTOF/NEW: new feature to export filename of measurement (for IsotopeFit)
+
 11.02.2014:
 
-* CLUSTOF/NEW: new feature to export file size of measurement (for IsotopeFit)
 * CLUSTOF/FIX: Add "evaluated by" field to admin
 
 30.01.2014:
