@@ -3,6 +3,9 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# set the IP for CLUSTOF here
+CLUSTOFIP = '138.232.72.1'
+
 ADMINS = (
      ('Josi', 'johannes.postler@uibk.ac.at'),
 )

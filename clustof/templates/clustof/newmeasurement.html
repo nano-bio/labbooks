@@ -6,7 +6,7 @@
       {% for field in form %}
         <tr>
         <td>
-         <strong>{{ field.label_tag }}:</strong>
+         <strong>{{ field.label_tag }}</strong>
         </td>
         <td>{{ field }}</td>
         <td>{% if field.field.timelabel %}({{ field.field.timelabel }}){% endif %}{% if field.errors %}{{ field.errors }}{% endif %}

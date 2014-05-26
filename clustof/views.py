@@ -197,12 +197,12 @@ def plot_parameters(request, parameter1 = 'extraction_1', parameter2 = 'extracti
 
 def exportfile(request, id):
     m = get_object_or_404(Measurement, id = id)
-    return HttpResponseRedirect('/clustof/export/files/' + m.data_filename.replace('D:\\Data\\', ''))
+    return HttpResponseRedirect('http://' + settings.CLUSTOFIP + '/' + m.data_filename.replace('D:\\Data\\', ''))
 
-def exportfilesize(request, id):
-    m = get_object_or_404(Measurement, id = id)
-    fs = os.stat('/clustof/' + m.data_filename.replace('D:\\Data\\', '')).st_size
-    return HttpResponse(fs)
+#def exportfilesize(request, id):
+#    m = get_object_or_404(Measurement, id = id)
+#    fs = os.stat('/clustof/' + m.data_filename.replace('D:\\Data\\', '')).st_size
+#    return HttpResponse(fs)
 
 def exportfilename(request, id):
     m = get_object_or_404(Measurement, id = id)

@@ -24,7 +24,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'data_filename', 'tof_settings_file', 'scantype', 'rating', 'time', 'evaluated_by', 'evaluation_file')
+            'fields': ('operator', 'data_filename', 'tof_settings_file', 'scantype', 'rating', 'time', 'evaluated_by', 'evaluation_file', 'flagged')
         }),
         ('Pressures', {
             'fields': ('pressure_cs', 'pressure_pu1', 'pressure_pu2', 'pressure_ion', 'pressure_tof'),
