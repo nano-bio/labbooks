@@ -48,7 +48,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         #this is basically just a redirect
         if len(queryset) == 1:
             s = queryset.get()
-            exporturl = '/clustof/export/files/' + s.data_filename.replace('D:\\Data\\','')
+            exporturl = 'http://' + settings.CLUSTOFIP + '/' + s.data_filename.replace('D:\\Data\\','')
             return HttpResponseRedirect(exporturl)
         else:
             messages.error(request, 'You can only export ONE existing measurement, stupid.')

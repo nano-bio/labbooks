@@ -7,6 +7,11 @@ Requires django >= 1.4 (tested until 1.6.2)
 Changelog
 =========
 
+26.05.2014:
+
+* CLUSTOF/FIX: Update labbook for new clustof computer (direct file export)
+* CLUSTOF/FIX: Other minor CLUSTOF fixes
+
 01.04.2014:
 
 * ALL/FIX: Set max upload size to 200M for CLUSTOF evaluations
