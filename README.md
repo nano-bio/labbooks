@@ -1,11 +1,21 @@
 labbooks
 ========
 
-The repo holds our labbook software (currently used by VG).
-Requires django >= 1.4 (tested until 1.6.2)
+The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI).
+Requires django >= 1.4 (tested until 1.6.5)
 
 Changelog
 =========
+
+13.06.2014:
+
+* WIPPI/NEW: Calibrations with CCl4 now work
+* WIPPI/FIX: Energyscan plots now also plot negative values
+* VG/FIX: correctly determine whether a calibration is quadratic
+
+12.06.2014:
+
+* CLUSTOF/FIX: Add nozzle temp in admin interface
 
 26.05.2014:
 
