@@ -138,13 +138,8 @@ def calibrate(measurement, calibration):
     #takes a measurement object and a calibration object and calibrates the data
     tempdata = fitlib.helplib.readfile(settings.MEDIA_ROOT + measurement.datafile.name, tolerate_spaces = True)
 
-    #calibrate
-    if calibration.p2 == '':
-        for datapoint in tempdata:
-            datapoint[0] = calibration.p0 + calibration.p1*datapoint[0]
-    elif calibration.p2 != '':
-        for datapoint in tempdata:
-            datapoint[0] = calibration.p0 + calibration.p1*datapoint[0] + calibration.p2*datapoint[0]**2
+    for datapoint in tempdata:
+        datapoint[0] = datapoint[0] - calibration.p0
 
     return tempdata
 

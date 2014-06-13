@@ -8,8 +8,6 @@
             <td><strong>Date and time</strong</td>
             <td><strong>Comments</strong</td>
             <td><strong>p0</strong</td>
-            <td><strong>p1</strong</td>
-            <td><strong>p2</strong</td>
             <td><strong>Download</strong</td>
         </tr>
         {% for c in object_list %}
@@ -18,9 +16,7 @@
             <td><p><a href="/admin/wippi/calibration/{{ c.id }}">{{ c.time }}</a></p></td>
             <td><p>{{ c.comments }}</p></td>
             <td><p>{{ c.p0 }}</p></td>
-            <td><p>{{ c.p1 }}</p></td>
-            <td><p>{{ c.p2 }}</p></td>
-            <td><p><a href="{{ c.calibration_plot.url }}">Download</a></p></td>            
+            <td><p><a href="{{ c.calibration_plot.url }}">Download</a></p></td>
         </tr>
         {% endfor %}
     </ul>
