@@ -83,7 +83,7 @@ class Calibration(models.Model):
     calibration_plot = models.FileField(upload_to = 'vg/calibrations/', blank = True)    
     
     def __unicode__(self):
-        if self.p2 is '':
+        if self.p2 == 0.0:
             quadratic = 'No'
         else:
             quadratic = 'Yes'
