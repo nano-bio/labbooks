@@ -7,6 +7,10 @@ Requires django >= 1.4 (tested until 1.6.5)
 Changelog
 =========
 
+17.06.2014:
+
+* CLUSTOF/NEW: Enable download of evaluation file from admin measurement overview
+
 13.06.2014:
 
 * WIPPI/NEW: Calibrations with CCl4 now work

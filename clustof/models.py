@@ -61,6 +61,14 @@ class Measurement(models.Model):
     evaluated_by = models.CharField(max_length = 20, blank = True)
     evaluation_file = models.FileField(upload_to = 'clustof/evaluations/', blank = True, default = '')
 
+    def eval_file(self):
+        if self.evaluation_file:
+            return "<a href='%s'>Download</a>" % (self.evaluation_file.url)
+        else:
+            return ''
+
+    eval_file.allow_tags = True
+
     def __unicode__(self):
         return u'%s, %s: %s ...' % (self.time, self.operator, self.substance[0:80])
 
