@@ -36,7 +36,7 @@ class Measurement(models.Model):
     pressure_ion = models.FloatField(verbose_name = 'Pressure ION', default = float('2e-8'))
     pressure_tof = models.FloatField(verbose_name = 'Pressure TOF', default = float('3e-7'))
     stag_pressure_he = models.FloatField(verbose_name = 'He Stagnation Pressure', default = 25)
-    temperature_he = models.FloatField(verbose_name = 'He Temperature', default = 9.0)
+    temperature_he = models.FloatField(verbose_name = 'He Temp', default = 9.0)
     nozzle_diameter = models.FloatField(default = 0.4)
     electron_energy_set = models.FloatField(blank = True, null = True, verbose_name = 'Electron Energy set on Power Supply (for MS)')
     real_electron_energy = models.FloatField(blank = True, null = True, verbose_name = 'Real Electron Energy (for MS)')
@@ -61,18 +61,27 @@ class Measurement(models.Model):
     evaluated_by = models.CharField(max_length = 20, blank = True)
     evaluation_file = models.FileField(upload_to = 'clustof/evaluations/', blank = True, default = '')
 
+    # this provides a link to the eval file in the admin interface
+
     def eval_file(self):
         if self.evaluation_file:
-            return "<a href='%s'>Download</a>" % (self.evaluation_file.url)
+            return "<a href='%s'>Eval. file</a>" % (self.evaluation_file.url)
         else:
             return ''
 
     eval_file.allow_tags = True
 
+    # same for the actual data file
+
+    def data_file(self):
+        return "<a href='%s'>Data file</a>" % ('/clustof/export/' + str(self.id))
+
+    data_file.allow_tags = True
+
     def __unicode__(self):
         return u'%s, %s: %s ...' % (self.time, self.operator, self.substance[0:80])
 
-    def electron_energy(self):
+    def elec_energy(self):
         if self.real_electron_energy is not None:
             ee = self.real_electron_energy
         else:

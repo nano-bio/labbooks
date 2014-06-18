@@ -7,6 +7,11 @@ Requires django >= 1.4 (tested until 1.6.5)
 Changelog
 =========
 
+18.06.2014:
+
+* CLUSTOF/NEW: Enable download of data file from admin measurement overview
+* CLUSTOF/FIX: Minor cosmetic enhancements to admin measurement overview
+
 17.06.2014:
 
 * CLUSTOF/NEW: Enable download of evaluation file from admin measurement overview
