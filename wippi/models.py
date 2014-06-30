@@ -24,7 +24,7 @@ class Operator(models.Model):
 class Measurement(models.Model):
     operator = models.ForeignKey('Operator')
     time = models.DateTimeField(auto_now = False, auto_now_add = False)
-    datafile = models.FileField(upload_to = 'wippi/%Y/%m/%d/%H/%M/%S/')
+    datafile = models.FileField(upload_to = 'wippi/%Y/%m/%d/%H/%M/%S/', max_length = 400)
     scantype = models.CharField(max_length = 20, choices = SCANTYPES, default = ENERGYSCAN)
     gatetime = models.FloatField(blank = True, null = True)
     polarity = models.CharField(max_length = 3, choices = POLARITIES, default = 'NEG')

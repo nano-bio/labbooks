@@ -7,6 +7,10 @@ Requires django >= 1.4 (tested until 1.6.5)
 Changelog
 =========
 
+30.06.2014:
+
+* WIPPI/VG/FIX: Increased maximum filename length for data files in WIPPI and VG
+
 18.06.2014:
 
 * CLUSTOF/NEW: Enable download of data file from admin measurement overview
