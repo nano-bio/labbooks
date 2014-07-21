@@ -113,7 +113,7 @@ class Calibration(models.Model):
         ordering = ['-time']
 
 class JournalEntry(models.Model):
-    time = models.DateTimeField(auto_now = False, auto_now_add = True)
+    time = models.DateTimeField(auto_now = False, auto_now_add = False)
     operator = models.ForeignKey('Operator')
     comment = models.TextField()
     attachment = models.FileField(upload_to = 'wippi/techjournal/', blank = True, default = '')
