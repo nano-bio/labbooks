@@ -3,6 +3,7 @@ from django.conf.urls import patterns, include, url
 import vg.urls
 import clustof.urls
 import wippi.urls
+import cheminventory.urls
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -21,5 +22,6 @@ urlpatterns = patterns('',
     url(r'^vg/', include(vg.urls)),
     url(r'^wippi/', include(wippi.urls)),
     url(r'^clustof/', include(clustof.urls)),
+    url(r'^cheminventory/', include(cheminventory.urls)),
     url(r'^$', 'django.contrib.flatpages.views.flatpage', {'url': '/'}, name='home'),
 )

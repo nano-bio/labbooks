@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'south',
     'clustof',
     'wippi',
+    'cheminventory',
 )
 
 # A sample logging configuration. The only tangible logging

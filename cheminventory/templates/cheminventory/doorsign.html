@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>DOORPLATE</title>
+    <style>
+    	p {
+    		padding: 0px;
+    		margin:0px;
+    		font-family: Arial, Helvetica, sans-serif;}
+
+	    #subtitle{
+	    	font-weight:bold;
+	    	color: white;
+	    	padding:15px 0px 5px 0px;
+		    background-color: black;
+	    }
+
+  	 	table{
+		    background-color: white;
+		    width: 1000px;
+		    border-collapse: seperate;
+		    border-spacing: 0px 20px
+      	}
+    </style>
+</head>
+
+<body>
+    <table>
+	  <tr>
+	    <td colspan=2 align="center" bgcolor="red">
+	    <p style="font-weight:bold; font-size:48px; color:white">
+	    	{{ lab.name }}
+	    </p>
+
+	    <p style="font-weight:bold; font-size:18px; color:white">
+	    	+43 512 507 52660
+	    </p>
+
+	    <p style="font-weight:bold; font-size:24px; color:white">
+	  		Institute for Ion Physics and Applied Physics - AG Scheier/Denifl
+	    </p>
+	  	</td>
+	  </tr>
+
+	  <tr id="subtitle">
+	  	<td colspan=2>
+	    <p>
+	  		Responsible Persons:
+	  	</p>
+	  	</td>
+	  </tr>
+{% for person in lab.responsible_persons.all %}
+	  <tr>
+	  	<td>
+	  		<p>{{ person.name }}</p>
+	  	</td>
+	  	<td>
+	  		<p>{{ person.office_phone }}<br>
+	  		   {{ person.mobile }}</p>
+	  	</td>
+	  </tr>
+{% endfor %}
+{% if gases %}
+	  <tr id="subtitle">
+	  	  	<td>
+	  	    <p>
+	  	  		Gas Cylinder(s):
+	  	  	</p>
+	  	  	</td>
+	  	  	<td>
+			<p>
+{% for gas in gases %}
+     {{ gas.name }} /
+{% endfor %}
+			</p>
+	  		</td>
+	  </tr>
+
+	  <tr>
+	  		<td colspan=2 align="center"><p>
+     <img src="http://ideadb.uibk.ac.at/files/images/gas.svg" height="200px">
+{% for gaswarning in gaswarnings %}
+     <img src="http://ideadb.uibk.ac.at/files/images/{{ gaswarning }}.svg" height="200px">
+{% endfor %}
+	   		</p></td>
+	  </tr>
+{% endif %}
+{% if chems %}
+	  <tr id="subtitle">
+	  	   	<td>
+	  	    <p>
+	  	   		Chemical(s):
+	  	   	</p>
+	  	   	</td>
+	  	   	<td>
+	  		<p>
+{% for chem in chems %}
+    {{ chem.name }} /
+{% endfor %}
+	  		</p>
+	  	  	</td>
+	  </tr>
+
+	  <tr>
+	  	  	<td colspan=2 align="center"><p>
+{% for chemwarning in chemwarnings %}
+     <img src="http://ideadb.uibk.ac.at/files/images/{{ chemwarning }}.svg" height="200px">
+{% endfor %}
+
+	  	  	</p></td>
+	  </tr>
+{% endif %}
+	  <tr id="subtitle">
+	  	  	<td colspan=2 align="center">
+	  	    <p style="color:red; font-size: 20px">
+	  	  		If you notice anything unusual, please call one of the above numbers!<br>
+	  	  		Wenn Sie etwas Ungew&ouml;hnliches bemerken, rufen Sie bitte eine der oben genannten Nummern an!
+	  	    </p>
+	  	  	</td>
+	  </tr>
+</table>
+</body>
+
+</html>
