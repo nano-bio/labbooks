@@ -7,6 +7,10 @@ Requires django >= 1.4 (tested until 1.6.5)
 Changelog
 =========
 
+25.07.2014:
+
+* CHEMINVENTORY/NEW: Well, the entire thing is new. 
+
 21.07.2014:
 
 * WIPPI/FIX: Enable editing of Journal Entry dates in WIPPI
