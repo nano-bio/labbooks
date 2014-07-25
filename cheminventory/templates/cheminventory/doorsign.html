@@ -12,6 +12,7 @@
 
 	    #subtitle{
 	    	font-weight:bold;
+	    	font-size:24px;
 	    	color: white;
 	    	padding:15px 0px 5px 0px;
 		    background-color: black;
@@ -28,13 +29,16 @@
 
 <body>
     <table>
-	  <tr>
-	    <td colspan=2 align="center" bgcolor="red">
-	    <p style="font-weight:bold; font-size:48px; color:white">
+	  <tr bgcolor="darkred">
+	    <td width="20%" align="center">
+	  			 <p><br><img src="IAPhi_white.svg" height="90px"></p>
+	  	</td>
+	    <td colspan=2 align="center">
+	    <p style="font-weight:bold; font-size:64px; color:white">
 	    	{{ lab.name }}
 	    </p>
 
-	    <p style="font-weight:bold; font-size:18px; color:white">
+	    <p style="font-weight:bold; font-size:24px; color:white">
 	    	+43 512 507 52660
 	    </p>
 
@@ -70,7 +74,7 @@
 	  	  	</p>
 	  	  	</td>
 	  	  	<td>
-			<p>
+			<p style="font-weight:normal">
 {% for gas in gases %}
      {{ gas.name }} /
 {% endfor %}
@@ -95,9 +99,9 @@
 	  	   	</p>
 	  	   	</td>
 	  	   	<td>
-	  		<p>
+	  		<p style="font-weight:normal">
 {% for chem in chems %}
-    {{ chem.name }} /
+    {{ chem.name }}
 {% endfor %}
 	  		</p>
 	  	  	</td>
@@ -114,7 +118,7 @@
 {% endif %}
 	  <tr id="subtitle">
 	  	  	<td colspan=2 align="center">
-	  	    <p style="color:red; font-size: 20px">
+	  	    <p style="color:yellow; font-size: 20px">
 	  	  		If you notice anything unusual, please call one of the above numbers!<br>
 	  	  		Wenn Sie etwas Ungew&ouml;hnliches bemerken, rufen Sie bitte eine der oben genannten Nummern an!
 	  	    </p>
