@@ -31,7 +31,7 @@
     <table>
 	  <tr bgcolor="darkred">
 	    <td width="20%" align="center">
-	  			 <p><br><img src="IAPhi_white.svg" height="90px"></p>
+	  			 <p><br><img src="http://ideadb.uibk.ac.at/files/images/IAPhi_white.svg" height="90px"></p>
 	  	</td>
 	    <td colspan=2 align="center">
 	    <p style="font-weight:bold; font-size:64px; color:white">
@@ -101,7 +101,7 @@
 	  	   	<td>
 	  		<p style="font-weight:normal">
 {% for chem in chems %}
-    {{ chem.name }}
+    {{ chem.name }} ({{ chem.chemical_formula }}) /
 {% endfor %}
 	  		</p>
 	  	  	</td>
@@ -124,16 +124,42 @@
 	  	  	</p>
 	  	  	</td>
 	  </tr>
+{% for chem in chems %}
 	  <tr>
+
 		  	  	<td colspan=2>
 		  	  	<p style="Font-Size:18px; Font-weight:bold">
-		  	  		[CHEMICAL]
+		  	  		{{ chem.name }} ({{ chem.chemical_formula }})
 		  	  	</p>
 		  	  	<p>
-					<b>H: </b>If inhaled: RUN!! - If swallowed: VOMIT!
-		  			<b>P: </b>
+{% for h in chem.hs %}
+					<b>{{ h.number }}: </b>{{ h.text }}
+{% endfor %}
+<br />
+{% for p in chem.ps %}
+                                        <b>{{ p.number }}: </b>{{ p.text }}
+{% endfor %}
 		  	  	</p></td>
+          </tr>
+{% endfor %}
+
+{% for gas in gases %}
+          <tr>
+                                <td colspan=2>
+                                <p style="Font-Size:18px; Font-weight:bold">
+                                        {{ gas.name }} ({{ gas.chemical_formula }})
+                                </p>
+                                <p>
+{% for h in gas.hs %}
+                                        <b>{{ h.number }}: </b>{{ h.text }}
+{% endfor %}
+<br />
+{% for p in gas.ps %}
+                                        <b>{{ p.number }}: </b>{{ p.text }}
+{% endfor %}
+                                </p></td>
 	  </tr>
+{% endfor %}
 	  <tr id="subtitle">
 	  	  	<td colspan=2 align="center">
 	  	    <p style="color:yellow; font-size: 20px">

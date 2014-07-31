@@ -28,6 +28,18 @@ def print_doorsign(request, labid):
     gaswarnings = set(gaswarnings)
     chemwarnings = set(chemwarnings)
 
+    for chem in chems:
+        hids = models.Chemical.objects.filter(id = chem.id).values_list('ghs_h', flat = True)
+        pids = models.Chemical.objects.filter(id = chem.id).values_list('ghs_p', flat = True)
+        chem.hs = models.GHS_H.objects.filter(id__in = hids)
+        chem.ps = models.GHS_P.objects.filter(id__in = pids)
+
+    for gas in gases:
+        hids = models.Chemical.objects.filter(id = gas.id).values_list('ghs_h', flat = True)
+        pids = models.Chemical.objects.filter(id = gas.id).values_list('ghs_p', flat = True)
+        gas.hs = models.GHS_H.objects.filter(id__in = hids)
+        gas.ps = models.GHS_P.objects.filter(id__in = pids)
+
     t = get_template('cheminventory/doorsign.html')
     c = Context({'lab': lab, 'chems': chems, 'gases': gases, 'gaswarnings': gaswarnings, 'chemwarnings': chemwarnings})
 

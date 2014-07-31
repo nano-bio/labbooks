@@ -16,6 +16,11 @@ SOM = (
     ('SOLID', 'Solid'),
 )
 
+GROUPS = (
+    ('DENIFL', 'Denifl'),
+    ('SCHEIER', 'Scheier'),
+)
+
 class StorageLocation(models.Model):
     name = models.CharField(max_length = 200)
 
@@ -122,6 +127,7 @@ class Chemical(models.Model):
         unique_together = (('cas','state_of_matter','irritant','toxic','explosive','oxidizing','flammable','health_hazard','corrosive','environmentally_damaging','h2o_reactivity'),
                            ('inchikey','state_of_matter','irritant','toxic','explosive','oxidizing','flammable','health_hazard','corrosive','environmentally_damaging','h2o_reactivity'),
                            ('csid','state_of_matter','irritant','toxic','explosive','oxidizing','flammable','health_hazard','corrosive','environmentally_damaging','h2o_reactivity'))
+        ordering = ['name']
 
     def __unicode__(self):
         if self.chemical_formula is not u'':
@@ -165,6 +171,7 @@ class ChemicalInstance(models.Model):
     company = models.CharField(max_length = 100, blank = True)
     quantity = models.CharField(max_length = 100, blank = True)
     delivery_date = models.DateField(blank = True, null = True)
+    group = models.CharField(max_length = 7, null = True, choices = GROUPS, default = 'DENIFL')
     last_used = models.DateField(blank = True, null = True)
     last_user = models.CharField(max_length = 100, blank = True, null = True)
     storage_location = models.ForeignKey(StorageLocation)
@@ -174,8 +181,11 @@ class ChemicalInstance(models.Model):
 
     comments = models.TextField(max_length = 1000, blank = True)
 
+    class Meta:
+        order_with_respect_to = 'chemical'
+
     def __unicode__(self):
-        if self.cylinder_number != '':
+        if self.chemical.state_of_matter == 'GAS':
             return u'%s Gas (Cylinder No. %s)' % (self.chemical.name, self.cylinder_number)
         if self.chemical.chemical_formula is not u'':
             return u'%s (%s) at %s'%(self.chemical.name, self.chemical.chemical_formula, self.storage_location.name)

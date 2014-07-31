@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """ provides some basic chemical functions """
-
+from django.core.exceptions import ValidationError
 import re
 
 #list of nominal mass of most abundant isotopes

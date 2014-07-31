@@ -7,9 +7,10 @@ from django.http import HttpResponseRedirect
 class ChemicalInstanceAdmin(admin.ModelAdmin):
     search_fields = ('chemical__name', 'chemical__chemical_formula', 'chemical__cas', 'chemical__inchi')
     list_display = ('__unicode__', 'cas', 'state_of_matter', 'irritant', 'toxic', 'explosive', 'oxidizing', 'flammable', 'health_hazard', 'corrosive', 'environmentally_damaging')
-    list_filter = ('storage_location', 'chemical__state_of_matter', 'chemical__irritant', 'chemical__toxic', 'chemical__explosive', 'chemical__oxidizing', 'chemical__flammable', 'chemical__health_hazard', 'chemical__corrosive', 'chemical__environmentally_damaging')
+    list_filter = ('storage_location', 'chemical__state_of_matter', 'chemical__irritant', 'chemical__toxic', 'chemical__explosive', 'chemical__oxidizing', 'chemical__flammable', 'chemical__health_hazard', 'chemical__corrosive', 'chemical__environmentally_damaging', 'group')
     save_on_top = True
     raw_id_fields = ('chemical', )
+    ordering = ['chemical__name']
 
 class ChemicalAdmin(admin.ModelAdmin):
     search_fields = ('cas', 'name', 'chemical_formula', 'inchi', 'csid', 'inchikey')
@@ -18,8 +19,13 @@ class ChemicalAdmin(admin.ModelAdmin):
     save_on_top = True
     filter_horizontal = ('ghs_p', 'ghs_h')
 
+class ChemicalInstanceInline(admin.TabularInline):
+    model = ChemicalInstance
+
 class UsageLocationAdmin(admin.ModelAdmin):
     actions = ['print_doorsign']
+
+    inlines = [ChemicalInstanceInline]
 
     def print_doorsign(self, request, queryset):
         if len(queryset) == 1:
