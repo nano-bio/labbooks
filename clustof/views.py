@@ -41,7 +41,7 @@ def readable_time_ago(datetimeobject):
 
 def readsettings(request):
     #this is only allowed from ClusTOF    
-    if request.META.get('REMOTE_ADDR') != '138.232.72.1':
+    if request.META.get('HTTP_X_REAL_IP') != settings.CLUSTOFIP:
         return HttpResponseForbidden()
 
     #we always just edit the first entry

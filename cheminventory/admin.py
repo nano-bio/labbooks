@@ -19,6 +19,15 @@ class ChemicalAdmin(admin.ModelAdmin):
     save_on_top = True
     filter_horizontal = ('ghs_p', 'ghs_h')
 
+    actions = ['new_instance']
+
+    def new_instance(self, request, queryset):
+        if len(queryset) == 1:
+            s = queryset.get()
+        else:
+            return messages.error(request, 'Select only one chemical!')
+        return HttpResponseRedirect('/admin/cheminventory/chemicalinstance/add/?chemical=%s' % (str(s.id)))
+
 class ChemicalInstanceInline(admin.TabularInline):
     model = ChemicalInstance
 

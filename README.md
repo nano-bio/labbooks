@@ -7,6 +7,24 @@ Requires django >= 1.4 (tested until 1.6.5)
 Changelog
 =========
 
+22.08.2014:
+
+* CLUSTOF/FIX: electron_energy wasn't renamed in the CurrentSettings model -> send2labbook 
+               didn't work
+
+21.08.2014:
+
+* CLUSTOF/FIX: gunicorn 0.19 needs a different HTTP Request parameter to retrieve the
+               client IP. Also: use settings.CLUSTOFIP to check IP for readsettings.
+
+14.08.2014:
+
+* VG/NEW: Allow for CID Scans
+
+13.08.2014:
+
+* CHEMINVENTORY/NEW: New action to add new instance from chemical list
+
 25.07.2014:
 
 * CHEMINVENTORY/NEW: Well, the entire thing is new. 

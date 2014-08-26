@@ -3,11 +3,13 @@ from django.db import models
 ENERGYSCAN = 'ES'
 MASSSCAN = 'MS'
 MIKESCAN = 'MIKE'
+CIDSCAN = 'CID'
 
 SCANTYPES = (
     (ENERGYSCAN, 'Energyscan'),
     (MASSSCAN, 'Massscan'),
     (MIKESCAN, 'MIKE-Scan'),
+    (CIDSCAN, 'CID-Scan'),
 )
 
 POLARITIES = (
