@@ -128,10 +128,10 @@
 	  <tr>
 
 		  	  	<td colspan=2>
-		  	  	<p style="Font-Size:18px; Font-weight:bold">
+		  	  	<p style="Font-Size:14px; Font-weight:bold">
 		  	  		{{ chem.name }} ({{ chem.chemical_formula }})
 		  	  	</p>
-		  	  	<p>
+		  	  	<p  style="Font-Size:12px">
 {% for h in chem.hs %}
 					<b>{{ h.number }}: </b>{{ h.text }}
 {% endfor %}
@@ -146,10 +146,10 @@
 {% for gas in gases %}
           <tr>
                                 <td colspan=2>
-                                <p style="Font-Size:18px; Font-weight:bold">
+                                <p style="Font-Size:14px; Font-weight:bold">
                                         {{ gas.name }} ({{ gas.chemical_formula }})
                                 </p>
-                                <p>
+                                <p style="Font-Size:12px">
 {% for h in gas.hs %}
                                         <b>{{ h.number }}: </b>{{ h.text }}
 {% endfor %}
