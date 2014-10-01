@@ -45,3 +45,15 @@ def print_doorsign(request, labid):
 
     html = t.render(c)
     return HttpResponse(html)
+
+def print_chemwaste(request, locid):
+    lab = models.StorageLocation.objects.get(id = locid)
+    #chemsstored  = models.ChemicalInstance.objects.filter(storage_location = lab.id).values_list('chemical', flat = True)
+    chemsstored  = models.ChemicalInstance.objects.filter(storage_location = lab.id)
+
+    t = get_template('cheminventory/chemwaste.html')
+    c = Context({'lab': lab, 'chems': chemsstored})
+
+    html = t.render(c)
+    return HttpResponse(html)
+

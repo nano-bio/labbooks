@@ -43,6 +43,17 @@ class UsageLocationAdmin(admin.ModelAdmin):
             return messages.error(request, 'Select only one location!')
         return HttpResponseRedirect('/cheminventory/doorsign/%s' % (str(s.id)))
 
+class StorageLocationAdmin(admin.ModelAdmin):
+    actions = ['print_chemwaste']
+
+    def print_chemwaste(self, request, queryset):
+        if len(queryset) == 1:
+            s = queryset.get()
+        else:
+            return messages.error(request, 'Select only one location!')
+        return HttpResponseRedirect('/cheminventory/chemwaste/%s' % (str(s.id)))
+
+
 class GHS_H_Admin(admin.ModelAdmin):
     save_on_top = True
 
@@ -51,7 +62,7 @@ class GHS_P_Admin(admin.ModelAdmin):
 
 admin.site.register(Chemical, ChemicalAdmin)
 admin.site.register(ChemicalInstance, ChemicalInstanceAdmin)
-admin.site.register(StorageLocation)
+admin.site.register(StorageLocation, StorageLocationAdmin)
 admin.site.register(GHS_H, GHS_H_Admin)
 admin.site.register(GHS_P, GHS_P_Admin)
 admin.site.register(UsageLocation, UsageLocationAdmin)
