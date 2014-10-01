@@ -84,9 +84,13 @@ class Measurement(models.Model):
     def elec_energy(self):
         if self.real_electron_energy is not None:
             ee = self.real_electron_energy
-        else:
+        elif self.electron_energy_set is not None:
             ee = self.electron_energy_set + self.ion_block
+        else:
+            ee = 1001
 
+        # a little bit dirty. this means, either it cannot be computed
+        # or somebody set it to 1234 (for ES) because it cannot be computed
         if ee > 1000:
             ee = '-'
 
