@@ -3,6 +3,8 @@ from clustof.models import Comment, Measurement, Operator, CurrentSetting, Journ
 from django.http import HttpResponseRedirect
 from django.conf import settings
 
+import datetime
+
 class CommentInline(admin.TabularInline):
     model = Comment
 
@@ -20,7 +22,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     inlines = [CommentInline]
 
-    actions = ['create_new_measurement_based_on_existing_one', 'export_measurement']
+    actions = ['create_new_measurement_based_on_existing_one', 'export_measurement', 'show_surrounding_data']
 
     fieldsets = (
         ('General', {
@@ -43,6 +45,16 @@ class MeasurementAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
     )
+
+    def show_surrounding_data(self, request, queryset):
+        s = queryset.first()
+        earlier = s.time - datetime.timedelta(days=7)
+        later = s.time + datetime.timedelta(days=7)
+
+        adminurl = './?time__gte='+earlier.date().isoformat()+'&time__lt='+later.date().isoformat()
+        return HttpResponseRedirect(adminurl)
+
+    show_surrounding_data.short_description = u'Show data +/- one week'
 
     def export_measurement(self, request, queryset):
         #this is basically just a redirect

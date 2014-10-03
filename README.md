@@ -7,6 +7,15 @@ Requires django >= 1.4 (tested until 1.6.5)
 Changelog
 =========
 
+03.10.2014:
+
+* CLUSTOF/FIX: Enable admin to show measurements within +/- one week
+
+01.10.2014:
+
+* CLUSTOF/FIX: no more warning if EE cannot be calculated (mostly due to ES)
+* CHEMINVENTORY/NEW: possibility to print automatic chem disposal sheets
+
 22.08.2014:
 
 * CLUSTOF/FIX: electron_energy wasn't renamed in the CurrentSettings model -> send2labbook 
