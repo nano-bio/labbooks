@@ -17,7 +17,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         return obj.time.strftime('%d %m %Y, %H:%M')
     propertime.short_description = 'Time and date'
 
-    list_display = ('propertime', 'substance', 'description', 'scantype', 'datafile')
+    list_display = ('propertime', 'substance', 'description', 'scantype', 'datafile', 'view_link')
     list_filter = ('operator', 'time', 'scantype')
     search_fields = ('substance', 'description')
     save_as = True

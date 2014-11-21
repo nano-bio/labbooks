@@ -2,10 +2,14 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI).
-Requires django >= 1.4 (tested until 1.6.5)
+Requires django >= 1.4 (tested until 1.6.8)
 
 Changelog
 =========
+
+21.11.2014:
+
+* VG/WIPPI/NEW: Direct link to viewing page in admin measurement list
 
 03.10.2014:
 

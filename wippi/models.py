@@ -94,6 +94,11 @@ class Measurement(models.Model):
         time = self.time.strftime('%d %m %Y, %H:%M')
         return u'%s: %s, %s' % (self.id, self.substance, time)
 
+    def view_link(self):
+        return "<a href='/wippi/view/%s/'>View</a>" % (self.id)
+
+    view_link.allow_tags = True
+
     class Meta:
         ordering = ['-time']
 
