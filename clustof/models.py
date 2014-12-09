@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+import re
+
 
 SCANTYPES = (
     ('ES', 'Energyscan'),
@@ -95,6 +97,14 @@ class Measurement(models.Model):
             ee = '-'
 
         return ee
+
+    def clean(self):
+        # cleaning method. first thing, check if file extension is there
+        fn = self.data_filename.split('\\')[2]
+        if re.match('^DataFile_20[0-2][0-9].[0|1][0-9].[0-3][0-9]-[0-9]{2}h[0-9]{2}m[0-9]{2}s_AS$', fn):
+            # if this matches, its a TOF-file, but without the extension
+            # --> somebody (Paul) forgot the file extension.
+            self.data_filename = self.data_filename + '.h5'
 
     class Meta:
         ordering = ['-time']
