@@ -7,6 +7,14 @@ Requires django >= 1.4 (tested until 1.6.8)
 Changelog
 =========
 
+14.01.2015:
+
+* CLUSTOF/FIX: Properly label deflector lenses (oben/unten/links/rechts)
+
+09.12.2014:
+
+* CLUSTOF/NEW: Autocorrect filename if filename looks like TOF file, but doesn't have an extension
+
 21.11.2014:
 
 * VG/WIPPI/NEW: Direct link to viewing page in admin measurement list
