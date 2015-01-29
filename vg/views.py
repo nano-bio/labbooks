@@ -7,6 +7,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 import models
 from django.db import models as djangomodels
 
+from itertools import chain
+
 import sys, os
 
 sys.path.append('/var/opt')
@@ -273,23 +275,11 @@ def export_all_f_urls(request):
     #this is mainly used for benchmarking the peak finding algorithm
     #it returns a list of urls to F-/SF6 scans
 
-    cals = models.Calibration.objects.all()
-    output = []
-    
-    for cal in cals:
-        if cal.cal_base_file_1 is not None:
-            if cal.cal_base_file_1.description == 'F' and cal.cal_base_file_1.substance == 'SF6':
-                output.append(cal.cal_base_file_1.datafile.url)
-        if cal.cal_base_file_2 is not None:
-            if cal.cal_base_file_2.description == 'F' and cal.cal_base_file_2.substance == 'SF6':
-                output.append(cal.cal_base_file_2.datafile.url)
-        if cal.cal_base_file_3 is not None:
-            if cal.cal_base_file_3.description == 'F' and cal.cal_base_file_3.substance == 'SF6':
-                output.append(cal.cal_base_file_3.datafile.url)
-        if cal.cal_base_file_4 is not None:
-            if cal.cal_base_file_4.description == 'F' and cal.cal_base_file_4.substance == 'SF6':
-                output.append(cal.cal_base_file_4.datafile.url)
+    F = models.Measurement.objects.filter(scantype__exact='ES').filter(description__exact='F').filter(substance__contains='SF6').all()
+    Fforcal = models.Measurement.objects.filter(scantype__exact='ES').filter(description__exact='F for calibration').filter(substance__contains='SF6').all()
+    all = list(chain(F, Fforcal))
+    output = set(all)
 
-    text = '\r\n'.join(output)
+    text = '\r\n'.join([str(m.id) for m in output])
             
     return HttpResponse(text)
