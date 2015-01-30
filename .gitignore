@@ -5,5 +5,7 @@ local_settings.py
 mediaroot/*
 .matplotlib/
 vg/migrations/*
+clustof/migrations/*
+wippi/migrations/*
 cheminventory/migrations/*
 chemspider_token.txt

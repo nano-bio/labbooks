@@ -7,6 +7,10 @@ Requires django >= 1.4 (tested until 1.6.8)
 Changelog
 =========
 
+29.01.2015:
+
+* CLUSTOF/NEW: Add Turbopump current tracking
+
 14.01.2015:
 
 * CLUSTOF/FIX: Properly label deflector lenses (oben/unten/links/rechts)

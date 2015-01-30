@@ -179,3 +179,23 @@ class CurrentSetting(models.Model):
     oven_2_power_time = models.DateTimeField()
     polarity = models.CharField(max_length = 3, choices = POLARITIES, default = 'NEG')
     polarity_time = models.DateTimeField()
+
+class Turbopump(models.Model):
+    name = models.CharField(max_length=100)
+    type = models.CharField(max_length=100, blank = True)
+    purchase_date = models.DateField(auto_now_add = False, auto_now = False, blank = True, null = True)
+    service_date = models.DateField(auto_now_add = False, auto_now = False, blank = True, null = True)
+
+    def __unicode__(self):
+       return self.name
+
+class TurbopumpStatus(models.Model):
+    pump = models.ForeignKey('Turbopump')
+    current = models.FloatField()
+    date = models.DateField(auto_now_add = True, auto_now = False)
+
+    class Meta:
+        verbose_name_plural = "Turbopump Status"
+
+    def __unicode__(self):
+        return '%s at %s: %s' % (self.pump.name, self.date, self.current)

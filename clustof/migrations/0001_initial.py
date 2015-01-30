@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -24,7 +24,7 @@ class Migration(SchemaMigration):
             ('tof_settings_file', self.gf('django.db.models.fields.CharField')(max_length=1500)),
             ('data_filename', self.gf('django.db.models.fields.CharField')(default='D:\\Data\\', max_length=1500)),
             ('operator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['clustof.Operator'])),
-            ('rating', self.gf('django.db.models.fields.IntegerField')(blank=True)),
+            ('rating', self.gf('django.db.models.fields.IntegerField')(default=3, null=True, blank=True)),
             ('scantype', self.gf('django.db.models.fields.CharField')(default='MS', max_length=20)),
             ('pressure_cs', self.gf('django.db.models.fields.FloatField')(default=4e-05)),
             ('pressure_pu1', self.gf('django.db.models.fields.FloatField')(default=3e-06)),
@@ -51,9 +51,11 @@ class Migration(SchemaMigration):
             ('oven_2_temperature', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('oven_2_power', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('faraday_cup', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('flagged', self.gf('django.db.models.fields.BooleanField')()),
+            ('flagged', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('substance', self.gf('django.db.models.fields.TextField')(max_length=1500)),
             ('polarity', self.gf('django.db.models.fields.CharField')(default='NEG', max_length=3)),
+            ('evaluated_by', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
+            ('evaluation_file', self.gf('django.db.models.fields.files.FileField')(default='', max_length=100, blank=True)),
         ))
         db.send_create_signal(u'clustof', ['Measurement'])
 
@@ -96,8 +98,8 @@ class Migration(SchemaMigration):
             ('pressure_tof_time', self.gf('django.db.models.fields.DateTimeField')()),
             ('temperature_he', self.gf('django.db.models.fields.FloatField')(default=9.0)),
             ('temperature_he_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('electron_energy', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('electron_energy_time', self.gf('django.db.models.fields.DateTimeField')()),
+            ('electron_energy_set', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
+            ('electron_energy_set_time', self.gf('django.db.models.fields.DateTimeField')()),
             ('ion_block', self.gf('django.db.models.fields.FloatField')()),
             ('ion_block_time', self.gf('django.db.models.fields.DateTimeField')()),
             ('pusher', self.gf('django.db.models.fields.FloatField')()),
@@ -164,8 +166,8 @@ class Migration(SchemaMigration):
             'deflector_1_time': ('django.db.models.fields.DateTimeField', [], {}),
             'deflector_2': ('django.db.models.fields.FloatField', [], {}),
             'deflector_2_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'electron_energy': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'electron_energy_time': ('django.db.models.fields.DateTimeField', [], {}),
+            'electron_energy_set': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
+            'electron_energy_set_time': ('django.db.models.fields.DateTimeField', [], {}),
             'extraction_1': ('django.db.models.fields.FloatField', [], {}),
             'extraction_1_time': ('django.db.models.fields.DateTimeField', [], {}),
             'extraction_2': ('django.db.models.fields.FloatField', [], {}),
@@ -220,11 +222,13 @@ class Migration(SchemaMigration):
             'deflector_1': ('django.db.models.fields.FloatField', [], {}),
             'deflector_2': ('django.db.models.fields.FloatField', [], {}),
             'electron_energy_set': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
+            'evaluated_by': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
+            'evaluation_file': ('django.db.models.fields.files.FileField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
             'extraction_1': ('django.db.models.fields.FloatField', [], {}),
             'extraction_2': ('django.db.models.fields.FloatField', [], {}),
             'faraday_cup': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'filament_current': ('django.db.models.fields.FloatField', [], {}),
-            'flagged': ('django.db.models.fields.BooleanField', [], {}),
+            'flagged': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'housing_current': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ion_block': ('django.db.models.fields.FloatField', [], {}),
@@ -241,7 +245,7 @@ class Migration(SchemaMigration):
             'pressure_pu2': ('django.db.models.fields.FloatField', [], {'default': '1e-06'}),
             'pressure_tof': ('django.db.models.fields.FloatField', [], {'default': '3e-07'}),
             'pusher': ('django.db.models.fields.FloatField', [], {}),
-            'rating': ('django.db.models.fields.IntegerField', [], {'blank': 'True'}),
+            'rating': ('django.db.models.fields.IntegerField', [], {'default': '3', 'null': 'True', 'blank': 'True'}),
             'real_electron_energy': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'scantype': ('django.db.models.fields.CharField', [], {'default': "'MS'", 'max_length': '20'}),
             'stag_pressure_he': ('django.db.models.fields.FloatField', [], {'default': '25'}),

@@ -13,10 +13,10 @@ import os
 import models
 from django.db import models as djangomodels
 
-import datetime
+import datetime, time
 from django.utils.timezone import utc
 
-from models import CurrentSetting, Measurement
+from models import CurrentSetting, Measurement, Turbopump, TurbopumpStatus
 
 def retrieve_plotable_parameters():
     #show all fields that are numbers and can be plotted
@@ -226,3 +226,23 @@ def mcsv(request, count = 20, offset = 0):
 
     response.write(t.render(c))
     return response
+
+def pump(request, pumpnumber):
+    pump = get_object_or_404(Turbopump, id = pumpnumber)
+    datasets = TurbopumpStatus.objects.filter(pump = pump.id).all()
+    values = []
+    for dataset in datasets:
+        # time 1000 because flot wants milliseconds
+        timestamp = time.mktime(dataset.date.timetuple())*1000
+        values.append('[' + str(timestamp)  + ', ' + str(dataset.current) + ']')
+
+    values = ', '.join(values)
+
+    t = get_template('clustof/pump.html')
+    c = Context({'values': values, 'pump': pump})
+
+    html = t.render(c)
+
+    return HttpResponse(html)
+
+    return 
