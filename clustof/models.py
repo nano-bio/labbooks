@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 import re
+from django.core.exceptions import ValidationError
 
 
 SCANTYPES = (
@@ -105,6 +106,12 @@ class Measurement(models.Model):
             # if this matches, its a TOF-file, but without the extension
             # --> somebody (Paul) forgot the file extension.
             self.data_filename = self.data_filename + '.h5'
+
+        # further sanity checks
+        # polarity negative -> no positive lens values:
+        if self.polarity == 'NEG':
+            if self.ion_block > 0:
+                raise ValidationError('Ion block should be negative when measuring anions. Please double check!')
 
     class Meta:
         ordering = ['-time']

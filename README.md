@@ -2,10 +2,14 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI).
-Requires django >= 1.4 (tested until 1.6.8)
+Requires django >= 1.4 (tested until 1.6.10)
 
 Changelog
 =========
+
+02.02.2015:
+
+* CLUSTOF/NEW: check sign of ion block voltage if measurement is negative
 
 29.01.2015:
 
