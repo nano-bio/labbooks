@@ -7,6 +7,11 @@ Requires django >= 1.4 (tested until 1.6.10)
 Changelog
 =========
 
+05.02.2015:
+
+* CLUSTOF/NEW: Measurement properties can now be exported
+* CLUSTOF/FIX: Upload limit for evaluation files now 500mb
+
 02.02.2015:
 
 * CLUSTOF/NEW: check sign of ion block voltage if measurement is negative

@@ -1,0 +1,48 @@
+<html>
+  <body>
+    {% for m in measurements %}
+    <strong>Measurement ID: {{ m.id }}</strong>
+    <p>Filename: {{ m.data_filename }}</p>
+    <p>Substance: {{ m.substance }}</p>
+    <p>Polarity: {{ m.polarity }} --> Scantype: {{ m.scantype }}</p>
+    <style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;border:none;}
+    .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 20px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
+    .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 20px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
+    </style>
+    <table class="tg">
+      <tr>
+        <td class="tg-031e">EE (real):</td>
+        <td class="tg-031e">{{ m.elec_energy }}</td>
+        <td class="tg-031e">Pressure CS:</td>
+        <td class="tg-031e">{{ m.pressure_cs }}</td>
+      </tr>
+      <tr>
+        <td class="tg-031e">He Temp:</td>
+        <td class="tg-031e">{{ m.temperature_he }}</td>
+        <td class="tg-031e">Pressure PU1:</td>
+        <td class="tg-031e">{{ m.pressure_pu1 }}</td>
+      </tr>
+      <tr>
+        <td class="tg-031e">He Pressure:</td>
+        <td class="tg-031e">{{ m.stag_pressure_he }}</td>
+        <td class="tg-031e">Pressure PU2:</td>
+        <td class="tg-031e">{{ m.pressure_pu2 }}</td>
+      </tr>
+      <tr>
+        <td class="tg-031e"></td>
+        <td class="tg-031e"></td>
+        <td class="tg-031e">Pressure ION:</td>
+        <td class="tg-031e">{{ m.pressure_ion }}</td>
+      </tr>
+      <tr>
+        <td class="tg-031e"></td>
+        <td class="tg-031e"></td>
+        <td class="tg-031e">Pressure TOF:</td>
+        <td class="tg-031e">{{ m.pressure_tof }}</td>
+      </tr>
+    </table>
+    <br /><br />
+    {% endfor %}
+  </body>
+</html>

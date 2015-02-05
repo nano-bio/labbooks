@@ -1,7 +1,9 @@
 from django.contrib import admin, messages
 from clustof.models import Comment, Measurement, Operator, CurrentSetting, JournalEntry, Turbopump, TurbopumpStatus
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
+from django.template.loader import get_template
+from django.template import Context, Template
 
 import datetime
 
@@ -22,7 +24,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     inlines = [CommentInline]
 
-    actions = ['create_new_measurement_based_on_existing_one', 'export_measurement', 'show_surrounding_data']
+    actions = ['create_new_measurement_based_on_existing_one', 'export_measurement', 'show_surrounding_data', 'scan_properties']
 
     fieldsets = (
         ('General', {
@@ -83,6 +85,17 @@ class MeasurementAdmin(admin.ModelAdmin):
             return HttpResponseRedirect(redirect_address)
         else:
             messages.error(request, 'You can only base a new measurement on ONE existing measurement, stupid.')
+
+    def scan_properties(self, request, queryset):
+        measurements = queryset.all()
+        t = get_template('clustof/scan_properties.html')
+        c = Context({'measurements': measurements})
+
+        html = t.render(c)
+
+        return HttpResponse(html)
+
+    scan_properties.short_description = u'Export measurement properties'
 
 admin.site.register(Comment)
 admin.site.register(Measurement, MeasurementAdmin)
