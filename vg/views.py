@@ -8,6 +8,7 @@ import models
 from django.db import models as djangomodels
 
 from itertools import chain
+import datetime, time
 
 import sys, os
 
@@ -283,3 +284,24 @@ def export_all_f_urls(request):
     text = '\r\n'.join([str(m.id) for m in output])
             
     return HttpResponse(text)
+
+def pump(request, pumpnumber):
+    pump = get_object_or_404(Turbopump, id = pumpnumber)
+    datasets = TurbopumpStatus.objects.filter(pump = pump.id).all()
+    values = []
+    for dataset in datasets:
+        # time 1000 because flot wants milliseconds
+        timestamp = time.mktime(dataset.date.timetuple())*1000
+        values.append('[' + str(timestamp)  + ', ' + str(dataset.current) + ']')
+
+    values = ', '.join(values)
+
+    t = get_template('vg/pump.html')
+    c = Context({'values': values, 'pump': pump})
+
+    html = t.render(c)
+
+    return HttpResponse(html)
+
+    return
+

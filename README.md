@@ -7,6 +7,11 @@ Requires django >= 1.4 (tested until 1.6.10)
 Changelog
 =========
 
+25.03.2015:
+
+* VG/NEW: Add Turbopump current tracking
+* ALL/FIX: Prepare for Django 1.7
+
 05.02.2015:
 
 * CLUSTOF/NEW: Measurement properties can now be exported

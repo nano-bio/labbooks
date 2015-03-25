@@ -111,3 +111,23 @@ class JournalEntry(models.Model):
     class Meta:
         ordering = ['-time']
         verbose_name_plural = 'Journal Entries'
+
+class Turbopump(models.Model):
+    name = models.CharField(max_length=100)
+    type = models.CharField(max_length=100, blank = True)
+    purchase_date = models.DateField(auto_now_add = False, auto_now = False, blank = True, null = True)
+    service_date = models.DateField(auto_now_add = False, auto_now = False, blank = True, null = True)
+
+    def __unicode__(self):
+       return self.name
+
+class TurbopumpStatus(models.Model):
+    pump = models.ForeignKey('Turbopump')
+    current = models.FloatField()
+    date = models.DateField(auto_now_add = True, auto_now = False)
+
+    class Meta:
+        verbose_name_plural = "Turbopump Status"
+
+    def __unicode__(self):
+        return '%s at %s: %s' % (self.pump.name, self.date, self.current)

@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 
-from models import Measurement, Calibration, JournalEntry
+from models import Measurement, Calibration, JournalEntry, Turbopump
 
 import vg.views
 
@@ -24,4 +24,6 @@ urlpatterns = patterns('',
     url(r'^view/(\d+)/fit/(\d+)/$', 'vg.views.fitmeasurement'),
     url(r'^view/(\d+)/cal/(\d+)/fit/(\d+)/$', 'vg.views.fitcalmeasurement'),
     url(r'^export_all_f_urls/$', 'vg.views.export_all_f_urls'),
+    url(r'^pumps/$', ListView.as_view(model = Turbopump, template_name = 'vg/pump_list.html')),
+    url(r'^pumps/(?P<pumpnumber>\d+)$', 'vg.views.pump'),
 )

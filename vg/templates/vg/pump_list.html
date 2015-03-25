@@ -1,0 +1,21 @@
+{% extends "vg/base.html" %}
+
+{% block content %}
+    <h2>Select Turbopump</h2>
+    <table>
+        <tr>
+            <td><strong>Name</strong</td>
+            <td><strong>Type</strong</td>
+            <td><strong>Purchase Date</strong</td>
+            <td><strong>Last Service</strong</td>
+        </tr>
+        {% for p in object_list %}
+        <tr>
+            <td><a href="{{ p.id }}">{{ p.name }}</a></td>
+            <td>{{ p.type }}</td>
+            <td>{{ p.purchase_date }}</td>
+            <td>{{ p.service_date }}</td>
+        </tr>
+        {% endfor %}
+    </ul>
+{% endblock %}

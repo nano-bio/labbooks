@@ -87,7 +87,7 @@ class MeasurementAdmin(admin.ModelAdmin):
             messages.error(request, 'You can only base a new measurement on ONE existing measurement, stupid.')
 
     def scan_properties(self, request, queryset):
-        measurements = queryset.all()
+        measurements = queryset.all().order_by('id')
         t = get_template('clustof/scan_properties.html')
         c = Context({'measurements': measurements})
 
