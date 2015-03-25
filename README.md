@@ -9,6 +9,7 @@ Changelog
 
 25.03.2015:
 
+* ALL/FIX: Final changes for Django 1.7.7
 * VG/NEW: Add Turbopump current tracking
 * ALL/FIX: Prepare for Django 1.7
 

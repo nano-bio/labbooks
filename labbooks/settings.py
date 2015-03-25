@@ -129,7 +129,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'vg',
     'django.contrib.flatpages',
-    'south',
     'clustof',
     'wippi',
     'cheminventory',

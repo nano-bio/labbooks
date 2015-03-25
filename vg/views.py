@@ -286,8 +286,8 @@ def export_all_f_urls(request):
     return HttpResponse(text)
 
 def pump(request, pumpnumber):
-    pump = get_object_or_404(Turbopump, id = pumpnumber)
-    datasets = TurbopumpStatus.objects.filter(pump = pump.id).all()
+    pump = get_object_or_404(models.Turbopump, id = pumpnumber)
+    datasets = models.TurbopumpStatus.objects.filter(pump = pump.id).all()
     values = []
     for dataset in datasets:
         # time 1000 because flot wants milliseconds

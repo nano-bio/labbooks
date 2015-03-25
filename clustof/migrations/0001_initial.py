@@ -1,268 +1,201 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import django.core.validators
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Operator'
-        db.create_table(u'clustof_operator', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('firstname', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('lastname', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('email', self.gf('django.db.models.fields.EmailField')(max_length=254)),
-        ))
-        db.send_create_signal(u'clustof', ['Operator'])
+    dependencies = [
+    ]
 
-        # Adding model 'Measurement'
-        db.create_table(u'clustof_measurement', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('tof_settings_file', self.gf('django.db.models.fields.CharField')(max_length=1500)),
-            ('data_filename', self.gf('django.db.models.fields.CharField')(default='D:\\Data\\', max_length=1500)),
-            ('operator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['clustof.Operator'])),
-            ('rating', self.gf('django.db.models.fields.IntegerField')(default=3, null=True, blank=True)),
-            ('scantype', self.gf('django.db.models.fields.CharField')(default='MS', max_length=20)),
-            ('pressure_cs', self.gf('django.db.models.fields.FloatField')(default=4e-05)),
-            ('pressure_pu1', self.gf('django.db.models.fields.FloatField')(default=3e-06)),
-            ('pressure_pu2', self.gf('django.db.models.fields.FloatField')(default=1e-06)),
-            ('pressure_ion', self.gf('django.db.models.fields.FloatField')(default=2e-08)),
-            ('pressure_tof', self.gf('django.db.models.fields.FloatField')(default=3e-07)),
-            ('stag_pressure_he', self.gf('django.db.models.fields.FloatField')(default=25)),
-            ('temperature_he', self.gf('django.db.models.fields.FloatField')(default=9.0)),
-            ('nozzle_diameter', self.gf('django.db.models.fields.FloatField')(default=0.4)),
-            ('electron_energy_set', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('real_electron_energy', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('ion_block', self.gf('django.db.models.fields.FloatField')()),
-            ('pusher', self.gf('django.db.models.fields.FloatField')()),
-            ('wehnelt', self.gf('django.db.models.fields.FloatField')()),
-            ('extraction_1', self.gf('django.db.models.fields.FloatField')()),
-            ('extraction_2', self.gf('django.db.models.fields.FloatField')()),
-            ('deflector_1', self.gf('django.db.models.fields.FloatField')()),
-            ('deflector_2', self.gf('django.db.models.fields.FloatField')()),
-            ('filament_current', self.gf('django.db.models.fields.FloatField')()),
-            ('trap_current', self.gf('django.db.models.fields.FloatField')()),
-            ('housing_current', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('oven_1_temperature', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('oven_1_power', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('oven_2_temperature', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('oven_2_power', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('faraday_cup', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('flagged', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('substance', self.gf('django.db.models.fields.TextField')(max_length=1500)),
-            ('polarity', self.gf('django.db.models.fields.CharField')(default='NEG', max_length=3)),
-            ('evaluated_by', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('evaluation_file', self.gf('django.db.models.fields.files.FileField')(default='', max_length=100, blank=True)),
-        ))
-        db.send_create_signal(u'clustof', ['Measurement'])
-
-        # Adding model 'Comment'
-        db.create_table(u'clustof_comment', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('measurement', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['clustof.Measurement'])),
-            ('operator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['clustof.Operator'])),
-            ('time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('text', self.gf('django.db.models.fields.TextField')(max_length=3000)),
-        ))
-        db.send_create_signal(u'clustof', ['Comment'])
-
-        # Adding model 'JournalEntry'
-        db.create_table(u'clustof_journalentry', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('operator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['clustof.Operator'])),
-            ('comment', self.gf('django.db.models.fields.TextField')()),
-            ('attachment', self.gf('django.db.models.fields.files.FileField')(default='', max_length=100, blank=True)),
-        ))
-        db.send_create_signal(u'clustof', ['JournalEntry'])
-
-        # Adding model 'CurrentSetting'
-        db.create_table(u'clustof_currentsetting', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('tof_settings_file', self.gf('django.db.models.fields.CharField')(max_length=1500)),
-            ('tof_settings_file_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('data_filename', self.gf('django.db.models.fields.CharField')(default='D:\\Data\\', max_length=1500)),
-            ('data_filename_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('pressure_cs', self.gf('django.db.models.fields.FloatField')(default=4e-05)),
-            ('pressure_cs_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('pressure_pu1', self.gf('django.db.models.fields.FloatField')(default=3e-06)),
-            ('pressure_pu1_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('pressure_pu2', self.gf('django.db.models.fields.FloatField')(default=1e-06)),
-            ('pressure_pu2_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('pressure_ion', self.gf('django.db.models.fields.FloatField')(default=2e-08)),
-            ('pressure_ion_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('pressure_tof', self.gf('django.db.models.fields.FloatField')(default=3e-07)),
-            ('pressure_tof_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('temperature_he', self.gf('django.db.models.fields.FloatField')(default=9.0)),
-            ('temperature_he_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('electron_energy_set', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('electron_energy_set_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('ion_block', self.gf('django.db.models.fields.FloatField')()),
-            ('ion_block_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('pusher', self.gf('django.db.models.fields.FloatField')()),
-            ('pusher_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('wehnelt', self.gf('django.db.models.fields.FloatField')()),
-            ('wehnelt_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('extraction_1', self.gf('django.db.models.fields.FloatField')()),
-            ('extraction_1_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('extraction_2', self.gf('django.db.models.fields.FloatField')()),
-            ('extraction_2_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('deflector_1', self.gf('django.db.models.fields.FloatField')()),
-            ('deflector_1_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('deflector_2', self.gf('django.db.models.fields.FloatField')()),
-            ('deflector_2_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('filament_current', self.gf('django.db.models.fields.FloatField')()),
-            ('filament_current_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('trap_current', self.gf('django.db.models.fields.FloatField')()),
-            ('trap_current_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('oven_1_temperature', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('oven_1_temperature_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('oven_1_power', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('oven_1_power_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('oven_2_temperature', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('oven_2_temperature_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('oven_2_power', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('oven_2_power_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('polarity', self.gf('django.db.models.fields.CharField')(default='NEG', max_length=3)),
-            ('polarity_time', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'clustof', ['CurrentSetting'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Operator'
-        db.delete_table(u'clustof_operator')
-
-        # Deleting model 'Measurement'
-        db.delete_table(u'clustof_measurement')
-
-        # Deleting model 'Comment'
-        db.delete_table(u'clustof_comment')
-
-        # Deleting model 'JournalEntry'
-        db.delete_table(u'clustof_journalentry')
-
-        # Deleting model 'CurrentSetting'
-        db.delete_table(u'clustof_currentsetting')
-
-
-    models = {
-        u'clustof.comment': {
-            'Meta': {'object_name': 'Comment'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'measurement': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['clustof.Measurement']"}),
-            'operator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['clustof.Operator']"}),
-            'text': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
-            'time': ('django.db.models.fields.DateTimeField', [], {})
-        },
-        u'clustof.currentsetting': {
-            'Meta': {'object_name': 'CurrentSetting'},
-            'data_filename': ('django.db.models.fields.CharField', [], {'default': "'D:\\\\Data\\\\'", 'max_length': '1500'}),
-            'data_filename_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'deflector_1': ('django.db.models.fields.FloatField', [], {}),
-            'deflector_1_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'deflector_2': ('django.db.models.fields.FloatField', [], {}),
-            'deflector_2_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'electron_energy_set': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'electron_energy_set_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'extraction_1': ('django.db.models.fields.FloatField', [], {}),
-            'extraction_1_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'extraction_2': ('django.db.models.fields.FloatField', [], {}),
-            'extraction_2_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'filament_current': ('django.db.models.fields.FloatField', [], {}),
-            'filament_current_time': ('django.db.models.fields.DateTimeField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ion_block': ('django.db.models.fields.FloatField', [], {}),
-            'ion_block_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'oven_1_power': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'oven_1_power_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'oven_1_temperature': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'oven_1_temperature_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'oven_2_power': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'oven_2_power_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'oven_2_temperature': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'oven_2_temperature_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'polarity': ('django.db.models.fields.CharField', [], {'default': "'NEG'", 'max_length': '3'}),
-            'polarity_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'pressure_cs': ('django.db.models.fields.FloatField', [], {'default': '4e-05'}),
-            'pressure_cs_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'pressure_ion': ('django.db.models.fields.FloatField', [], {'default': '2e-08'}),
-            'pressure_ion_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'pressure_pu1': ('django.db.models.fields.FloatField', [], {'default': '3e-06'}),
-            'pressure_pu1_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'pressure_pu2': ('django.db.models.fields.FloatField', [], {'default': '1e-06'}),
-            'pressure_pu2_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'pressure_tof': ('django.db.models.fields.FloatField', [], {'default': '3e-07'}),
-            'pressure_tof_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'pusher': ('django.db.models.fields.FloatField', [], {}),
-            'pusher_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'temperature_he': ('django.db.models.fields.FloatField', [], {'default': '9.0'}),
-            'temperature_he_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'tof_settings_file': ('django.db.models.fields.CharField', [], {'max_length': '1500'}),
-            'tof_settings_file_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'trap_current': ('django.db.models.fields.FloatField', [], {}),
-            'trap_current_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'wehnelt': ('django.db.models.fields.FloatField', [], {}),
-            'wehnelt_time': ('django.db.models.fields.DateTimeField', [], {})
-        },
-        u'clustof.journalentry': {
-            'Meta': {'ordering': "['-time']", 'object_name': 'JournalEntry'},
-            'attachment': ('django.db.models.fields.files.FileField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
-            'comment': ('django.db.models.fields.TextField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'operator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['clustof.Operator']"}),
-            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
-        },
-        u'clustof.measurement': {
-            'Meta': {'ordering': "['-time']", 'object_name': 'Measurement'},
-            'data_filename': ('django.db.models.fields.CharField', [], {'default': "'D:\\\\Data\\\\'", 'max_length': '1500'}),
-            'deflector_1': ('django.db.models.fields.FloatField', [], {}),
-            'deflector_2': ('django.db.models.fields.FloatField', [], {}),
-            'electron_energy_set': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'evaluated_by': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'evaluation_file': ('django.db.models.fields.files.FileField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
-            'extraction_1': ('django.db.models.fields.FloatField', [], {}),
-            'extraction_2': ('django.db.models.fields.FloatField', [], {}),
-            'faraday_cup': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'filament_current': ('django.db.models.fields.FloatField', [], {}),
-            'flagged': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'housing_current': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ion_block': ('django.db.models.fields.FloatField', [], {}),
-            'nozzle_diameter': ('django.db.models.fields.FloatField', [], {'default': '0.4'}),
-            'operator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['clustof.Operator']"}),
-            'oven_1_power': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'oven_1_temperature': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'oven_2_power': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'oven_2_temperature': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'polarity': ('django.db.models.fields.CharField', [], {'default': "'NEG'", 'max_length': '3'}),
-            'pressure_cs': ('django.db.models.fields.FloatField', [], {'default': '4e-05'}),
-            'pressure_ion': ('django.db.models.fields.FloatField', [], {'default': '2e-08'}),
-            'pressure_pu1': ('django.db.models.fields.FloatField', [], {'default': '3e-06'}),
-            'pressure_pu2': ('django.db.models.fields.FloatField', [], {'default': '1e-06'}),
-            'pressure_tof': ('django.db.models.fields.FloatField', [], {'default': '3e-07'}),
-            'pusher': ('django.db.models.fields.FloatField', [], {}),
-            'rating': ('django.db.models.fields.IntegerField', [], {'default': '3', 'null': 'True', 'blank': 'True'}),
-            'real_electron_energy': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'scantype': ('django.db.models.fields.CharField', [], {'default': "'MS'", 'max_length': '20'}),
-            'stag_pressure_he': ('django.db.models.fields.FloatField', [], {'default': '25'}),
-            'substance': ('django.db.models.fields.TextField', [], {'max_length': '1500'}),
-            'temperature_he': ('django.db.models.fields.FloatField', [], {'default': '9.0'}),
-            'time': ('django.db.models.fields.DateTimeField', [], {}),
-            'tof_settings_file': ('django.db.models.fields.CharField', [], {'max_length': '1500'}),
-            'trap_current': ('django.db.models.fields.FloatField', [], {}),
-            'wehnelt': ('django.db.models.fields.FloatField', [], {})
-        },
-        u'clustof.operator': {
-            'Meta': {'object_name': 'Operator'},
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '254'}),
-            'firstname': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'lastname': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        }
-    }
-
-    complete_apps = ['clustof']
+    operations = [
+        migrations.CreateModel(
+            name='Comment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('time', models.DateTimeField()),
+                ('text', models.TextField(max_length=3000)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CurrentSetting',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('tof_settings_file', models.CharField(max_length=1500, verbose_name=b'TOF Settings File')),
+                ('tof_settings_file_time', models.DateTimeField()),
+                ('data_filename', models.CharField(default=b'D:\\Data\\', max_length=1500, verbose_name=b'Filename')),
+                ('data_filename_time', models.DateTimeField()),
+                ('pressure_cs', models.FloatField(default=4e-05, verbose_name=b'Pressure CS')),
+                ('pressure_cs_time', models.DateTimeField()),
+                ('pressure_pu1', models.FloatField(default=3e-06, verbose_name=b'Pressure PU1')),
+                ('pressure_pu1_time', models.DateTimeField()),
+                ('pressure_pu2', models.FloatField(default=1e-06, verbose_name=b'Pressure PU2')),
+                ('pressure_pu2_time', models.DateTimeField()),
+                ('pressure_ion', models.FloatField(default=2e-08, verbose_name=b'Pressure ION')),
+                ('pressure_ion_time', models.DateTimeField()),
+                ('pressure_tof', models.FloatField(default=3e-07, verbose_name=b'Pressure TOF')),
+                ('pressure_tof_time', models.DateTimeField()),
+                ('temperature_he', models.FloatField(default=9.0, verbose_name=b'He Temperature')),
+                ('temperature_he_time', models.DateTimeField()),
+                ('electron_energy_set', models.FloatField(null=True, verbose_name=b'Electron Energy (for MS)', blank=True)),
+                ('electron_energy_set_time', models.DateTimeField()),
+                ('ion_block', models.FloatField()),
+                ('ion_block_time', models.DateTimeField()),
+                ('pusher', models.FloatField()),
+                ('pusher_time', models.DateTimeField()),
+                ('wehnelt', models.FloatField()),
+                ('wehnelt_time', models.DateTimeField()),
+                ('extraction_1', models.FloatField()),
+                ('extraction_1_time', models.DateTimeField()),
+                ('extraction_2', models.FloatField()),
+                ('extraction_2_time', models.DateTimeField()),
+                ('deflector_1', models.FloatField()),
+                ('deflector_1_time', models.DateTimeField()),
+                ('deflector_2', models.FloatField()),
+                ('deflector_2_time', models.DateTimeField()),
+                ('filament_current', models.FloatField()),
+                ('filament_current_time', models.DateTimeField()),
+                ('trap_current', models.FloatField()),
+                ('trap_current_time', models.DateTimeField()),
+                ('oven_1_temperature', models.FloatField(null=True, blank=True)),
+                ('oven_1_temperature_time', models.DateTimeField()),
+                ('oven_1_power', models.FloatField(null=True, blank=True)),
+                ('oven_1_power_time', models.DateTimeField()),
+                ('oven_2_temperature', models.FloatField(null=True, blank=True)),
+                ('oven_2_temperature_time', models.DateTimeField()),
+                ('oven_2_power', models.FloatField(null=True, blank=True)),
+                ('oven_2_power_time', models.DateTimeField()),
+                ('polarity', models.CharField(default=b'NEG', max_length=3, choices=[(b'NEG', b'Negative'), (b'POS', b'Positive'), (b'OLD', b'Unknown (Old File)')])),
+                ('polarity_time', models.DateTimeField()),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='JournalEntry',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('time', models.DateTimeField(auto_now_add=True)),
+                ('comment', models.TextField()),
+                ('attachment', models.FileField(default=b'', upload_to=b'clustof/techjournal/', blank=True)),
+            ],
+            options={
+                'ordering': ['-time'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Measurement',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('time', models.DateTimeField()),
+                ('tof_settings_file', models.CharField(max_length=1500, verbose_name=b'TOF Settings File')),
+                ('data_filename', models.CharField(default=b'D:\\Data\\', max_length=1500, verbose_name=b'Filename')),
+                ('rating', models.IntegerField(default=3, null=True, blank=True, validators=[django.core.validators.MaxValueValidator(5), django.core.validators.MinValueValidator(0)])),
+                ('scantype', models.CharField(default=b'MS', max_length=20, choices=[(b'ES', b'Energyscan'), (b'MS', b'Mass Spectrum'), (b'TS', b'Temperature-Scan'), (b'PS', b'Pressure-Scan'), (b'OLD', b'Unknown (Old File)')])),
+                ('pressure_cs', models.FloatField(default=4e-05, verbose_name=b'Pressure CS')),
+                ('pressure_pu1', models.FloatField(default=3e-06, verbose_name=b'Pressure PU1')),
+                ('pressure_pu2', models.FloatField(default=1e-06, verbose_name=b'Pressure PU2')),
+                ('pressure_ion', models.FloatField(default=2e-08, verbose_name=b'Pressure ION')),
+                ('pressure_tof', models.FloatField(default=3e-07, verbose_name=b'Pressure TOF')),
+                ('stag_pressure_he', models.FloatField(default=25, verbose_name=b'He Stagnation Pressure')),
+                ('temperature_he', models.FloatField(default=9.0, verbose_name=b'He Temp')),
+                ('nozzle_diameter', models.FloatField(default=0.4)),
+                ('electron_energy_set', models.FloatField(null=True, verbose_name=b'Electron Energy set on Power Supply (for MS)', blank=True)),
+                ('real_electron_energy', models.FloatField(null=True, verbose_name=b'Real Electron Energy (for MS)', blank=True)),
+                ('ion_block', models.FloatField()),
+                ('pusher', models.FloatField()),
+                ('wehnelt', models.FloatField()),
+                ('extraction_1', models.FloatField()),
+                ('extraction_2', models.FloatField()),
+                ('deflector_1', models.FloatField(verbose_name=b'Deflector oben/unten')),
+                ('deflector_2', models.FloatField(verbose_name=b'Deflector links/rechts')),
+                ('filament_current', models.FloatField()),
+                ('trap_current', models.FloatField()),
+                ('housing_current', models.FloatField(null=True, blank=True)),
+                ('oven_1_temperature', models.FloatField(null=True, blank=True)),
+                ('oven_1_power', models.FloatField(null=True, blank=True)),
+                ('oven_2_temperature', models.FloatField(null=True, blank=True)),
+                ('oven_2_power', models.FloatField(null=True, blank=True)),
+                ('faraday_cup', models.FloatField(null=True, blank=True)),
+                ('flagged', models.BooleanField(default=False)),
+                ('substance', models.TextField(max_length=1500)),
+                ('polarity', models.CharField(default=b'NEG', max_length=3, choices=[(b'NEG', b'Negative'), (b'POS', b'Positive'), (b'OLD', b'Unknown (Old File)')])),
+                ('evaluated_by', models.CharField(max_length=20, blank=True)),
+                ('evaluation_file', models.FileField(default=b'', upload_to=b'clustof/evaluations/', blank=True)),
+            ],
+            options={
+                'ordering': ['-time'],
+                'get_latest_by': 'time',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Operator',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('firstname', models.CharField(max_length=50)),
+                ('lastname', models.CharField(max_length=50)),
+                ('email', models.EmailField(max_length=254)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Turbopump',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100)),
+                ('type', models.CharField(max_length=100, blank=True)),
+                ('purchase_date', models.DateField(null=True, blank=True)),
+                ('service_date', models.DateField(null=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='TurbopumpStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('current', models.FloatField()),
+                ('date', models.DateField(auto_now_add=True)),
+                ('pump', models.ForeignKey(to='clustof.Turbopump')),
+            ],
+            options={
+                'verbose_name_plural': 'Turbopump Status',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='measurement',
+            name='operator',
+            field=models.ForeignKey(to='clustof.Operator'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='journalentry',
+            name='operator',
+            field=models.ForeignKey(to='clustof.Operator'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='comment',
+            name='measurement',
+            field=models.ForeignKey(to='clustof.Measurement'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='comment',
+            name='operator',
+            field=models.ForeignKey(to='clustof.Operator'),
+            preserve_default=True,
+        ),
+    ]
