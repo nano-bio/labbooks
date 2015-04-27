@@ -123,6 +123,7 @@ class MeasurementForm(forms.ModelForm):
                     pass
     class Meta:
         model = Measurement
+        fields = '__all__'
 
 #@login_required
 def newmeasurement(request):
