@@ -7,6 +7,10 @@ Requires django >= 1.4 (tested until 1.6.10)
 Changelog
 =========
 
+03.05.2015:
+
+*CLUSTOF/FIX: Check for path in model.clean method
+
 25.03.2015:
 
 * ALL/FIX: Final changes for Django 1.7.7

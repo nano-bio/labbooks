@@ -101,7 +101,11 @@ class Measurement(models.Model):
 
     def clean(self):
         # cleaning method. first thing, check if file extension is there
-        fn = self.data_filename.split('\\')[2]
+        try:
+            fn = self.data_filename.split('\\')[2]
+        except IndexError:
+            raise ValidationError('Something is odd about this filename. Did you forget the path?')
+
         if re.match('^DataFile_20[0-2][0-9].[0|1][0-9].[0-3][0-9]-[0-9]{2}h[0-9]{2}m[0-9]{2}s_AS$', fn):
             # if this matches, its a TOF-file, but without the extension
             # --> somebody (Paul) forgot the file extension.
