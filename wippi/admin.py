@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.core.files import File
 from django.db.models.fields.files import FieldFile
-
+from django.utils import http
 from django.contrib.admin.sites import AdminSite
 
 import sys
@@ -96,14 +96,14 @@ class MeasurementAdmin(admin.ModelAdmin):
         if len(queryset) == 1:
             s = queryset.get()
             #this variable will hold all the values and is the address to the new measurement form
-            redirect_address = 'add/?'
+            redirect_address = u'add/?'
             #we don't want these to be adopted
             forbidden_items = ['_state', 'time', 'datafile']
             #walk through all fields of the model
             for item in s.__dict__:
                 if item not in forbidden_items:
                     if s.__dict__[item] is not None:
-                        redirect_address += item + '=' + str(s.__dict__[item]) + '&'
+                        redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
 
             #redirect to newly created address
             return HttpResponseRedirect(redirect_address)

@@ -2,10 +2,16 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI).
-Requires django >= 1.4 (tested until 1.6.10)
+Requires django >= 1.7 (tested until 1.8.2)
 
 Changelog
 =========
+
+07.07.2015:
+
+* CLUSTOF/NEW: Allow for hand drawings in journal entries -> aimed at tablets
+* CLUSTOF/FIX: Better search functions for journal entries
+* CLUSTOF/FIX: proper handling for copying actions 
 
 03.05.2015:
 

@@ -1,22 +1,24 @@
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django import forms
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template
 from django.template import Context, Template
+from django.core.files import File
 from django.core import serializers
 
 import os
-
+import re
+import base64
 import models
 from django.db import models as djangomodels
 
 import datetime, time
 from django.utils.timezone import utc
 
-from models import CurrentSetting, Measurement, Turbopump, TurbopumpStatus
+from models import CurrentSetting, Measurement, Turbopump, TurbopumpStatus, JournalEntry
 
 def retrieve_plotable_parameters():
     #show all fields that are numbers and can be plotted
@@ -125,7 +127,7 @@ class MeasurementForm(forms.ModelForm):
         model = Measurement
         fields = '__all__'
 
-#@login_required
+@login_required
 def newmeasurement(request):
     #form was already submitted
     if request.method == 'POST':
@@ -247,3 +249,67 @@ def pump(request, pumpnumber):
     return HttpResponse(html)
 
     return 
+
+#define a class for a form to enter new measurements
+class TechJournalForm(forms.ModelForm):
+    written_notes = forms.CharField(widget=forms.HiddenInput())
+    def __init__(self, *args, **kwargs):
+        super(TechJournalForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = JournalEntry
+        exclude = ('written_notes', )
+
+@login_required
+def newjournalentry(request):
+    #form was already submitted
+    if request.method == 'POST':
+        form = TechJournalForm(request.POST, request.FILES)
+        dataUrlPattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
+        ImageData = request.POST.get('written_notes')
+        ImageData = dataUrlPattern.match(ImageData).group(2)
+
+        # If none or len 0, means illegal image data
+        if (ImageData == None) or len(ImageData) == 0:
+            # PRINT ERROR MESSAGE HERE
+            raise ValidationError('Image not OK!')
+
+        tmp_filename_written_notes = '/tmp/output.png'
+        output = open(tmp_filename_written_notes, 'wb')
+        output.write(ImageData.decode('base64'))
+        output.close()
+
+        if form.is_valid():
+            new_journal_entry = form.save()
+            new_journal_entry.written_notes.save(new_journal_entry.generate_filename(), File(open(tmp_filename_written_notes)))
+            return HttpResponseRedirect('/clustof/journal/' + str(new_journal_entry.id))
+
+    #form was not submitted, create a form
+    else:
+        #now create a new form for a Measurement
+        form = TechJournalForm()
+
+    return render(request, 'clustof/newjournalentry.html', {'form': form})
+
+#show journal entries
+def showjournalentry(request, id):
+    """ Generic display page for all measurements """
+    #fetch from db
+    m = models.JournalEntry.objects.get(id = id)
+
+    #get next and last scan for convenient switching
+    try:
+        m.nextid = models.JournalEntry.objects.filter(time__gt = m.time).order_by('time')[0:1].get().id
+    except models.JournalEntry.DoesNotExist:
+        m.nextid = m.id
+    
+    try:
+        m.lastid = models.JournalEntry.objects.filter(time__lt = m.time).order_by('-time')[0:1].get().id
+    except models.JournalEntry.DoesNotExist:
+        m.lastid = m.id
+
+    #ready to render
+    t = get_template('clustof/showjournalentry.html')
+    c = Context({'m' : m})
+    html = t.render(c)
+    return HttpResponse(html)

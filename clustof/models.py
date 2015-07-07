@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-import re
+import re, time
 from django.core.exceptions import ValidationError
-
+from django.conf import settings
 
 SCANTYPES = (
     ('ES', 'Energyscan'),
@@ -136,12 +136,17 @@ class JournalEntry(models.Model):
     operator = models.ForeignKey('Operator')
     comment = models.TextField()
     attachment = models.FileField(upload_to = 'clustof/techjournal/', blank = True, default = '')
+    written_notes = models.ImageField(blank = True, upload_to = 'clustof/techjournal/notes/')
 
     def __unicode__(self):
         return u'%s, %s, %s: %s' % (self.id, self.time, self.operator, self.comment[:50])
 
+    def generate_filename(self):
+        return settings.MEDIA_ROOT + 'clustof/techjournal/notes/' + str(time.time()) + '.png'
+
     class Meta:
         ordering = ['-time']
+        verbose_name_plural = "Journal Entries"
 
 class CurrentSetting(models.Model):
     tof_settings_file = models.CharField(max_length = 1500, verbose_name = 'TOF Settings File')
