@@ -2,10 +2,12 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI).
-Requires django >= 1.7 (tested until 1.8.2)
+Requires django >= 1.7 (tested until 1.8.5)
 
 Changelog
 =========
+
+* CHEMINVENTORY/NEW: Implement gas cylinder handling
 
 07.07.2015:
 

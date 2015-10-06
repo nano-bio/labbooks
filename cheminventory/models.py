@@ -59,7 +59,7 @@ class StorageLocation(models.Model):
 
 class Person(models.Model):
     name = models.CharField(max_length = 200)
-    office_phone = models.IntegerField(max_length = 5)
+    office_phone = models.IntegerField()
     mobile = models.CharField(max_length = 15)
 
     def __unicode__(self):
@@ -263,3 +263,44 @@ class ChemicalInstance(models.Model):
         # we also have to check whether the state of matter is correct
         if self.chemical.state_of_matter != self.storage_location.suitable_for:
             raise ValidationError('The state of matter of this sample is not allowed in this storage location')
+
+class GasCylinder(models.Model):
+    cylinder_number = models.IntegerField(unique = True, verbose_name = 'Number of gas cylinder')
+    chemical = models.ForeignKey(Chemical, related_name = 'gas_cylinder')
+    pressure = models.FloatField(default = 200)
+    quality = models.FloatField(default = 5.0)
+    company = models.CharField(max_length = 100, blank = True)
+    quantity = models.CharField(max_length = 100, blank = True)
+    delivery_date = models.DateField(blank = True, null = True)
+    group = models.CharField(max_length = 7, null = True, choices = GROUPS, default = 'SCHEIER')
+    storage_location = models.ForeignKey(StorageLocation)
+    comments = models.TextField(max_length = 1000, blank = True)
+
+    def current_usage_location(self):
+        name = GasCylinderUsageRecord.objects.filter(gas_cylinder = self.id).order_by('date')[0:1].get().usage_location.name
+        return name
+
+    current_usage_location.admin_order_field = 'UsageRecord__usage_location'
+
+    def __unicode__(self):
+        return u'%s Gas (Cylinder No. %s, %s bar)' % (self.chemical.name, self.cylinder_number, self.pressure)
+
+    def cas(self):
+        return self.chemical.cas
+    cas.admin_order_field = 'chemical__cas'
+    cas.short_description = 'CAS'
+
+    def chemical__name(self):
+        return self.chemical.name
+    chemical__name.admin_order_field = 'chemical__name'
+    chemical__name.short_descriptioN = 'Gas'
+
+class GasCylinderUsageRecord(models.Model):
+    gas_cylinder = models.ForeignKey(GasCylinder)
+    date = models.DateField()
+    user = models.ForeignKey(Person)
+    usage_location = models.ForeignKey(UsageLocation)
+    comment = models.CharField(max_length = 100, blank = True)
+
+    def __unicode__(self):
+        return u'Cylinder %s (%s) used at %s on %s' % (self.gas_cylinder.id, self.gas_cylinder.chemical.name, self.usage_location, self.date) 

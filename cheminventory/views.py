@@ -1,8 +1,13 @@
 from django.shortcuts import render
 import models
+import urllib
 from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import get_template
+from django.core import urlresolvers
+
+from django.utils.html import conditional_escape
+from django.utils.safestring import mark_safe
 
 # Prints door signs for a storage location
 def print_doorsign(request, labid):
@@ -57,3 +62,13 @@ def print_chemwaste(request, locid):
     html = t.render(c)
     return HttpResponse(html)
 
+def print_gas_cylinder_qr(request, gc_id):
+    hostname = request.get_host()
+    qr_url = urlresolvers.reverse('admin:cheminventory_gascylinder_change', args=(gc_id,))
+    http = u'http://'
+    complete_link = http + hostname + qr_url
+
+    url = conditional_escape("http://chart.apis.google.com/chart?%s" % \
+            urllib.urlencode({'chs':'300x300', 'cht':'qr', 'chl':complete_link, 'choe':'UTF-8'}))
+    
+    return HttpResponse(mark_safe(u"""<img class="qrcode" src="%s" width="300" height="300" alt="QR" />""" % (url)))
