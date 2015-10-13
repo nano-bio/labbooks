@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import get_template
 from django.core import urlresolvers
-
+from django.db.models import Q
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
@@ -13,8 +13,15 @@ from django.utils.safestring import mark_safe
 def print_doorsign(request, labid):
     lab = models.UsageLocation.objects.get(id = labid)
     chemsused  = models.ChemicalInstance.objects.filter(usage_location = lab.id).values_list('chemical', flat = True)
+    gascylindersused = models.GasCylinderUsageRecord.objects.filter(usage_location = lab.id).values_list('gas_cylinder', flat = True)
+    gasesused = []
+    for gascylinder in gascylindersused:
+        m = models.GasCylinderUsageRecord.objects.filter(gas_cylinder = gascylinder).order_by('-date').all()[0:1].get()
+        if m.usage_location.id == lab.id:
+            gasesused.append(m.gas_cylinder.chemical.id)
+
     chems = models.Chemical.objects.filter(id__in = list(chemsused)).exclude(state_of_matter = 'GAS')
-    gases = models.Chemical.objects.filter(id__in = list(chemsused)).filter(state_of_matter = 'GAS')
+    gases = models.Chemical.objects.filter(id__in = list(gasesused))
     chemwarnings = []
     gaswarnings = []
     params2check = ['toxic', 'oxidizing', 'irritant', 'explosive', 'flammable', 'health_hazard', 'corrosive', 'environmentally_damaging']

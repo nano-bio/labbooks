@@ -7,6 +7,7 @@ from django.template import Context, Template
 from django.utils import http
 
 import datetime
+import re
 
 class CommentInline(admin.TabularInline):
     model = Comment
@@ -25,7 +26,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     inlines = [CommentInline]
 
-    actions = ['create_new_measurement_based_on_existing_one', 'export_measurement', 'show_surrounding_data', 'scan_properties']
+    actions = ['create_new_measurement_based_on_existing_one', 'export_measurement', 'show_surrounding_data', 'scan_properties', 'export_frequencies']
 
     fieldsets = (
         ('General', {
@@ -67,6 +68,19 @@ class MeasurementAdmin(admin.ModelAdmin):
             return HttpResponseRedirect(exporturl)
         else:
             messages.error(request, 'You can only export ONE existing measurement, stupid.')
+
+    def export_frequencies(self, request, queryset):
+        datasets = queryset.all()
+        values = []
+        regex = '[0-9]{3,4},[0-9]{4,6}nm'
+        prog = re.compile(regex)
+        for dataset in datasets:
+            fn = dataset.data_filename
+            frequency = prog.search(dataset.substance).group(0)
+            values.append(str(frequency).replace('nm', '') + ' ' + str(fn).replace('D:\\Data\\','') + '\n')
+
+        return HttpResponse(values)
+
 
     def create_new_measurement_based_on_existing_one(self, request, queryset):
         #we can only base it on one measurement

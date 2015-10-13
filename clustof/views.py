@@ -248,8 +248,6 @@ def pump(request, pumpnumber):
 
     return HttpResponse(html)
 
-    return 
-
 #define a class for a form to enter new measurements
 class TechJournalForm(forms.ModelForm):
     written_notes = forms.CharField(widget=forms.HiddenInput())

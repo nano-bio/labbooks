@@ -277,7 +277,7 @@ class GasCylinder(models.Model):
     comments = models.TextField(max_length = 1000, blank = True)
 
     def current_usage_location(self):
-        name = GasCylinderUsageRecord.objects.filter(gas_cylinder = self.id).order_by('date')[0:1].get().usage_location.name
+        name = GasCylinderUsageRecord.objects.filter(gas_cylinder = self.id).order_by('-date')[0:1].get().usage_location.name
         return name
 
     current_usage_location.admin_order_field = 'UsageRecord__usage_location'
