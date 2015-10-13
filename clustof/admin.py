@@ -72,12 +72,14 @@ class MeasurementAdmin(admin.ModelAdmin):
     def export_frequencies(self, request, queryset):
         datasets = queryset.all()
         values = []
-        regex = '[0-9]{3,4},[0-9]{4,6}nm'
+        regex = '[0-9]{3},[0-9]{2,6}nm'
         prog = re.compile(regex)
         for dataset in datasets:
             fn = dataset.data_filename
-            frequency = prog.search(dataset.substance).group(0)
-            values.append(str(frequency).replace('nm', '') + ' ' + str(fn).replace('D:\\Data\\','') + '\n')
+            result = prog.search(dataset.substance)
+            if result:
+                frequency = result.group(0)
+                values.append(str(frequency).replace('nm', '') + ' ' + str(fn).replace('D:\\Data\\','') + '\n')
 
         return HttpResponse(values)
 
