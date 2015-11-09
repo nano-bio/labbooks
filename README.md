@@ -7,6 +7,9 @@ Requires django >= 1.7 (tested until 1.8.5)
 Changelog
 =========
 
+09.11.2015:
+
+* CHEMINVENTORY/NEW: Option to show all chemicals affected by certain GHS statements
 * CHEMINVENTORY/NEW: Implement gas cylinder handling
 
 07.07.2015:

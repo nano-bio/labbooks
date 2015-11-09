@@ -1,6 +1,9 @@
 from django.contrib import admin, messages
 from cheminventory.models import StorageLocation, Chemical, ChemicalInstance, GasCylinder, StorageLocation, GHS_H, GHS_P, UsageLocation, Person, GasCylinderUsageRecord
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.template.loader import get_template
+from django.template import Context
+
 
 # Register your models here.
 
@@ -78,9 +81,32 @@ class StorageLocationAdmin(admin.ModelAdmin):
 
 class GHS_H_Admin(admin.ModelAdmin):
     save_on_top = True
+    actions = ['show_all_chemicals']
+
+    def show_all_chemicals(self, request, queryset):
+        ghsids = queryset.values_list('id', flat = True)
+        ghs = queryset.all()
+        chemicals = ChemicalInstance.objects.filter(chemical__ghs_h__in = ghsids)
+        t = get_template('cheminventory/ghs_list.html')
+        c = Context({'ghs': ghs, 'chems': chemicals})
+
+        html = t.render(c)
+        return HttpResponse(html)
 
 class GHS_P_Admin(admin.ModelAdmin):
     save_on_top = True
+    actions = ['show_all_chemicals']
+
+    def show_all_chemicals(self, request, queryset):
+        ghsids = queryset.values_list('id', flat = True)
+        ghs = queryset.all()
+        chemicals = ChemicalInstance.objects.filter(chemical__ghs_p__in = ghsids)
+        t = get_template('cheminventory/ghs_list.html')
+        c = Context({'ghs': ghs, 'chems': chemicals})
+
+        html = t.render(c)
+        return HttpResponse(html)
+
 
 class GasCylinderUsageRecordAdmin(admin.ModelAdmin):
     search_fields = ('usage_location', 'user', 'date', 'gas_cylinder')
