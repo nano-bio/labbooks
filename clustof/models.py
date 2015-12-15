@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-import re, time
+import re, time, datetime
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
@@ -215,3 +215,18 @@ class TurbopumpStatus(models.Model):
 
     def __unicode__(self):
         return '%s at %s: %s' % (self.pump.name, self.date, self.current)
+
+class VacuumStatus(models.Model):
+    time = models.IntegerField()
+    g1 = models.FloatField(blank = True, null = True)
+    g2 = models.FloatField(blank = True, null = True)
+    g3 = models.FloatField(blank = True, null = True)
+    g4 = models.FloatField(blank = True, null = True)
+    g5 = models.FloatField(blank = True, null = True)
+    g6 = models.FloatField(blank = True, null = True)
+
+    class Meta:
+        verbose_name_plural = "Vacuum Status"
+
+    def __unicode__(self):
+        return u'Pressures at %s' % (datetime.datetime.fromtimestamp(self.time).strftime('%c')) 

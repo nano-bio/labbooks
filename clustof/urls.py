@@ -25,4 +25,8 @@ urlpatterns = patterns('',
     url(r'^csv/(\d+)/(\d+)/$', 'clustof.views.mcsv'),
     url(r'^csv/(\d+)/$', 'clustof.views.mcsv'),
     url(r'^csv/$', 'clustof.views.mcsv'),
+    url(r'^vacuumstatus/input/$', 'clustof.views.readvacuumstatus'),
+    url(r'^vacuumstatus/output/(\d+)/(\d+)/$', 'clustof.views.writevacuumstatus'),
+    url(r'^vacuumstatus/output/(\d+)/$', 'clustof.views.writevacuumstatus'),
+    url(r'^vacuumstatus/output/$', 'clustof.views.writevacuumstatus'),
 )

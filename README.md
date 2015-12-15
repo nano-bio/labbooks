@@ -2,10 +2,15 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI).
-Requires django >= 1.7 (tested until 1.8.5)
+Requires django >= 1.7 (tested until 1.8.7)
 
 Changelog
 =========
+
+15.12.2015:
+
+* CLUSTOF/NEW: Implement reading, writing and saving pressures via JSON
+* CLUSTOF/FIX: Don't save empty images in technical journal of clustof
 
 09.11.2015:
 

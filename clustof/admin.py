@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from clustof.models import Comment, Measurement, Operator, CurrentSetting, JournalEntry, Turbopump, TurbopumpStatus
+from clustof.models import Comment, Measurement, Operator, CurrentSetting, JournalEntry, Turbopump, TurbopumpStatus, VacuumStatus
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.template.loader import get_template
@@ -134,3 +134,4 @@ admin.site.register(CurrentSetting)
 admin.site.register(JournalEntry, JournalEntryAdmin)
 admin.site.register(Turbopump)
 admin.site.register(TurbopumpStatus)
+admin.site.register(VacuumStatus)
