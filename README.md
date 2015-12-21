@@ -7,6 +7,11 @@ Requires django >= 1.7 (tested until 1.8.7)
 Changelog
 =========
 
+21.12.2015:
+
+* SURFTOF/NEW: SurfTOF is completely new
+* ALL/FIX: add template jscss.html which includes all basic jQuery and CSS inclusions (and update to jQ 1.11.3 min version)
+
 15.12.2015:
 
 * CLUSTOF/NEW: Implement reading, writing and saving pressures via JSON
