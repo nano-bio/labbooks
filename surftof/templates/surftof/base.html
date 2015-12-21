@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>SURFTOF Labbook</title>
     <link rel="stylesheet" href="http://ideadb.uibk.ac.at/files/css/drawingboard.min.css">
-    <title>CLUSTOF Labbook</title>
     {% include "jscss.html" %}
     <script language="javascript" type="text/javascript" src="http://ideadb.uibk.ac.at/files/js/flot/jquery.flot.navigate.js"></script>
     <script language="javascript" type="text/javascript" src="http://ideadb.uibk.ac.at/files/js/flot/jquery.flot.time.js"></script>
@@ -10,17 +10,16 @@
 </head>
 
 <body>
-    <div id="Header">CLUSTOF Labbook</div>
+    <div id="Header">SURFTOF Labbook</div>
     <div id="Menu">
         {% block sidebar %}
         <ul>
-            <li><a href="/clustof/">Home</a></li>
-            <li><a href="/admin/clustof/">Admin</a></li>
-            <li><a href="/clustof/view/">Measurements</a></li>
-            <li><a href="/clustof/newmeasurement/">New Measurement</a></li>
-            <li><a href="/clustof/insight/">Insights</a></li>
-            <li><a href="/clustof/journal/">Technical Journal</a></li>
-            <li><a href="/clustof/pumps/">Turbopumps</a></li>
+            <li><a href="/surftof/">Home</a></li>
+            <li><a href="/admin/surftof/">Admin</a></li>
+            <li><a href="/surftof/view/">Measurements</a></li>
+            <li><a href="/surftof/insight/">Insights</a></li>
+            <li><a href="/surftof/journal/">Technical Journal</a></li>
+            <li><a href="/surftof/pumps/">Turbopumps</a></li>
         </ul>
         {% endblock %}
     </div>

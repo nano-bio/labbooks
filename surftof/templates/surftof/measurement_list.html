@@ -1,0 +1,69 @@
+{% extends "surftof/base.html" %}
+
+{% block content %}
+    <h2>Latest Measurements</h2>
+    <div class="general"><a href="/admin/surftof/measurement/add/">Add new Measurement</a><br />
+    <a href="/admin/surftof/measurement/">Go to Measurement admin page</a><br />
+    </div><br />
+    {% if is_paginated %}
+    <div class="general">
+            <a href="?page=1">&lt;&lt; first &nbsp;&nbsp;</a>
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&lt; previous&nbsp;&nbsp;</a>
+            {% endif %}
+
+            <a href="#">Page {{ page_obj.number }} of {{ paginator.num_pages }}</a>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&nbsp;&nbsp; next &gt;</a>
+            {% endif %}
+
+            <a href="?page=last">&nbsp;&nbsp; last &gt;&gt;</a>
+    </div><br />
+    {% endif %}
+    <table>
+        <tr>
+            <td><strong>ID</strong</td>
+            <td><strong>Date</strong</td>
+            <td><strong>Operator</strong</td>
+            <td><strong>Polarity</strong</td>
+            <td><strong>Surf. mat.</strong</td>
+            <td><strong>Projectile</strong</td>
+            <td><strong>Collision En.</strong</td>
+            <td><strong>Export</strong</td>
+        </tr>
+        </tr>
+          <td>&nbsp;</td>
+        </tr>
+        {% for m in object_list %}
+        <tr>
+            <td><p><a href="/admin/surftof/measurement/{{ m.id }}">{{ m.id }}</a></p></td>
+            <td><p><a href="/admin/surftof/measurement/{{ m.id }}">{{ m.time|date:"d.m.Y H:i" }}</a></p></td>
+            <td><p>{{ m.operator }}</p></td>
+            <td><p>{{ m.polarity }}</p></td>
+            <td><p>{{ m.surface_material|truncatewords:25 }}</p></td>
+            <td><p>{{ m.projectile }}</p></td>
+            <td><p>{{ m.collision_energy }}</p></td>
+            <td><p><a href="/surftof/export/{{ m.id }}">{{ m.data_filename|cut:"D:\Data\\" }}</a></p></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% if is_paginated %}
+    <div class="general">
+            <a href="?page=1">&lt;&lt; first &nbsp;&nbsp;</a>
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&lt; previous&nbsp;&nbsp;</a>
+            {% endif %}
+
+            <a href="#">Page {{ page_obj.number }} of {{ paginator.num_pages }}</a>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&nbsp;&nbsp; next &gt;</a>
+            {% endif %}
+
+            <a href="?page=last">&nbsp;&nbsp; last &gt;&gt;</a>
+    </div><br />
+    {% endif %}
+{% endblock %}

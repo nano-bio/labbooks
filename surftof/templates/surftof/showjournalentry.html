@@ -1,0 +1,20 @@
+{% extends "surftof/base.html" %}
+
+{% block content %}
+    <h2><a href="../{{ m.lastid }}">&lt;&lt; {{ m.lastid }}</a> Measurement No. {{ m.id }} <a href="../{{ m.nextid }}">{{ m.nextid }} &gt;&gt;</a></h2>
+    <div class="general" id="info">Journal Entry from {{ m.time }}</div>
+    <div style="height:400px">
+        <div style="float:left" id="conditions" class="general">
+          <strong>Comments:</strong><br />
+          {{ m.comment }}<br />
+          {% if m.attachment %}
+          <strong><a href="{{ m.attachment.url }}">View Attachment</a></strong>
+          {% endif %}
+        </div>
+        {% if m.written_notes %}
+        <div style="float:right">
+            <img src="{{ m.written_notes.url }}" width="800"/>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
