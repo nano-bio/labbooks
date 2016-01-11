@@ -7,7 +7,7 @@ TEMPLATE_DEBUG = DEBUG
 CLUSTOFIP = '138.232.72.1'
 
 # set the IP for SURFTOF here
-SURFTOFIP = '138.232.1.1'
+SURFTOFIP = '138.232.71.196'
 
 # set IPS for all pressure writing devices here
 #snowball, josis computer

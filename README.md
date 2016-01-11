@@ -1,11 +1,15 @@
 labbooks
 ========
 
-The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI).
-Requires django >= 1.7 (tested until 1.8.7)
+The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
+Requires django >= 1.7 (tested until 1.9.1)
 
 Changelog
 =========
+
+11.01.2016:
+
+* SURFTOF/FIX: Add machine IP for SURFTOF
 
 21.12.2015:
 
@@ -30,7 +34,7 @@ Changelog
 
 03.05.2015:
 
-*CLUSTOF/FIX: Check for path in model.clean method
+* CLUSTOF/FIX: Check for path in model.clean method
 
 25.03.2015:
 

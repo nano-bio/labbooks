@@ -371,5 +371,3 @@ def writevacuumstatus(request, after = None, before = None):
     datasets = models.VacuumStatus.objects.filter(time__lte=beforetimestamp).filter(time__gte=aftertimestamp).all()
     data = json.dumps([{'time': dataset.time, 'g1': dataset.g1, 'g2': dataset.g2, 'g3': dataset.g3, 'g4': dataset.g4, 'g5': dataset.g5, 'g6': dataset.g6} for dataset in datasets])
     return HttpResponse(data)
-
-    
