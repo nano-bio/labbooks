@@ -99,6 +99,11 @@ class Measurement(models.Model):
 
     view_link.allow_tags = True
 
+    def file_link(self):
+        return u'<a href=\'%s\'>File</a>' % (self.datafile.url)
+
+    file_link.allow_tags = True
+
     class Meta:
         ordering = ['-time']
 
