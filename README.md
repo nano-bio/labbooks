@@ -7,7 +7,11 @@ Requires django >= 1.7 (tested until 1.9.2)
 Changelog
 =========
 
-29.03.2016:
+21.03.2016:
+
+* CLUSTOF/NEW: Also search for measurement ID in admin
+
+29.02.2016:
 
 * VG/WIPPI/FIX: Shorten link to measurement file download in admin
 

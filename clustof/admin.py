@@ -19,7 +19,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     list_display = ('propertime', 'operator', 'scantype', 'substance', 'polarity', 'elec_energy', 'temperature_he', 'data_file', 'evaluated_by', 'eval_file')
     list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by')
-    search_fields = ('substance', 'data_filename', 'tof_settings_file')
+    search_fields = ('substance', 'data_filename', 'tof_settings_file', 'id')
     save_as = True
     save_on_top = True
     ordering = ('-time',)
