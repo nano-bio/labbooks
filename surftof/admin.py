@@ -16,7 +16,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     list_display = ('propertime', 'operator', 'polarity', 'surface_material', 'projectile', 'collision_energy', 'data_file', 'evaluated_by', 'eval_file')
     list_filter = ('operator', 'time', 'polarity', 'evaluated_by', 'projectile')
-    search_fields = ('surface_material', 'projectile')
+    search_fields = ('surface_material', 'projectile', 'id')
     save_as = True
     save_on_top = True
     ordering = ('-time',)
@@ -34,6 +34,9 @@ class MeasurementAdmin(admin.ModelAdmin):
         ('Measurement', {
             'fields': ('u_surf', 'u_is', 'surface_material', 'projectile', 'surface_current', 'surface_temperature', 'heating_current'),
             'classes': ('wide',)
+        }),
+        ('ToF Settings', {
+            'fields': ('pusher_is', 'ion_block', 'zb1r', 'zb1l', 'zb_2', 'zyl1r', 'zyl1l', 'zyl2', 'def_ou', 'def_r', 'def_l', 'is_plate', 'pusher_tof', 'zl_grid', 'acc_grid', 'def_r_tof', 'def_l_tof', 'drift', 'reflectron', 'post_acc', 'mcp'),
         }),
     )
 

@@ -2,10 +2,14 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
-Requires django >= 1.7 (tested until 1.9.2)
+Requires django >= 1.7 (tested until 1.9.4)
 
 Changelog
 =========
+
+22.03.2016:
+
+* SURFTOF/NEW/Lorenz: New lenses
 
 21.03.2016:
 
