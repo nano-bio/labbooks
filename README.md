@@ -9,6 +9,7 @@ Changelog
 
 22.03.2016:
 
+* ALL/FIX/Josi: change urls.py to be compatible with future releases >= 1.10
 * SURFTOF/NEW/Lorenz: New lenses
 
 21.03.2016:

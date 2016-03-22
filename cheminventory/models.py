@@ -177,7 +177,7 @@ class ChemicalInstance(models.Model):
     storage_location = models.ForeignKey(StorageLocation)
     usage_location = models.ForeignKey(UsageLocation, blank = True, null = True)
 
-    cylinder_number = models.IntegerField(blank = True, null = True, max_length = 3, unique = True, verbose_name = 'Number of gas cylinder in wiki')
+    cylinder_number = models.IntegerField(blank = True, null = True, unique = True, verbose_name = 'Number of gas cylinder in wiki')
 
     comments = models.TextField(max_length = 1000, blank = True)
 

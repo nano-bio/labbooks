@@ -5,12 +5,13 @@ import clustof.urls
 import surftof.urls
 import wippi.urls
 import cheminventory.urls
+from django.contrib.flatpages import views as flatpageviews
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^$', 'labbooks.views.home', name='home'),
     #url(r'^labbooks/vg/', include('labbooks.vg.urls')),
@@ -25,5 +26,5 @@ urlpatterns = patterns('',
     url(r'^clustof/', include(clustof.urls)),
     url(r'^surftof/', include(surftof.urls)),
     url(r'^cheminventory/', include(cheminventory.urls)),
-    url(r'^$', 'django.contrib.flatpages.views.flatpage', {'url': '/'}, name='home'),
-)
+    url(r'^$', flatpageviews.flatpage, {'url': '/'}, name='home'),
+]
