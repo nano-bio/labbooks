@@ -6,6 +6,8 @@ Requires django >= 1.7 (tested until 1.9.4)
 
 Changelog
 =========
+23.03.2016
+* SURFTOF/NEW/Loernz: some more new Ionsource stuff
 
 22.03.2016:
 

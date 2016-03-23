@@ -36,7 +36,7 @@ class MeasurementAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('ToF Settings', {
-            'fields': ('pusher_is', 'ion_block', 'zb1r', 'zb1l', 'zb_2', 'zyl1r', 'zyl1l', 'zyl2', 'def_ou', 'def_r', 'def_l', 'is_plate', 'pusher_tof', 'zl_grid', 'acc_grid', 'def_r_tof', 'def_l_tof', 'drift', 'reflectron', 'post_acc', 'mcp'),
+            'fields': ('fil_cur', 'fil_vol', 'far_cup', 'pusher_is', 'ion_block', 'zb1r', 'zb1l', 'zb_2', 'zyl1r', 'zyl1l', 'zyl2', 'def_ou', 'def_r', 'def_l', 'is_plate', 'pusher_tof', 'zl_grid', 'acc_grid', 'def_r_tof', 'def_l_tof', 'drift', 'reflectron', 'post_acc', 'mcp'),
         }),
     )
 
