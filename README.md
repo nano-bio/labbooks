@@ -6,6 +6,9 @@ Requires django >= 1.7 (tested until 1.9.4)
 
 Changelog
 =========
+31.03.2016
+* SURFTOF/FIX/Lorenz: corrected some content errors in Surftof
+
 23.03.2016
 * SURFTOF/NEW/Loernz: some more new Ionsource stuff
 

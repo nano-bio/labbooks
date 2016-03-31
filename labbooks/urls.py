@@ -25,6 +25,10 @@ urlpatterns = [
     url(r'^wippi/', include(wippi.urls)),
     url(r'^clustof/', include(clustof.urls)),
     url(r'^surftof/', include(surftof.urls)),
+    #for upcomming snowball 
+
+
+    #url(r'^snowball/', include(snowball.urls)),
     url(r'^cheminventory/', include(cheminventory.urls)),
     url(r'^$', flatpageviews.flatpage, {'url': '/'}, name='home'),
 ]
