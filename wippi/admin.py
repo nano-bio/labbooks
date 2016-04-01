@@ -31,7 +31,7 @@ class MeasurementAdmin(admin.ModelAdmin):
             'fields': ('operator', 'datafile', 'scantype', 'polarity', 'substance', 'description', 'time')
         }),
         ('Pressures', {
-            'fields': ('pressure_monochromator', 'pressure_pickup', 'pressure_cs', 'background_pressure'),
+            'fields': ('pressure_monochromator', 'pressure_pickup', 'base_pressure', 'pressure_cs', 'background_pressure'),
             'classes': ('wide',)
         }),
         ('Quadrupole Lenses', {
@@ -39,11 +39,11 @@ class MeasurementAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('WIPPI settings', {
-            'fields': ('channeltron_1', 'channeltron_2', 'oven_temperature', 'chamber_temperature', 'faraday_current', 'filament_current', 'electron_energy', 'emission', 'energy_resolution', 'mass_resolution'),
+            'fields': ('qmh', 'channeltron_1', 'channeltron_2', 'oven_temperature', 'chamber_temperature', 'faraday_current', 'filament_current', 'electron_energy', 'emission', 'energy_resolution', 'mass_resolution'),
             'classes': ('wide',)
         }),
         ('Lenses', {
-            'fields': ('anode', 'coil_voltage_xy', 'coil_voltage_xz', 'coil_voltage_yz', 'coil_current_xy', 'coil_current_xz', 'coil_current_yz', 'lens_1a', 'lens_1b', 'lens_1c', 'lens_A1', 'lens_L2', 'lens_L3', 'lens_2a', 'lens_2b', 'lens_2c', 'lens_L4', 'lens_L5', 'lens_D1', 'lens_D2', 'lens_Ua', 'lens_Ui', 'uhk_mitte', 'lens_3a', 'lens_3b', 'lens_3c', 'lens_A2', 'lens_L6', 'lens_L7', 'lens_4a', 'lens_4b', 'lens_4c', 'lens_L8', 'uex_mitte', 'lens_A3', 'lens_L10', 'lens_SK1', 'lens_SK2'),
+            'fields': ('anode', 'coil_voltage_xy', 'coil_voltage_xz', 'coil_voltage_yz', 'coil_current_xy', 'coil_current_xz', 'coil_current_yz', 'lens_1a', 'lens_1b', 'lens_1c', 'lens_A1', 'lens_L2', 'lens_L3', 'lens_2a', 'lens_2b', 'lens_2c', 'lens_L4', 'lens_L5', 'lens_D1', 'lens_D2', 'lens_Ua', 'lens_Ui', 'uhk_mitte', 'lens_3a', 'lens_3b', 'lens_3c', 'lens_A2', 'lens_L6', 'lens_L7', 'lens_4a', 'lens_4b', 'lens_4c', 'lens_L8', 'uex_mitte', 'lens_A3', 'lens_L10', 'lens_SK1', 'lens_SK2', 'ue', 'ue_fine'),
             'classes': ('wide',)
         }),
         ('Comments', {
