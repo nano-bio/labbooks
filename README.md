@@ -6,6 +6,9 @@ Requires django >= 1.7 (tested until 1.9.4)
 
 Changelog
 =========
+01.04.2016
+* WIPPI/NEW/Lorenz: some new Lenses and fixes 
+
 31.03.2016
 * SURFTOF/FIX/Lorenz: corrected some content errors in Surftof
 
