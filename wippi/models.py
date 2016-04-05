@@ -31,6 +31,7 @@ class Measurement(models.Model):
     electron_energy = models.FloatField(blank = True, null = True, verbose_name = 'Electron Energy (for MS)')
     ion_energy = models.FloatField(blank = True, null = True)
     substance = models.CharField(max_length = 200)
+    fragment = models.CharField(blank = True, max_length = 200)
     description = models.CharField(max_length = 200)
     channeltron_1 = models.FloatField(default = 5.8, verbose_name = 'Channeltron 1', blank = True, null = True)
     channeltron_2 = models.FloatField(verbose_name = 'Channeltron 2', blank = True, null = True)

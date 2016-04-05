@@ -25,6 +25,9 @@ urlpatterns = [
     url(r'^view/(\d+)/fit/(\d+)/$', vg.views.fitmeasurement),
     url(r'^view/(\d+)/cal/(\d+)/fit/(\d+)/$', vg.views.fitcalmeasurement),
     url(r'^export_all_f_urls/$', vg.views.export_all_f_urls),
+    url(r'^export_all_sf6_urls/$', vg.views.export_all_sf6_urls),
+    url(r'^export_all_sf5_urls/$', vg.views.export_all_sf5_urls),
+    url(r'^export_all_f2_urls/$', vg.views.export_all_f2_urls),
     url(r'^pumps/$', ListView.as_view(model = Turbopump, template_name = 'vg/pump_list.html')),
     url(r'^pumps/(?P<pumpnumber>\d+)$', vg.views.pump),
 ]

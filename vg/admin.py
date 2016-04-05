@@ -17,7 +17,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         return obj.time.strftime('%d %m %Y, %H:%M')
     propertime.short_description = 'Time and date'
 
-    list_display = ('propertime', 'substance', 'description', 'scantype', 'polarity', 'file_link', 'view_link')
+    list_display = ('propertime', 'substance', 'fragment', 'description', 'scantype', 'polarity', 'file_link', 'view_link')
     list_filter = ('operator', 'time', 'scantype', 'polarity')
     search_fields = ('substance', 'description')
     save_as = True
@@ -28,7 +28,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'datafile', 'scantype', 'polarity', 'substance', 'description', 'time')
+            'fields': ('operator', 'datafile', 'scantype', 'polarity', 'substance', 'fragment', 'description', 'time')
         }),
         ('Pressures', {
             'fields': ('pressure_ionblock', 'pressure_analyzer', 'background_pressure'),

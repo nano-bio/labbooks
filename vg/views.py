@@ -10,6 +10,8 @@ from django.db import models as djangomodels
 from itertools import chain
 import datetime, time
 
+from django.db.models import Q
+
 import sys, os
 
 sys.path.append('/var/opt')
@@ -273,17 +275,61 @@ def fitcalmeasurement(request, m_id, c_id, n_peaks):
     return HttpResponse(html)
 
 def export_all_f_urls(request):
-    #this is mainly used for benchmarking the peak finding algorithm
-    #it returns a list of urls to F-/SF6 scans
+    #this is mainly used for benchmarking peak finding algorithms and other weird shit josi thinks about
+    #it returns a list of ids of F-/SF6 scans
 
-    F = models.Measurement.objects.filter(scantype__exact='ES').filter(description__exact='F').filter(substance__contains='SF6').all()
-    Fforcal = models.Measurement.objects.filter(scantype__exact='ES').filter(description__exact='F for calibration').filter(substance__contains='SF6').all()
-    all = list(chain(F, Fforcal))
-    output = set(all)
+    output = models.Measurement.objects.filter(
+        Q(scantype__exact='ES'),
+        Q(description__exact='F') | Q(description__exact='F / SF6 neg for cal') | Q(description__exact='F neg for cal') | Q(description__exact='F- for Calibration') | Q(description__exact='F for calibration'),
+        Q(substance__contains='SF6')
+    ).all()
 
     text = '\r\n'.join([str(m.id) for m in output])
             
     return HttpResponse(text)
+
+def export_all_sf6_urls(request):
+    #this is mainly used for benchmarking peak finding algorithms and other weird shit josi thinks about
+    #it returns a list of ids of SF6-/SF6 scans
+
+    output = models.Measurement.objects.filter(
+        Q(scantype__exact='ES'),
+        Q(description__exact='SF6') | Q(description__exact='SF6 neg for cal') | Q(description__exact='SF6 for Calibration') | Q(description__exact='SF6 for calibration'),
+        Q(substance__contains='SF6')
+    ).all()
+
+    text = '\r\n'.join([str(m.id) for m in output])
+
+    return HttpResponse(text)
+
+def export_all_sf5_urls(request):
+    #this is mainly used for benchmarking peak finding algorithms and other weird shit josi thinks about
+    #it returns a list of ids of SF6-/SF6 scans
+
+    output = models.Measurement.objects.filter(
+        Q(scantype__exact='ES'),
+        Q(description__exact='SF5') | Q(description__exact='SF5 neg for cal') | Q(description__exact='SF5 for Calibration') | Q(description__exact='SF5 for calibration'),
+        Q(substance__contains='SF6')
+    ).all()
+
+    text = '\r\n'.join([str(m.id) for m in output])
+
+    return HttpResponse(text)
+
+def export_all_f2_urls(request):
+    #this is mainly used for benchmarking peak finding algorithms and other weird shit josi thinks about
+    #it returns a list of ids of SF6-/SF6 scans
+
+    output = models.Measurement.objects.filter(
+        Q(scantype__exact='ES'),
+        Q(description__exact='F2') | Q(description__exact='F2 neg for cal') | Q(description__exact='F2 for Calibration') | Q(description__exact='F2 for calibration'),
+        Q(substance__contains='SF6')
+    ).all()
+
+    text = '\r\n'.join([str(m.id) for m in output])
+
+    return HttpResponse(text)
+
 
 def pump(request, pumpnumber):
     pump = get_object_or_404(models.Turbopump, id = pumpnumber)

@@ -6,6 +6,12 @@ Requires django >= 1.7 (tested until 1.9.4)
 
 Changelog
 =========
+
+05.04.2016
+
+* WIPPI/VG/NEW/Josi: Field "fragment" for measured fragment in energy scan
+* VG/NEW/Josi: added new functions to export F2, SF5 and SF6/SF6 energy scans
+
 01.04.2016
 * WIPPI/NEW/Lorenz: some new Lenses and fixes 
 

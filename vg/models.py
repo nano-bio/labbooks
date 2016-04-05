@@ -34,6 +34,7 @@ class Measurement(models.Model):
     gatetime = models.FloatField(blank = True, null = True)
     electron_energy = models.FloatField(blank = True, null = True, verbose_name = 'Electron Energy (for MS)')
     substance = models.CharField(max_length = 100)
+    fragment = models.CharField(blank = True, max_length = 100)
     description = models.CharField(max_length = 200)
     channeltron = models.FloatField(default = 2.3, verbose_name = 'Channeltron (kV)')
     ionblock_temperature = models.PositiveIntegerField(default = 160)
