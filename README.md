@@ -7,6 +7,11 @@ Requires django >= 1.7 (tested until 1.9.4)
 Changelog
 =========
 
+18.04.2016
+
+* CLUSTOF/NEW/Josi: Include temperature for vacuum status in CLUSTOF
+* CLUSTOF/FIX/Josi: Fix new IPs for Snowball
+
 05.04.2016
 
 * WIPPI/VG/NEW/Josi: Field "fragment" for measured fragment in energy scan

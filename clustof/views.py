@@ -334,7 +334,7 @@ def readvacuumstatus(request):
         return HttpResponseBadRequest()
     else:
         # define pattern to look for in delivered data
-        linepattern = r'([0-9]{9,10})\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?'
+        linepattern = r'([0-9]{9,10})\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E-[0-9]{2})?\t([0-9]{1}\.[0-9]{3}E\+[0-2]{2})?'
         lineregex = re.compile(linepattern)
 
         # get the data and split by line break
@@ -347,7 +347,7 @@ def readvacuumstatus(request):
             for line in lines:
                 values = lineregex.match(line)
                 if values:
-                    models.VacuumStatus.objects.create(time = values.group(1), g1 = values.group(2), g2 = values.group(3), g3 = values.group(4), g4 = values.group(5), g5 = values.group(6), g6 = values.group(7))
+                    models.VacuumStatus.objects.create(time = values.group(1), g1 = values.group(2), g2 = values.group(3), g3 = values.group(4), g4 = values.group(5), g5 = values.group(6), g6 = values.group(7), temperature = values.group(8))
                     i = i + 1
 
             return HttpResponse('%s entries saved' % (i))
@@ -369,5 +369,5 @@ def writevacuumstatus(request, after = None, before = None):
         beforetimestamp = int(time.time())
 
     datasets = models.VacuumStatus.objects.filter(time__lte=beforetimestamp).filter(time__gte=aftertimestamp).all()
-    data = json.dumps([{'time': dataset.time, 'g1': dataset.g1, 'g2': dataset.g2, 'g3': dataset.g3, 'g4': dataset.g4, 'g5': dataset.g5, 'g6': dataset.g6} for dataset in datasets])
+    data = json.dumps([{'time': dataset.time, 'g1': dataset.g1, 'g2': dataset.g2, 'g3': dataset.g3, 'g4': dataset.g4, 'g5': dataset.g5, 'g6': dataset.g6, 'temperature': dataset.temperature} for dataset in datasets])
     return HttpResponse(data)

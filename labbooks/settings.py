@@ -4,14 +4,14 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 # set the IP for CLUSTOF here
-CLUSTOFIP = '138.232.72.1'
+CLUSTOFIP = '138.232.74.13'
 
 # set the IP for SURFTOF here
 SURFTOFIP = '138.232.71.196'
 
 # set IPS for all pressure writing devices here
 #snowball, josis computer
-PRESSUREIPS = ['138.232.71.244', '138.232.72.50']
+PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 
 ADMINS = (
      ('Josi', 'johannes.postler@uibk.ac.at'),

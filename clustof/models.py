@@ -224,6 +224,7 @@ class VacuumStatus(models.Model):
     g4 = models.FloatField(blank = True, null = True)
     g5 = models.FloatField(blank = True, null = True)
     g6 = models.FloatField(blank = True, null = True)
+    temperature = models.FloatField(blank = True, null = True)
 
     class Meta:
         verbose_name_plural = "Vacuum Status"
