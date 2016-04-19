@@ -7,6 +7,10 @@ Requires django >= 1.7 (tested until 1.9.4)
 Changelog
 =========
 
+19.04.2016
+
+* CHEMINVENTORY/FIX: Do not allow gas-phase chemical instances (should be gas bottles)
+
 18.04.2016
 
 * CLUSTOF/NEW/Josi: Include temperature for vacuum status in CLUSTOF

@@ -8,11 +8,19 @@ from django.template import Context
 # Register your models here.
 
 class ChemicalInstanceAdmin(admin.ModelAdmin):
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(ChemicalInstanceAdmin,self).get_form(request, obj,**kwargs)
+        # form class is created per request by modelform_factory function
+        # so it's safe to modify
+        # we modify the the queryset to not show gases
+        form.base_fields['chemical'].queryset = form.base_fields['chemical'].queryset.exclude(state_of_matter = 'GAS')
+        return form
+
     search_fields = ('chemical__name', 'chemical__chemical_formula', 'chemical__cas', 'chemical__inchi')
     list_display = ('__unicode__', 'cas', 'state_of_matter', 'irritant', 'toxic', 'explosive', 'oxidizing', 'flammable', 'health_hazard', 'corrosive', 'environmentally_damaging')
     list_filter = ('storage_location', 'chemical__state_of_matter', 'chemical__irritant', 'chemical__toxic', 'chemical__explosive', 'chemical__oxidizing', 'chemical__flammable', 'chemical__health_hazard', 'chemical__corrosive', 'chemical__environmentally_damaging', 'group')
     save_on_top = True
-    raw_id_fields = ('chemical', )
+    #raw_id_fields = ('chemical', )
     ordering = ['chemical__name']
 
 class GasCylinderUsageRecordInline(admin.TabularInline):
