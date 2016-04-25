@@ -143,6 +143,7 @@ INSTALLED_APPS = (
     'wippi',
     'cheminventory',
     'surftof',
+    'snowball',
 )
 
 # A sample logging configuration. The only tangible logging

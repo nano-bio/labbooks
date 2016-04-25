@@ -12,13 +12,29 @@ import datetime, time
 
 from django.db.models import Q
 
-import sys, os
+import sys, os, re
+from chemlib import checkatoms
 
 sys.path.append('/var/opt')
 
 MPLCONFIGDIR = '/var/opt/labbooks/.matplotlib/'
 os.environ['HOME'] = '/var/opt/labbooks/'
 import fitlib
+from fitlib.chemlib import ChemicalObject
+
+atomregex = re.compile('\b(([A-Z]+[a-z]?\d{0,3})+)+\b')
+
+def get_chemical_formula(chemical_formula):
+    """ checks chemical formalae for plausibility """
+
+    # first we check if the formula seems like a chemical formula
+    m = atomregex.findall(chemical_formula)
+    if m is not None:
+        for form in m:
+            if checkatoms(form[0]):
+                return form[0]
+
+    return u''
 
 def retrieve_plotable_parameters():
     #show all fields that are numbers and can be plotted
@@ -286,6 +302,32 @@ def export_all_f_urls(request):
 
     text = '\r\n'.join([str(m.id) for m in output])
             
+    return HttpResponse(text)
+
+def all_usable_es(request):
+    substancelist = []
+    fragmentlist = []
+
+    output = models.Measurement.objects.exclude(fragment = u'').all()
+    for m in output:
+        success = False
+        chemform = get_chemical_formula(m.substance)
+        if chemform != u'':
+            substancelist.append(chemform)
+            fragmentlist.append(m.fragment)
+        else:
+            o = ChemicalObject(token = '03ed8095-9ff1-42e5-8548-4e716da2622a', name = m.substance)
+            o.complete()
+            if o.chemicalformula != '':
+                substancelist.append(o.chemicalformula)
+                fragmentlist.append(m.fragment)
+
+    text = ''
+    i = 0
+    for s in substancelist:
+        text = text + s + ' ' + fragmentlist[i] + '<br />'
+        i = i + 1
+
     return HttpResponse(text)
 
 def export_all_sf6_urls(request):

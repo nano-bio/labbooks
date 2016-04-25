@@ -1,38 +1,33 @@
 #created after SurfTof
 from django.contrib import admin, messages
-from snowball.models import Measurement, Operator, JournalEntry, Turbopump, TurbopumpStatus, VacuumStatus
+from snowball.models import Measurement, Operator, JournalEntry, Turbopump, TurbopumpStatus
 from django.http import HttpResponseRedirect, HttpResponse
-from django.conf import get_template
 from django.template import Context, Template
 from django.utils import http
 
 import datetime
-import re
 
-class MeasurmentAdmin(admin.ModelAdmin):
-    def propetime(self, obj):
+class MeasurementAdmin(admin.ModelAdmin):
+    def propertime(self, obj):
         return obj.time.strftime('%d %m %Y, %H:%M')
-    probetime.short_desctiption = 'Time and date'
+    propertime.short_desctiption = 'Time and date'
 
-    list_display = ('propertime', 'operator', 'datafile', 'evaluated_by', 'eval_file',)
-    list_filter = ('operator', 'time', 'evaluated_by',)
+    list_display = ('propertime', 'operator', 'datafile')
+    list_filter = ('operator',)
     serach_fields = ('id',)
     save_as = True
     save_on_top = True
-    ordering = ('-time',)
+    ordering = ('-starttime',)
 
     actions = ['create_new_measurement_based_on_existing_one', 'export_measurement',]
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'data_filename', 'time', 'evaluated_by', 'evaluation_file')
+            'fields': ('operator', 'datafile', 'starttime', 'endtime')
         }),
-        ('Pressures', {
-            'fields': ('pressure_cs',)
-        }),
-        ('Measurement', {
-            'fields': ('time',)
-        })
+#        ('Measurement', {
+#            'fields': ('time',)
+#        })
     )
 
     def export_measurement(self, request, queryset):
@@ -47,7 +42,7 @@ class MeasurmentAdmin(admin.ModelAdmin):
         if len(queryset) == 1:
             s = queryset.get()
             redirect_address = u'add/?'
-            forbitten_item = ['_state', 'time', 'data_filename', 'rating',]
+            forbitten_item = ['_state', 'starttime', 'datafile']
             for item in s.__dict__:
                 if item not in forbitten_items:
                     if s.__dict__[item] is not None:
@@ -74,6 +69,4 @@ admin.site.register(Operator,)
 admin.site.register(JournalEntry, JournalEntryAdmin)
 admin.site.register(Turbopump)
 admin.site.register(TurbopumpStatus)
-admin.site.register(VacuumStatus)
-
              

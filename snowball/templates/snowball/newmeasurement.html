@@ -1,0 +1,20 @@
+{% extends "clustof/base.html" %}
+
+{% block content %}
+    <form method="post" action="">
+      <table>
+      {% for field in form %}
+        <tr>
+        <td>
+         <strong>{{ field.label_tag }}</strong>
+        </td>
+        <td>{{ field }}</td>
+        <td>{% if field.field.timelabel %}({{ field.field.timelabel }}){% endif %}{% if field.errors %}{{ field.errors }}{% endif %}
+        </td>
+      {% endfor %}
+        </tr>
+      </table>
+     {% csrf_token %}
+     <input type = "submit" value = "Save Measurement">
+    </form>
+{% endblock %}
