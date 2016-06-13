@@ -8,6 +8,7 @@ from django.core import urlresolvers
 from django.db.models import Q
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+import datetime
 
 # Prints door signs for a storage location
 def print_doorsign(request, labid):
@@ -53,7 +54,8 @@ def print_doorsign(request, labid):
         gas.ps = models.GHS_P.objects.filter(id__in = pids)
 
     t = get_template('cheminventory/doorsign.html')
-    c = Context({'lab': lab, 'chems': chems, 'gases': gases, 'gaswarnings': gaswarnings, 'chemwarnings': chemwarnings})
+    datum = datetime.datetime.now()
+    c = Context({'lab': lab, 'chems': chems, 'gases': gases, 'gaswarnings': gaswarnings, 'chemwarnings': chemwarnings, 'datum': datum})
 
     html = t.render(c)
     return HttpResponse(html)
