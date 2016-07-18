@@ -117,7 +117,7 @@ class GHS_P_Admin(admin.ModelAdmin):
 
 
 class GasCylinderUsageRecordAdmin(admin.ModelAdmin):
-    search_fields = ('usage_location', 'user', 'date', 'gas_cylinder')
+    search_fields = ('usage_location__name', 'user__name', 'date', 'gas_cylinder__cylinder_number', 'gas_cylinder__chemical__name')
     list_display = ('gas_cylinder', 'usage_location', 'user', 'date')
     list_filter = ('usage_location', 'user', 'date', 'gas_cylinder')
 

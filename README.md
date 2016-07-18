@@ -9,6 +9,7 @@ Changelog
 
 18.07.2016
 
+* CHEMICALINVENTORY/FIX/Josi: Properly search for gas cylinder usage records in admin interface
 * CLUSTOF/NEW/Josi: New fields for gas inlets / pickup oven chemicals. Optional and is also used by search.
 * CLUSTOF/FIX/Josi: Default nozzle size now 5 mum
 * CLUSTOF/NEW/Josi: Two more operators
