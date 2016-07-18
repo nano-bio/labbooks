@@ -3,6 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 import re, time, datetime
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from cheminventory import models as cheminventory_models
 
 SCANTYPES = (
     ('ES', 'Energyscan'),
@@ -30,7 +31,9 @@ class Measurement(models.Model):
     time = models.DateTimeField(auto_now = False, auto_now_add = False)
     tof_settings_file = models.CharField(max_length = 1500, verbose_name = 'TOF Settings File')
     data_filename = models.CharField(max_length=1500, verbose_name = 'Filename', default = 'D:\\Data\\')
-    operator = models.ForeignKey('Operator')
+    operator = models.ForeignKey('Operator', related_name = 'op1')
+    operator2 = models.ForeignKey('Operator', related_name = 'op2', blank = True, null = True)
+    operator3 = models.ForeignKey('Operator', related_name = 'op3', blank = True, null = True)
     rating = models.IntegerField(blank = True, default = 3, null = True, validators = [MaxValueValidator(5), MinValueValidator(0)])
     scantype = models.CharField(max_length = 20, choices = SCANTYPES, default = 'MS')
     pressure_cs = models.FloatField(verbose_name = 'Pressure CS', default = float('4e-5'))
@@ -40,7 +43,7 @@ class Measurement(models.Model):
     pressure_tof = models.FloatField(verbose_name = 'Pressure TOF', default = float('3e-7'))
     stag_pressure_he = models.FloatField(verbose_name = 'He Stagnation Pressure', default = 25)
     temperature_he = models.FloatField(verbose_name = 'He Temp', default = 9.0)
-    nozzle_diameter = models.FloatField(default = 0.4)
+    nozzle_diameter = models.FloatField(default = 5)
     electron_energy_set = models.FloatField(blank = True, null = True, verbose_name = 'Electron Energy set on Power Supply (for MS)')
     real_electron_energy = models.FloatField(blank = True, null = True, verbose_name = 'Real Electron Energy (for MS)')
     ion_block = models.FloatField()
@@ -59,7 +62,12 @@ class Measurement(models.Model):
     oven_2_power = models.FloatField(blank = True, null = True)
     faraday_cup = models.FloatField(blank = True, null = True)
     flagged = models.BooleanField(default = False)
-    substance = models.TextField(max_length=1500)
+    substance = models.TextField(max_length=1500, verbose_name = 'Comment')
+    chem_pu1_oven = models.ForeignKey(cheminventory_models.Chemical, related_name = 'chem_pu1_oven', blank = True, null = True, verbose_name = 'Chemical PU1 Oven')
+    chem_pu1_gas = models.ForeignKey(cheminventory_models.Chemical, related_name = 'chem_pu1_gas', blank = True, null = True, verbose_name = 'Chemical PU1 Gas')
+    chem_pu2_oven = models.ForeignKey(cheminventory_models.Chemical, related_name = 'chem_pu2_oven', blank = True, null = True, verbose_name = 'Chemical PU2 Oven')
+    chem_pu2_gas = models.ForeignKey(cheminventory_models.Chemical, related_name = 'chem_pu2_gas', blank = True, null = True, verbose_name = 'Chemical PU2 Gas')
+    is_inlet_gas = models.ForeignKey(cheminventory_models.Chemical, related_name = 'is_inlet_gas', blank = True, null = True, verbose_name = 'Ion Source Inlet Gas')
     polarity = models.CharField(max_length = 3, choices = POLARITIES, default = 'NEG')
     evaluated_by = models.CharField(max_length = 20, blank = True)
     evaluation_file = models.FileField(upload_to = 'clustof/evaluations/', blank = True, default = '')

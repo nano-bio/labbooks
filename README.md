@@ -2,10 +2,24 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
-Requires django >= 1.7 (tested until 1.9.4)
+Requires django >= 1.8 (tested until 1.9.4)
 
 Changelog
 =========
+
+18.07.2016
+
+* CLUSTOF/NEW/Josi: New fields for gas inlets / pickup oven chemicals. Optional and is also used by search.
+* CLUSTOF/FIX/Josi: Default nozzle size now 5 mum
+* CLUSTOF/NEW/Josi: Two more operators
+
+13.06.2016
+
+* CHEMINVENTORY/NEW/Josi: Print date on doorsigns
+
+25.04.2016
+
+* SNOWBALL/NEW/Loernz: The Snowball side is added to the labbook (ALPHA)
 
 19.04.2016
 
