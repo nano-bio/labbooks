@@ -28,7 +28,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'datafile', 'scantype', 'polarity', 'substance', 'fragment', 'description', 'time')
+            'fields': ('operator', 'datafile', 'scantype', 'polarity', 'substance', 'substance_comment', 'fragment', 'description', 'time')
         }),
         ('Pressures', {
             'fields': ('pressure_monochromator', 'pressure_pickup', 'base_pressure', 'pressure_cs', 'background_pressure'),
@@ -39,7 +39,7 @@ class MeasurementAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('WIPPI settings', {
-            'fields': ('qmh', 'channeltron_1', 'channeltron_2', 'oven_temperature', 'chamber_temperature', 'faraday_current', 'filament_current', 'electron_energy', 'emission', 'energy_resolution', 'mass_resolution'),
+            'fields': ('qmh', 'channeltron_1', 'channeltron_2', 'oven_temperature', 'chamber_temperature', 'faraday_current', 'filament_current', 'electron_energy', 'emission', 'energy_resolution', 'mass_resolution', 'nozzle'),
             'classes': ('wide',)
         }),
         ('Lenses', {

@@ -1,4 +1,5 @@
 from django.db import models
+from cheminventory import models as cheminventory_models
 
 ENERGYSCAN = 'ES'
 MASSSCAN = 'MS'
@@ -30,7 +31,8 @@ class Measurement(models.Model):
     polarity = models.CharField(max_length = 3, choices = POLARITIES, default = 'NEG')
     electron_energy = models.FloatField(blank = True, null = True, verbose_name = 'Electron Energy (for MS)')
     ion_energy = models.FloatField(blank = True, null = True)
-    substance = models.CharField(max_length = 200)
+    substance = models.ForeignKey(cheminventory_models.Chemical, null = True)
+    substance_comment = models.CharField(max_length = 200, blank = True)
     fragment = models.CharField(blank = True, max_length = 200)
     description = models.CharField(max_length = 200)
     channeltron_1 = models.FloatField(default = 5.8, verbose_name = 'Channeltron 1', blank = True, null = True)
@@ -92,6 +94,7 @@ class Measurement(models.Model):
     lens_L10 = models.FloatField(default = 0, blank = True, null = True)
     lens_SK1 = models.FloatField(default = 0, blank = True, null = True)
     lens_SK2 = models.FloatField(default = 0, blank = True, null = True)
+    nozzle = models.FloatField(verbose_name = 'Nozzle Temperature', default = 12, blank = True, null = True)
     qmh = models.CharField(max_length = 5, blank = True, verbose_name = 'QMH')
     comments = models.TextField(blank = True)
 

@@ -7,6 +7,10 @@ Requires django >= 1.8 (tested until 1.9.4)
 Changelog
 =========
 
+06.09.2106
+
+* WIPPI/NEW/Josi: Changed textfield substance in WIPPI to a ForeignKey of cheminventory.chemical. Nice migrations saved the da[ta|y]!
+
 18.07.2016
 
 * CHEMICALINVENTORY/FIX/Josi: Properly search for gas cylinder usage records in admin interface
