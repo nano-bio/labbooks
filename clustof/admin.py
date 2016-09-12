@@ -18,7 +18,17 @@ class MeasurementAdmin(admin.ModelAdmin):
         return obj.time.strftime('%d %m %Y, %H:%M')
     propertime.short_description = 'Time and date'
 
-    list_display = ('propertime', 'operator', 'scantype', 'chems', 'substance', 'polarity', 'elec_energy', 'temperature_he', 'data_file', 'evaluated_by', 'eval_file')
+    def has_comment(self, obj):
+        comments = Comment.objects.filter(measurement = obj).all()
+        if len(comments) >= 1:
+            return True
+        else:
+            return False
+
+    has_comment.boolean = True
+    has_comment.short_description = 'Com.'
+
+    list_display = ('propertime', 'operator', 'scantype', 'chems', 'substance', 'polarity', 'elec_energy', 'temperature_he', 'data_file', 'has_comment', 'evaluated_by', 'eval_file')
     list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by')
     search_fields = ('substance', 'data_filename', 'tof_settings_file', 'id', 'chem_pu1_oven__name', 'chem_pu1_oven__chemical_formula', 'chem_pu2_oven__name', 'chem_pu2_oven__chemical_formula', 'chem_pu1_gas__name', 'chem_pu1_gas__chemical_formula', 'chem_pu2_gas__name', 'chem_pu2_gas__chemical_formula', 'is_inlet_gas__name', 'is_inlet_gas__chemical_formula')
     save_as = True

@@ -2,12 +2,16 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
-Requires django >= 1.8 (tested until 1.9.4)
+Requires django >= 1.8 (tested until 1.9.9)
 
 Changelog
 =========
 
-06.09.2106
+12.09.2016
+
+* CLUSTOF/NEW/Josi: Show small check in admin list of measurements if comments were made for this measurement 
+
+06.09.2016
 
 * WIPPI/NEW/Josi: Changed textfield substance in WIPPI to a ForeignKey of cheminventory.chemical. Nice migrations saved the da[ta|y]!
 
@@ -24,7 +28,7 @@ Changelog
 
 25.04.2016
 
-* SNOWBALL/NEW/Loernz: The Snowball side is added to the labbook (ALPHA)
+* SNOWBALL/NEW/Lorenz: The Snowball side is added to the labbook (ALPHA)
 
 19.04.2016
 
