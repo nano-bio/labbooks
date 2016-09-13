@@ -28,8 +28,11 @@ class MeasurementAdmin(admin.ModelAdmin):
     has_comment.boolean = True
     has_comment.short_description = 'Com.'
 
-    list_display = ('propertime', 'operator', 'scantype', 'chems', 'substance', 'polarity', 'elec_energy', 'temperature_he', 'data_file', 'has_comment', 'evaluated_by', 'eval_file')
-    list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by')
+    def eval_by(self, obj):
+        return obj.evaluated_by
+
+    list_display = ('propertime', 'marked', 'operator', 'scantype', 'chems', 'substance', 'polarity', 'elec_energy', 'temperature_he', 'data_file', 'has_comment', 'eval_by', 'eval_file')
+    list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by', 'marked')
     search_fields = ('substance', 'data_filename', 'tof_settings_file', 'id', 'chem_pu1_oven__name', 'chem_pu1_oven__chemical_formula', 'chem_pu2_oven__name', 'chem_pu2_oven__chemical_formula', 'chem_pu1_gas__name', 'chem_pu1_gas__chemical_formula', 'chem_pu2_gas__name', 'chem_pu2_gas__chemical_formula', 'is_inlet_gas__name', 'is_inlet_gas__chemical_formula')
     save_as = True
     save_on_top = True
@@ -41,7 +44,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'operator2', 'operator3', 'data_filename', 'tof_settings_file', 'scantype', 'rating', 'time', 'evaluated_by', 'evaluation_file', 'flagged')
+            'fields': (('operator', 'operator2', 'operator3'), 'data_filename', 'tof_settings_file', 'scantype', 'time', ('evaluated_by', 'evaluation_file'), ('flagged', 'marked'), 'rating')
         }),
         ('Pressures', {
             'fields': ('pressure_cs', 'pressure_pu1', 'pressure_pu2', 'pressure_ion', 'pressure_tof'),
@@ -56,7 +59,7 @@ class MeasurementAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('Pickup', {
-            'fields': ('oven_1_temperature', 'oven_1_power', 'oven_2_temperature', 'oven_2_power', 'chem_pu1_oven', 'chem_pu1_gas', 'chem_pu2_oven', 'chem_pu2_gas', 'is_inlet_gas', 'substance'),
+            'fields': (('oven_1_temperature', 'oven_1_power'), ('oven_2_temperature', 'oven_2_power'), ('chem_pu1_oven', 'chem_pu1_gas'), ('chem_pu2_oven', 'chem_pu2_gas'), 'is_inlet_gas', 'substance'),
             'classes': ('wide',)
         }),
     )
@@ -144,7 +147,10 @@ class JournalEntryAdmin(admin.ModelAdmin):
     save_on_top = True
     ordering = ('-time',)
 
-admin.site.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    raw_id_fields = ('measurement',)
+
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(Measurement, MeasurementAdmin)
 admin.site.register(Operator)
 admin.site.register(CurrentSetting)

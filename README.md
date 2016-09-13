@@ -7,6 +7,10 @@ Requires django >= 1.8 (tested until 1.9.9)
 Changelog
 =========
 
+13.09.2016
+
+* CLUSTOF/NEW/JOsi: New field 'marked', to easily highlight measurements. Small improvements in UI for measurement list.
+
 12.09.2016
 
 * CLUSTOF/NEW/Josi: Show small check in admin list of measurements if comments were made for this measurement 

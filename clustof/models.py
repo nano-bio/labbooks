@@ -71,6 +71,7 @@ class Measurement(models.Model):
     polarity = models.CharField(max_length = 3, choices = POLARITIES, default = 'NEG')
     evaluated_by = models.CharField(max_length = 20, blank = True)
     evaluation_file = models.FileField(upload_to = 'clustof/evaluations/', blank = True, default = '')
+    marked = models.BooleanField(default = False)
 
     # this provides a link to the eval file in the admin interface
 
