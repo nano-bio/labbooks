@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from models import Measurement, JournalEntry, Turbopump
 from django.views.generic import ListView
 from django.contrib.flatpages import views as flatpageviews
