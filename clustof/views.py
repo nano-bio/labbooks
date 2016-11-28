@@ -9,6 +9,7 @@ from django.template import Context, Template
 from django.core.files import File
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import FileSystemStorage
 
 import json
 import os
@@ -371,3 +372,14 @@ def writevacuumstatus(request, after = None, before = None):
     datasets = models.VacuumStatus.objects.filter(time__lte=beforetimestamp).filter(time__gte=aftertimestamp).all()
     data = json.dumps([{'time': dataset.time, 'g1': dataset.g1, 'g2': dataset.g2, 'g3': dataset.g3, 'g4': dataset.g4, 'g5': dataset.g5, 'g6': dataset.g6, 'temperature': dataset.temperature} for dataset in datasets])
     return HttpResponse(data)
+
+@csrf_exempt
+def filetest(request):
+    if request.method == 'POST' and request.FILES['logfile']:
+        logfile = request.FILES['logfile']
+        fs = FileSystemStorage()
+        filename = fs.save(logfile.name, logfile)
+        uploaded_file_url = fs.url(filename)
+        return HttpResponse('File URL: ' + uploaded_file_url, content_type="text/plain")
+    else:
+        return HttpResponse('No file logfile')

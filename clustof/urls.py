@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^vacuumstatus/output/(\d+)/(\d+)/$', clustof.views.writevacuumstatus),
     url(r'^vacuumstatus/output/(\d+)/$', clustof.views.writevacuumstatus),
     url(r'^vacuumstatus/output/$', clustof.views.writevacuumstatus),
+    url(r'^filetest/$$', clustof.views.filetest),
 ]
