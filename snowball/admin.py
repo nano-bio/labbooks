@@ -1,15 +1,23 @@
-#created after SurfTof
+
 from django.contrib import admin, messages
 from snowball.models import Measurement, Operator, JournalEntry, Turbopump, TurbopumpStatus
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, Template
 from django.utils import http
+from django.conf import settings
+from django.core.files import File
+from django.db.models.fields.files import FieldFile
+from django.contrib.admin.sites import AdminSite
+from numpy import *
 
+import os
+import sys
+import re
 import datetime
 
 class MeasurementAdmin(admin.ModelAdmin):
     def propertime(self, obj):
-        return obj.time.strftime('%d %m %Y, %H:%M')
+        return obj.starttime.strftime('%d %m %Y, %H:%M')
     propertime.short_desctiption = 'Time and date'
 
     list_display = ('propertime', 'operator', 'datafile')
@@ -24,11 +32,7 @@ class MeasurementAdmin(admin.ModelAdmin):
     fieldsets = (
         ('General', {
             'fields': ('operator', 'datafile', 'starttime', 'endtime')
-        }),
-#        ('Measurement', {
-#            'fields': ('time',)
-#        })
-    )
+        }),)
 
     def export_measurement(self, request, queryset):
         if len(queryset) == 1:
@@ -54,19 +58,58 @@ class MeasurementAdmin(admin.ModelAdmin):
 
 class JournalEntryAdmin(admin.ModelAdmin):
     def propertime(self, obj):
-        return obj.short.time.strftime('%d %m %Y, %H:%M')
+        return obj.time.strftime('%d %m %Y, %H:%M')
     propertime.short_description = 'Time and date'
 
     list_display = ('propertime', 'operator', 'attachment', 'written_notes',)
-    list_filter = ('operator', 'time',)
+    list_filter = ('operator', )
     serach_fields = ('comment',)
     save_as = True
     save_on_top = True
     ordering = ('-time',)
+
+
+class PlotAdmin(admin.ModelAdmin):
+    def openfile(filename, rw = 'r'):
+        #adjust file path in case of Windows
+        filename = os.path.nimcase(filename)
+
+        try:
+            #relativ path
+            f = open(filename, rw)
+            return f
+
+        except:
+            #full path
+            try:
+                f = open(filename, rw)
+                return f
+            except:
+                raise IOError('Could not read this shit')
+
+    def readfile(filename):
+        list = []
+        num_tab_num = re.compile('([0-9]{0,5}\.[0-9]{6})')
+        for line in f:
+
+           if not line.startswith('#'):
+               result=num_tab_num.match(line)
+               if result:
+                   list.append(line.strip('\r\n).split(#\t'))
+        data = array(a,dtype = float)
+        f.close()
+        data=array(list, dtype=float)
+        return data
+
+    def writefile(array, filename):
+        f = openfile(filename, 'w')
+        for valuepair in array:
+            f.write('%f\t%f\r\n' % (valuepair[0], valuepair[1]))
+        f.close()
+
 
 admin.site.register(Measurement, MeasurementAdmin)
 admin.site.register(Operator,)
 admin.site.register(JournalEntry, JournalEntryAdmin)
 admin.site.register(Turbopump)
 admin.site.register(TurbopumpStatus)
-             

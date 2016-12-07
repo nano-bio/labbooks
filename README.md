@@ -6,6 +6,9 @@ Requires django >= 1.8 (tested until 1.9.9)
 
 Changelog
 =========
+07.12.2016
+
+* SNOWBALL/MODIFY/Lorenz: Changed the model of Snowball in preperation for some new features
 
 13.09.2016
 

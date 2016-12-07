@@ -300,8 +300,8 @@ def export_all_f_urls(request):
         Q(substance__contains='SF6')
     ).all()
 
-    text = '\r\n'.join([str(m.id) for m in output])
-            
+    text = 'wget 138.232.74.60/vg/export/' + '\r\nwget 138.232.74.60/vg/export/'.join([str(m.id) for m in output])
+
     return HttpResponse(text)
 
 def all_usable_es(request):
@@ -340,7 +340,7 @@ def export_all_sf6_urls(request):
         Q(substance__contains='SF6')
     ).all()
 
-    text = '\r\n'.join([str(m.id) for m in output])
+    text = 'wget 138.232.74.60/vg/export/' + '\r\nwget 138.232.74.60/vg/export/'.join([str(m.id) for m in output])
 
     return HttpResponse(text)
 
@@ -354,7 +354,7 @@ def export_all_sf5_urls(request):
         Q(substance__contains='SF6')
     ).all()
 
-    text = '\r\n'.join([str(m.id) for m in output])
+    text = 'wget 138.232.74.60/vg/export/' + '\r\nwget 138.232.74.60/vg/export/'.join([str(m.id) for m in output])
 
     return HttpResponse(text)
 
@@ -368,7 +368,7 @@ def export_all_f2_urls(request):
         Q(substance__contains='SF6')
     ).all()
 
-    text = '\r\n'.join([str(m.id) for m in output])
+    text = 'wget 138.232.74.60/vg/export/' + '\r\nwget 138.232.74.60/vg/export/'.join([str(m.id) for m in output])
 
     return HttpResponse(text)
 

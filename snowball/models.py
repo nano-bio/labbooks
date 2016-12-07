@@ -14,12 +14,22 @@ class Operator(models.Model):
 
 class Measurement(models.Model):
     starttime = models.DateTimeField(auto_now = False, auto_now_add = False)
-    endtime = models.DateTimeField(auto_now = False, auto_now_add = False)
     datafile = models.FileField(upload_to = 'snowball/%Y/%m/%d/%H/%M/%S/', max_length = 400)
     operator = models.ForeignKey('Operator')
+    he_temp = models.FloatField(verbose_name = 'He temp', default = float('9.5'))
     
     def __unicode__(self):
-        return u'%s, %s,' %(self.time, self.operator)
+        return u'%s, %s,' %(self.starttime, self.operator)
+
+    def view_link(self):
+        return "<a href='/vg/view/%s/'>View</a>" % (self.id)
+
+    view_link.allow_tags = True
+
+    def file_link(self):
+        return u'<a href=\'%s\'>File</a>' % (self.datafile.url)
+
+    file_link.allow_tags = True
 
     class Meta:
         ordering = ['-starttime']
@@ -39,7 +49,7 @@ class JournalEntry(models.Model):
         return settings.MEDIA_ROOT + 'snowball/techjournal/notes/' + str(time.time()) + '.png'
 
     class Meta:
-        ordering = ['-time']
+        ordering = ['time']
         verbose_name_plural = "Journal Entries"
 
 class Turbopump(models.Model):
@@ -60,4 +70,4 @@ class TurbopumpStatus(models.Model):
         verbose_name_plural = "Turbopump Status"
 
     def __unicode__(self):
-        return u'Pressures at %s' % (datetime.datetime.fromtimestamp(self.time.strftime('%c')))
+        return '%s at %s: %s' % (self.pump.name, self.date, self.current)
