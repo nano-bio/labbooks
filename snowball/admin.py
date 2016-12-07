@@ -31,7 +31,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'datafile', 'starttime', 'endtime')
+            'fields': ('operator', 'datafile','he_temp', 'starttime')
         }),)
 
     def export_measurement(self, request, queryset):
