@@ -2,10 +2,15 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
-Requires django >= 1.8 (tested until 1.9.9)
+Requires django >= 1.8 (tested until 1.10.4)
 
 Changelog
 =========
+
+21.12.2016
+
+* CLUSTOF/FIX/Josi: When exporting files, also remove G:\Data from the filename (new CLUSTOF hard drive)
+
 07.12.2016
 
 * SNOWBALL/MODIFY/Lorenz: Changed the model of Snowball in preperation for some new features

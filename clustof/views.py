@@ -204,7 +204,7 @@ def plot_parameters(request, parameter1 = 'extraction_1', parameter2 = 'extracti
 
 def exportfile(request, id):
     m = get_object_or_404(Measurement, id = id)
-    return HttpResponseRedirect('http://' + settings.CLUSTOFIP + '/' + m.data_filename.replace('D:\\Data\\', ''))
+    return HttpResponseRedirect('http://' + settings.CLUSTOFIP + '/' + m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\',''))
 
 #def exportfilesize(request, id):
 #    m = get_object_or_404(Measurement, id = id)
