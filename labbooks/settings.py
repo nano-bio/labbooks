@@ -138,6 +138,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 )
 
 ROOT_URLCONF = 'labbooks.urls'
@@ -170,6 +171,8 @@ INSTALLED_APPS = (
     'cheminventory',
     'surftof',
     'snowball',
+    'poweralarm',
+    'admin_reorder',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -200,3 +203,22 @@ LOGGING = {
         },
     }
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+ADMIN_REORDER = (
+    'cheminventory',
+    'clustof',
+    'vg',
+    'wippi',
+    'surftof',
+    'snowball',
+    {'app': 'poweralarm', 'models': ('poweralarm.Experiment', 'cheminventory.Person')},
+    'auth',
+    'sites',
+)

@@ -6,6 +6,7 @@ import surftof.urls
 import wippi.urls
 import cheminventory.urls
 import snowball.urls
+import poweralarm.urls
 from django.contrib.flatpages import views as flatpageviews
 
 # Uncomment the next two lines to enable the admin:
@@ -28,5 +29,6 @@ urlpatterns = [
     url(r'^surftof/', include(surftof.urls)),
     url(r'^snowball/', include(snowball.urls)),
     url(r'^cheminventory/', include(cheminventory.urls)),
+    url(r'^poweralarm/', include(poweralarm.urls)),
     url(r'^$', flatpageviews.flatpage, {'url': '/'}, name='home'),
 ]
