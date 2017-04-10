@@ -8,13 +8,15 @@ from django.utils import http
 from django.contrib.admin.sites import AdminSite
 
 import sys
+import pytz
 sys.path.append('/var/opt/')
 
 import fitlib
 
 class MeasurementAdmin(admin.ModelAdmin):
     def propertime(self, obj):
-        return obj.time.strftime('%d %m %Y, %H:%M')
+        mtime = obj.time.astimezone(pytz.timezone('Europe/Vienna'))
+        return mtime.strftime('%d %m %Y, %H:%M')
     propertime.short_description = 'Time and date'
 
     list_display = ('propertime', 'substance', 'fragment', 'description', 'scantype', 'file_link', 'view_link')

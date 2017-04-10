@@ -8,6 +8,7 @@ from django.utils import http
 
 import datetime
 import re
+import pytz
 from operator import attrgetter
 
 class CommentInline(admin.TabularInline):
@@ -15,7 +16,8 @@ class CommentInline(admin.TabularInline):
 
 class MeasurementAdmin(admin.ModelAdmin):
     def propertime(self, obj):
-        return obj.time.strftime('%d %m %Y, %H:%M')
+        mtime = obj.time.astimezone(pytz.timezone('Europe/Vienna'))
+        return mtime.strftime('%d %m %Y, %H:%M')
     propertime.short_description = 'Time and date'
 
     def has_comment(self, obj):
@@ -31,7 +33,10 @@ class MeasurementAdmin(admin.ModelAdmin):
     def eval_by(self, obj):
         return obj.evaluated_by
 
-    list_display = ('propertime', 'marked', 'operator', 'scantype', 'chems', 'substance', 'polarity', 'elec_energy', 'temperature_he', 'data_file', 'has_comment', 'eval_by', 'eval_file')
+    def EE(self, obj):
+        return obj.elec_energy()
+
+    list_display = ('propertime', 'id', 'marked', 'operator', 'scantype', 'chems', 'substance', 'polarity', 'EE', 'temperature_he', 'data_file', 'has_comment', 'eval_by', 'eval_file')
     list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by', 'marked')
     search_fields = ('substance', 'data_filename', 'tof_settings_file', 'id', 'chem_pu1_oven__name', 'chem_pu1_oven__chemical_formula', 'chem_pu2_oven__name', 'chem_pu2_oven__chemical_formula', 'chem_pu1_gas__name', 'chem_pu1_gas__chemical_formula', 'chem_pu2_gas__name', 'chem_pu2_gas__chemical_formula', 'is_inlet_gas__name', 'is_inlet_gas__chemical_formula')
     save_as = True

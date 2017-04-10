@@ -2,10 +2,18 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
-Requires django >= 1.8 (tested until 1.10.4)
+Requires django >= 1.8 (tested until 1.10.7)
 
 Changelog
 =========
+
+10.04.2017
+
+* ALL/FIX: Proper timezone-aware display of measurement times in admin
+
+01.02.2017
+
+* POWERALARM/NEW/Josi: New power alarm feature that creates shell scripts that send SMS 
 
 21.12.2016
 
