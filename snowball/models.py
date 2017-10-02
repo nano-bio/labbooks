@@ -17,7 +17,10 @@ class Measurement(models.Model):
     datafile = models.FileField(upload_to = 'snowball/%Y/%m/%d/%H/%M/%S/', max_length = 400)
     operator = models.ForeignKey('Operator')
     he_temp = models.FloatField(verbose_name = 'He temp', default = float('9.5'))
-    
+    he_pres = models.FloatField(verbose_name = 'He pressure', default = float('20'))
+    ee = models.FloatField(verbose_name = 'Electron Energy', default = float('70'))
+    ec = models.FloatField(verbose_name = 'Electron Current', default = float('100'))
+
     def __unicode__(self):
         return u'%s, %s,' %(self.starttime, self.operator)
 
