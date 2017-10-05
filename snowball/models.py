@@ -20,7 +20,8 @@ class Measurement(models.Model):
     he_pres = models.FloatField(verbose_name = 'He pressure', default = float('20'))
     ee = models.FloatField(verbose_name = 'Electron Energy', default = float('70'))
     ec = models.FloatField(verbose_name = 'Electron Current', default = float('100'))
-    com = models.TextField(verbose_name = 'Comments')
+    chan = models.FloatField(verbose_name = 'Channeltron Voltage', default = float('3500'))
+    text = models.TextField(max_length = 1500, verbose_name = 'Comment', default = 'None')
 
     def __unicode__(self):
         return u'%s, %s,' %(self.starttime, self.operator)

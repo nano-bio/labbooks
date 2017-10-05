@@ -31,8 +31,8 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'datafile','he_temp', 'he_pres', 'ee', 'ec', 'starttime', 'com')
-        }),)
+            'fields': ('operator', 'datafile','he_temp', 'he_pres', 'ee', 'ec', 'chan', 'starttime', 'text'), 'classes':('wide')})
+    ,)
 
     def export_measurement(self, request, queryset):
         if len(queryset) == 1:
