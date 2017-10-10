@@ -27,13 +27,14 @@ class MeasurementAdmin(admin.ModelAdmin):
     save_on_top = True
     ordering = ('-starttime',)
 
-    actions = ['create_new_measurement_based_on_existing_one', 'export_measurement',]
+    actions = ['create_new_measurement_based_on_existing_one']
 
     fieldsets = (
         ('General', {
             'fields': ('operator', 'datafile','he_temp', 'he_pres', 'ee', 'ec', 'chan', 'starttime', 'text'), 'classes':('wide')})
     ,)
 
+#    not working right now
     def export_measurement(self, request, queryset):
         if len(queryset) == 1:
             s = queryset.get()
@@ -46,9 +47,9 @@ class MeasurementAdmin(admin.ModelAdmin):
         if len(queryset) == 1:
             s = queryset.get()
             redirect_address = u'add/?'
-            forbitten_item = ['_state', 'starttime', 'datafile']
+            forbitten_item = ['starttime', 'datafile']
             for item in s.__dict__:
-                if item not in forbitten_items:
+                if item not in forbitten_item:
                     if s.__dict__[item] is not None:
                         redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
 
@@ -68,7 +69,7 @@ class JournalEntryAdmin(admin.ModelAdmin):
     save_on_top = True
     ordering = ('-time',)
 
-
+#not working right now
 class PlotAdmin(admin.ModelAdmin):
     def openfile(filename, rw = 'r'):
         #adjust file path in case of Windows
