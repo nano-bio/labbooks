@@ -39,6 +39,7 @@ class MeasurementAdmin(admin.ModelAdmin):
     list_display = ('propertime', 'id', 'marked', 'operator', 'scantype', 'chems', 'substance', 'polarity', 'EE', 'temperature_he', 'data_file', 'has_comment', 'eval_by', 'eval_file')
     list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by', 'marked')
     search_fields = ('substance', 'data_filename', 'tof_settings_file', 'id', 'chem_pu1_oven__name', 'chem_pu1_oven__chemical_formula', 'chem_pu2_oven__name', 'chem_pu2_oven__chemical_formula', 'chem_pu1_gas__name', 'chem_pu1_gas__chemical_formula', 'chem_pu2_gas__name', 'chem_pu2_gas__chemical_formula', 'is_inlet_gas__name', 'is_inlet_gas__chemical_formula')
+    readonly_fields = ('id',)
     save_as = True
     save_on_top = True
     ordering = ('-time',)
@@ -49,7 +50,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': (('operator', 'operator2', 'operator3'), 'data_filename', 'tof_settings_file', 'scantype', 'time', ('evaluated_by', 'evaluation_file'), ('flagged', 'marked'), 'rating')
+            'fields': ('id', ('operator', 'operator2', 'operator3'), 'data_filename', 'tof_settings_file', 'scantype', 'time', ('evaluated_by', 'evaluation_file'), ('flagged', 'marked'), 'rating')
         }),
         ('Pressures', {
             'fields': ('pressure_cs', 'pressure_pu1', 'pressure_pu2', 'pressure_ion', 'pressure_tof'),
@@ -60,7 +61,7 @@ class MeasurementAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('Voltages Ionsource', {
-            'fields': ('electron_energy_set', 'real_electron_energy', 'ion_block', 'pusher', 'wehnelt', 'extraction_1', 'extraction_2', 'deflector_1', 'deflector_2', 'filament_current', 'trap_current', 'housing_current', 'faraday_cup', 'polarity'),
+            'fields': ('electron_energy_set', 'real_electron_energy', 'ion_block', 'pusher', 'wehnelt', ('extraction_1', 'extraction_1_left', 'extraction_1_right'), 'extraction_2', 'deflector_1', 'deflector_2', 'filament_current', 'trap_current', 'housing_current', 'faraday_cup', 'polarity'),
             'classes': ('wide',)
         }),
         ('Pickup', {

@@ -22,6 +22,7 @@ class Measurement(models.Model):
     ec = models.FloatField(verbose_name = 'Electron Current', default = float('100'))
     chan = models.FloatField(verbose_name = 'Channeltron Voltage', default = float('3500'))
     text = models.TextField(max_length = 1500, verbose_name = 'Comment', blank = True)
+    short_description = models.CharField(max_length = 160, blank = True)
 
     def __unicode__(self):
         return u'%s, %s,' %(self.starttime, self.operator)

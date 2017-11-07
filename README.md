@@ -7,6 +7,10 @@ Requires django >= 1.8 (tested until 1.10.7)
 Changelog
 =========
 
+07.11.2017
+
+* SNOWBALL/NEW/Josi: New short description fields for measurements (for measurement series indication)
+
 10.04.2017
 
 * ALL/FIX: Proper timezone-aware display of measurement times in admin

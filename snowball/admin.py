@@ -20,7 +20,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         return obj.starttime.strftime('%d %m %Y, %H:%M')
     propertime.short_desctiption = 'Time and date'
 
-    list_display = ('propertime', 'operator', 'datafile')
+    list_display = ('propertime', 'operator', 'datafile', 'short_description')
     list_filter = ('operator',)
     serach_fields = ('id',)
     save_as = True
@@ -31,7 +31,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'datafile','he_temp', 'he_pres', 'ee', 'ec', 'chan', 'starttime', 'text'), 'classes':('wide')})
+            'fields': ('operator', 'datafile', 'short_description', 'he_temp', 'he_pres', 'ee', 'ec', 'chan', 'starttime', 'text'), 'classes':('wide')})
     ,)
 
 #    not working right now

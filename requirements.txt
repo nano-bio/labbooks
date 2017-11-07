@@ -1,0 +1,10 @@
+django
+gunicorn
+periodictable
+suds
+numpy
+matplotlib
+django-modeladmin-reorder
+MySQL-python
+scipy
+Pillow
