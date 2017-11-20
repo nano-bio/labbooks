@@ -7,6 +7,10 @@ Requires django >= 1.8 (tested until 1.10.7)
 Changelog
 =========
 
+20.11.2017
+
+*CHEMINVENTORY/NEW/Josi: Option to filter storage locations now includes "all except waste" (which shows all instances that are not in one of the waste locations)
+
 07.11.2017
 
 * SNOWBALL/NEW/Josi: New short description fields for measurements (for measurement series indication)

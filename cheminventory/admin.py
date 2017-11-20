@@ -7,6 +7,51 @@ from django.template import Context
 
 # Register your models here.
 
+class InstanceStorageLocationListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'storage location'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'storage_location'
+
+    def lookups(self, request, model_admin):
+        """
+        We add the option to filter by 'all but waste' in order to get an
+        overview of what is currently in stock in an easy way
+        """
+        lookups = [
+            ('all_except_waste', u'All except waste'),
+        ]
+
+        # add all storage locations, because one should be able to filter by those as well
+        locations = StorageLocation.objects.all()
+        for location in locations:
+            lookups.append((location.id, location.name))
+
+        # sort the new list alphabetically, because easy.
+        lookups = set(lookups)
+        lookups = sorted(lookups, key=lambda tup: tup[1])
+        # expects a tuple returned, so convert list to tuple
+        return lookups
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # Compare the requested value (either '80s' or '90s')
+        # to decide how to filter the queryset.
+        if self.value() == None:
+            return queryset
+        elif self.value() == 'all_except_waste':
+            waste_locations = ['Chemical Waste, liquid', 'Chemical Waste, solid']
+            return queryset.exclude(storage_location__name__in = waste_locations)
+        else:
+            return queryset.filter(storage_location__exact = self.value())
+
+
 class ChemicalInstanceAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super(ChemicalInstanceAdmin,self).get_form(request, obj,**kwargs)
@@ -18,7 +63,7 @@ class ChemicalInstanceAdmin(admin.ModelAdmin):
 
     search_fields = ('chemical__name', 'chemical__chemical_formula', 'chemical__cas', 'chemical__inchi')
     list_display = ('__unicode__', 'cas', 'state_of_matter', 'irritant', 'toxic', 'explosive', 'oxidizing', 'flammable', 'health_hazard', 'corrosive', 'environmentally_damaging')
-    list_filter = ('storage_location', 'chemical__state_of_matter', 'chemical__irritant', 'chemical__toxic', 'chemical__explosive', 'chemical__oxidizing', 'chemical__flammable', 'chemical__health_hazard', 'chemical__corrosive', 'chemical__environmentally_damaging', 'group')
+    list_filter = (InstanceStorageLocationListFilter, 'chemical__state_of_matter', 'chemical__irritant', 'chemical__toxic', 'chemical__explosive', 'chemical__oxidizing', 'chemical__flammable', 'chemical__health_hazard', 'chemical__corrosive', 'chemical__environmentally_damaging', 'group')
     save_on_top = True
     #raw_id_fields = ('chemical', )
     ordering = ['chemical__name']
