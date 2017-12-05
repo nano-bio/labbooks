@@ -53,23 +53,21 @@ def print_doorsign(request, labid):
         gas.hs = models.GHS_H.objects.filter(id__in = hids)
         gas.ps = models.GHS_P.objects.filter(id__in = pids)
 
-    t = get_template('cheminventory/doorsign.html')
+    t = 'cheminventory/doorsign.html'
     datum = datetime.datetime.now()
-    c = Context({'lab': lab, 'chems': chems, 'gases': gases, 'gaswarnings': gaswarnings, 'chemwarnings': chemwarnings, 'datum': datum})
+    c = {'lab': lab, 'chems': chems, 'gases': gases, 'gaswarnings': gaswarnings, 'chemwarnings': chemwarnings, 'datum': datum}
 
-    html = t.render(c)
-    return HttpResponse(html)
+    return HttpResponse(render(request, t, c))
 
 def print_chemwaste(request, locid):
     lab = models.StorageLocation.objects.get(id = locid)
     #chemsstored  = models.ChemicalInstance.objects.filter(storage_location = lab.id).values_list('chemical', flat = True)
     chemsstored  = models.ChemicalInstance.objects.filter(storage_location = lab.id)
 
-    t = get_template('cheminventory/chemwaste.html')
-    c = Context({'lab': lab, 'chems': chemsstored})
+    t = 'cheminventory/chemwaste.html'
+    c = {'lab': lab, 'chems': chemsstored}
 
-    html = t.render(c)
-    return HttpResponse(html)
+    return HttpResponse(render(request, t, c))
 
 def print_gas_cylinder_qr(request, gc_id):
     hostname = request.get_host()
@@ -79,5 +77,5 @@ def print_gas_cylinder_qr(request, gc_id):
 
     url = conditional_escape("http://chart.apis.google.com/chart?%s" % \
             urllib.urlencode({'chs':'300x300', 'cht':'qr', 'chl':complete_link, 'choe':'UTF-8'}))
-    
+
     return HttpResponse(mark_safe(u"""<img class="qrcode" src="%s" width="300" height="300" alt="QR" />""" % (url)))

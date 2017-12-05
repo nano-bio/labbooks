@@ -195,12 +195,10 @@ def plot_parameters(request, parameter1 = 'extraction_1', parameter2 = 'extracti
     #get all the possible parameters
     fieldlist = retrieve_plotable_parameters()
 
-    t = get_template('clustof/plot_parameters.html')
-    c = Context({'values': values, 'parameter1': parameter1, 'parameter2': parameter2, 'fieldlist': fieldlist})
+    t = 'clustof/plot_parameters.html'
+    c = {'values': values, 'parameter1': parameter1, 'parameter2': parameter2, 'fieldlist': fieldlist}
 
-    html = t.render(c)
-
-    return HttpResponse(html)
+    return HttpResponse(render(request, t, c))
 
 def exportfile(request, id):
     m = get_object_or_404(Measurement, id = id)
@@ -227,11 +225,11 @@ def mcsv(request, count = 20, offset = 0):
     #response = HttpResponse()
 
     m = Measurement.objects.order_by('-time').all()[offset:count]
-    
-    t = get_template('clustof/mcsv.csv')
-    c = Context({'m': m})
 
-    response.write(t.render(c))
+    t = 'clustof/mcsv.csv'
+    c = {'m': m}
+
+    response.write(render(request, t, c))
     return response
 
 def pump(request, pumpnumber):
@@ -245,12 +243,10 @@ def pump(request, pumpnumber):
 
     values = ', '.join(values)
 
-    t = get_template('clustof/pump.html')
-    c = Context({'values': values, 'pump': pump})
+    t = 'clustof/pump.html'
+    c = {'values': values, 'pump': pump}
 
-    html = t.render(c)
-
-    return HttpResponse(html)
+    return HttpResponse(render(request, t, c))
 
 #define a class for a form to enter new measurements
 class TechJournalForm(forms.ModelForm):
@@ -311,17 +307,16 @@ def showjournalentry(request, id):
         m.nextid = models.JournalEntry.objects.filter(time__gt = m.time).order_by('time')[0:1].get().id
     except models.JournalEntry.DoesNotExist:
         m.nextid = m.id
-    
+
     try:
         m.lastid = models.JournalEntry.objects.filter(time__lt = m.time).order_by('-time')[0:1].get().id
     except models.JournalEntry.DoesNotExist:
         m.lastid = m.id
 
     #ready to render
-    t = get_template('clustof/showjournalentry.html')
-    c = Context({'m' : m})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'clustof/showjournalentry.html'
+    c = {'m' : m}
+    return HttpResponse(render(request, t, c))
 
 @csrf_exempt
 def readvacuumstatus(request):

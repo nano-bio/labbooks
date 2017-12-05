@@ -61,12 +61,10 @@ def plot_parameters(request, parameter1 = 'lens_1a', parameter2 = 'lens_1b'):
     #get all the possible parameters
     fieldlist = retrieve_plotable_parameters()
 
-    t = get_template('wippi/plot_parameters.html')
-    c = Context({'values': values, 'parameter1': parameter1, 'parameter2': parameter2, 'fieldlist': fieldlist})
+    t = 'wippi/plot_parameters.html'
+    c = {'values': values, 'parameter1': parameter1, 'parameter2': parameter2, 'fieldlist': fieldlist}
 
-    html = t.render(c)
-
-    return HttpResponse(html)
+    return HttpResponse(render(request, t, c))
 
 def showmeasurement(request, id):
     """ Generic display page for all measurements """
@@ -83,23 +81,22 @@ def showmeasurement(request, id):
         m.data.append('[%s, %s]' % (str(datapoint[0]), str(datapoint[1])))
 
     m.data = ' ,'.join(m.data)
-        
+
     #get next and last scan for convenient switching
     try:
         m.nextid = models.Measurement.objects.filter(time__gt = m.time).order_by('time')[0:1].get().id
     except models.Measurement.DoesNotExist:
         m.nextid = m.id
-    
+
     try:
         m.lastid = models.Measurement.objects.filter(time__lt = m.time).order_by('-time')[0:1].get().id
     except models.Measurement.DoesNotExist:
         m.lastid = m.id
 
     #ready to render
-    t = get_template('wippi/showmeasurement.html')
-    c = Context({'m' : m})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'wippi/showmeasurement.html'
+    c = {'m' : m}
+    return HttpResponse(render(request, t, c))
 
 def exportmeasurement(request, id):
     """Export file as it was uploaded, but add measurement id in the first line"""
@@ -113,10 +110,10 @@ def exportmeasurement(request, id):
     #assign the read lines to the context for the template
     m.filecontents = contents
 
-    t = get_template('wippi/export.txt')
-    c = Context({'m' : m})
-    html = t.render(c)
+    t = 'wippi/export.txt'
+    c = {'m' : m}
 
+    html = render(request, t, c)
     #make it download
     resp = HttpResponse(html, content_type='text/plain')
     #we need to encode the filename in ascii. replace weird characters with closest approx.
@@ -154,13 +151,12 @@ def showcalibratedmeasurement(request, m_id, c_id):
     m.data = format_for_plot(m.data)
 
     #ready to render
-    t = get_template('wippi/showcalmeasurement.html')
-    c = Context({'m' : m, 'c' : c})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'wippi/showcalmeasurement.html'
+    c = {'m' : m, 'c' : c}
+    return HttpResponse(render(request, t, c))
 
 def home(request):
-    return render_to_response('home.html')
+    return render(request, 'home.html', {})
 
 def exportcalibratedmeasurement(request, m_id, c_id):
     """calibrates a measurement (m_id) with a calibration (c_id) and exports it"""
@@ -179,12 +175,11 @@ def exportcalibratedmeasurement(request, m_id, c_id):
     #assign the read lines to the context for the template
     m.filecontents = '\r\n'.join(tempdata)
 
-    t = get_template('wippi/exportcalibrated.txt')
-    c = Context({'m' : m, 'c' : c})
-    html = t.render(c)
+    t = 'wippi/exportcalibrated.txt'
+    c = {'m' : m, 'c' : c}
 
     #make it download
-    resp = HttpResponse(html, content_type='text/plain')
+    resp = HttpResponse(render(request, t, c), content_type='text/plain')
     #we need to encode the filename in ascii. replace weird characters with closest approx.
     resp['Content-Disposition'] = 'attachment; filename=%s' % m.datafile.name.encode('ascii', 'replace')
     return resp
@@ -228,10 +223,9 @@ def fitmeasurement(request, m_id, n_peaks):
     m.fitteddata = format_for_plot(fitteddata)
 
     #ready to render
-    t = get_template('wippi/fitmeasurement.html')
-    c = Context({'m' : m})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'wippi/fitmeasurement.html'
+    c = {'m' : m}
+    return HttpResponse(render(request, t, c))
 
 def fitcalmeasurement(request, m_id, c_id, n_peaks):
     """fits a measurement (m_id) with n_peaks peaks and shows it"""
@@ -259,7 +253,6 @@ def fitcalmeasurement(request, m_id, c_id, n_peaks):
     m.fitteddata = format_for_plot(fitteddata)
 
     #ready to render
-    t = get_template('wippi/fitcalmeasurement.html')
-    c = Context({'m' : m, 'c' : c})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'wippi/fitcalmeasurement.html'
+    c = {'m' : m, 'c' : c}
+    return HttpResponse(render(request, t, c))

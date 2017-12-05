@@ -2,7 +2,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import Context, Template
 from django.template.loader import get_template
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 
 import models
 from django.db import models as djangomodels
@@ -49,10 +49,9 @@ def retrieve_plotable_parameters():
 def list_plotable_parameters(request):
     fieldlist = retrieve_plotable_parameters()
 
-    t = get_template('vg/plotable_parameters_list.html')
-    c = Context({'fieldlist': fieldlist})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'vg/plotable_parameters_list.html'
+    c = {'fieldlist': fieldlist}
+    return HttpResponse(render(request, t, c))
 
 def plot_parameters(request, parameter1 = 'ion_repeller', parameter2 = 'focus_coarse_1'):
     #first we check whether the parameters are allowed
@@ -82,12 +81,10 @@ def plot_parameters(request, parameter1 = 'ion_repeller', parameter2 = 'focus_co
     #get all the possible parameters
     fieldlist = retrieve_plotable_parameters()
 
-    t = get_template('vg/plot_parameters.html')
-    c = Context({'values': values, 'parameter1': parameter1, 'parameter2': parameter2, 'fieldlist': fieldlist})
+    t = 'vg/plot_parameters.html'
+    c = {'values': values, 'parameter1': parameter1, 'parameter2': parameter2, 'fieldlist': fieldlist}
 
-    html = t.render(c)
-
-    return HttpResponse(html)
+    return HttpResponse(render(request, t, c))
 
 def showmeasurement(request, id):
     """ Generic display page for all measurements """
@@ -117,10 +114,9 @@ def showmeasurement(request, id):
         m.lastid = m.id
 
     #ready to render
-    t = get_template('vg/showmeasurement.html')
-    c = Context({'m' : m})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'vg/showmeasurement.html'
+    c = {'m' : m}
+    return HttpResponse(render(request, t, c))
 
 def exportmeasurement(request, id):
     """Export file as it was uploaded, but add measurement id in the first line"""
@@ -134,9 +130,9 @@ def exportmeasurement(request, id):
     #assign the read lines to the context for the template
     m.filecontents = contents
 
-    t = get_template('vg/export.txt')
-    c = Context({'m' : m})
-    html = t.render(c)
+    t = 'vg/export.txt'
+    c = {'m' : m}
+    html = render(request, t, c)
 
     #make it download
     resp = HttpResponse(html, content_type='text/plain')
@@ -180,10 +176,9 @@ def showcalibratedmeasurement(request, m_id, c_id):
     m.data = format_for_plot(m.data)
 
     #ready to render
-    t = get_template('vg/showcalmeasurement.html')
-    c = Context({'m' : m, 'c' : c})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'vg/showcalmeasurement.html'
+    c = {'m' : m, 'c' : c}
+    return HttpResponse(render(request, t, c))
 
 def home(request):
     return render_to_response('home.html')
@@ -205,9 +200,9 @@ def exportcalibratedmeasurement(request, m_id, c_id):
     #assign the read lines to the context for the template
     m.filecontents = '\r\n'.join(tempdata)
 
-    t = get_template('vg/exportcalibrated.txt')
-    c = Context({'m' : m, 'c' : c})
-    html = t.render(c)
+    t = 'vg/exportcalibrated.txt'
+    c = {'m' : m, 'c' : c}
+    html = render(request, t, c)
 
     #make it download
     resp = HttpResponse(html, content_type='text/plain')
@@ -236,12 +231,12 @@ def fitmeasurement(request, m_id, n_peaks):
 
     #we want an integer
     n_peaks = int(n_peaks)
-    
+
     #fetch file with fitlib
     data = fitlib.helplib.readfile(settings.MEDIA_ROOT + m.datafile.name)
-    
+
     fitteddata, parameters = fit_data(data, n_peaks)
-    
+
     m.peaks = []
     #feed the template with peak information
     for i in range(0, n_peaks):
@@ -254,10 +249,9 @@ def fitmeasurement(request, m_id, n_peaks):
     m.fitteddata = format_for_plot(fitteddata)
 
     #ready to render
-    t = get_template('vg/fitmeasurement.html')
-    c = Context({'m' : m})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'vg/fitmeasurement.html'
+    c = {'m' : m}
+    return HttpResponse(render(request, t, c))
 
 def fitcalmeasurement(request, m_id, c_id, n_peaks):
     """fits a measurement (m_id) with n_peaks peaks and shows it"""
@@ -285,10 +279,9 @@ def fitcalmeasurement(request, m_id, c_id, n_peaks):
     m.fitteddata = format_for_plot(fitteddata)
 
     #ready to render
-    t = get_template('vg/fitcalmeasurement.html')
-    c = Context({'m' : m, 'c' : c})
-    html = t.render(c)
-    return HttpResponse(html)
+    t = 'vg/fitcalmeasurement.html'
+    c = {'m' : m, 'c' : c}
+    return HttpResponse(render(request, t, c))
 
 def export_all_f_urls(request):
     #this is mainly used for benchmarking peak finding algorithms and other weird shit josi thinks about
@@ -384,12 +377,7 @@ def pump(request, pumpnumber):
 
     values = ', '.join(values)
 
-    t = get_template('vg/pump.html')
-    c = Context({'values': values, 'pump': pump})
+    t = 'vg/pump.html'
+    c = {'values': values, 'pump': pump}
 
-    html = t.render(c)
-
-    return HttpResponse(html)
-
-    return
-
+    return HttpResponse(render(request, t, c))

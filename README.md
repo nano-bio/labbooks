@@ -2,10 +2,14 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
-Requires django >= 1.8 (tested until 1.10.7)
+Requires django >= 1.8 (tested until 1.11.8)
 
 Changelog
 =========
+
+05.12.2017
+
+*ALL/FIX/Josi: New render function for Django 1.11
 
 20.11.2017
 
