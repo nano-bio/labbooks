@@ -2,7 +2,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import Context, Template
 from django.template.loader import get_template
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, render
 
 import models
 from django.db import models as djangomodels

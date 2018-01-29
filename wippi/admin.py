@@ -21,7 +21,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     list_display = ('propertime', 'substance', 'fragment', 'description', 'scantype', 'file_link', 'view_link')
     list_filter = ('operator', 'time', 'scantype')
-    search_fields = ('substance', 'description')
+    search_fields = ('substance__chemical_formula', 'substance__name', 'description')
     save_as = True
     save_on_top = True
     ordering = ('-time',)

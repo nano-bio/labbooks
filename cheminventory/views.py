@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import models
 import urllib
+import csv
 from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import get_template
@@ -79,3 +80,17 @@ def print_gas_cylinder_qr(request, gc_id):
             urllib.urlencode({'chs':'300x300', 'cht':'qr', 'chl':complete_link, 'choe':'UTF-8'}))
 
     return HttpResponse(mark_safe(u"""<img class="qrcode" src="%s" width="300" height="300" alt="QR" />""" % (url)))
+
+def csv_export(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="chemicals.csv"'
+
+    qs = models.ChemicalInstance.objects.filter(group = 'SCHEIER').all()
+    writer = csv.writer(response)
+
+    writer.writerow(['Chemikalie', 'Menge', 'Hersteller', 'Aufbewahrungsort'])
+    for chem in qs:
+        writer.writerow([chem.chemical, chem.quantity, chem.company, chem.storage_location])
+
+    return response
