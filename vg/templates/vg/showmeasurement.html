@@ -1,4 +1,5 @@
 {% extends "vg/base.html" %}
+{% load static %}
 
 {% block content %}
     <h2><a href="../{{ m.lastid }}">&lt;&lt; {{ m.lastid }}</a> Measurement No. {{ m.id }} <a href="../{{ m.nextid }}">{{ m.nextid }} &gt;&gt;</a></h2>
@@ -160,7 +161,7 @@
         </tr>
       </table> 
     </div>
-<script src="http://ideadb.uibk.ac.at/files/js/plot.js"></script>
+<script src="{% static "js/plot.js" %}"></script>
 <script>
 do_plots([{{ m.data }}], [], "{{ m.substance }}");
 </script>
