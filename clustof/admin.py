@@ -50,7 +50,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('id', ('operator', 'operator2', 'operator3'), 'data_filename', 'tof_settings_file', 'scantype', 'time', ('evaluated_by', 'evaluation_file'), ('flagged', 'marked'), 'rating')
+            'fields': ('id', ('operator', 'operator2', 'operator3'), 'data_filename', 'tof_settings_file', 'scantype', 'time', ('evaluated_by', 'evaluation_file'), ('flagged', 'marked'), 'rating', 'laser_timing')
         }),
         ('Pressures', {
             'fields': ('pressure_cs', 'pressure_pu1', 'pressure_pu2', 'pressure_ion', 'pressure_tof'),
@@ -70,11 +70,11 @@ class MeasurementAdmin(admin.ModelAdmin):
         }),
     )
 
-    def chems(self, obj):
-        chems = [obj.chem_pu1_oven, obj.chem_pu1_gas, obj.chem_pu2_oven, obj.chem_pu2_gas, obj.is_inlet_gas]
-        chems_used = filter(None, chems)
-        chem_string = u' '.join(map(attrgetter('chemical_formula'), chems_used))
-        return chem_string
+#    def chems(self, obj):
+#        chems = [obj.chem_pu1_oven, obj.chem_pu1_gas, obj.chem_pu2_oven, obj.chem_pu2_gas, obj.is_inlet_gas]
+#        chems_used = filter(None, chems)
+#        chem_string = u' '.join(map(attrgetter('chemical_formula'), chems_used))
+#        return chem_string
 
     def show_surrounding_data(self, request, queryset):
         s = queryset.first()

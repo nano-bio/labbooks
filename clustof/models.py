@@ -4,6 +4,7 @@ import re, time, datetime
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from cheminventory import models as cheminventory_models
+from operator import attrgetter
 
 SCANTYPES = (
     ('ES', 'Energyscan'),
@@ -41,6 +42,7 @@ class Measurement(models.Model):
     pressure_pu2 = models.FloatField(verbose_name = 'Pressure PU2', default = float('1e-6'))
     pressure_ion = models.FloatField(verbose_name = 'Pressure ION', default = float('2e-8'))
     pressure_tof = models.FloatField(verbose_name = 'Pressure TOF', default = float('3e-7'))
+    laser_timing = models.IntegerField(max_length=4, blank=True, null=True)
     stag_pressure_he = models.FloatField(verbose_name = 'He Stagnation Pressure', default = 25)
     temperature_he = models.FloatField(verbose_name = 'He Temp', default = 9.0)
     nozzle_diameter = models.FloatField(default = 5)
@@ -109,6 +111,13 @@ class Measurement(models.Model):
             ee = '-'
 
         return ee
+
+
+    def chems(self):
+        chems = [self.chem_pu1_oven, self.chem_pu1_gas, self.chem_pu2_oven, self.chem_pu2_gas, self.is_inlet_gas]
+        chems_used = filter(None, chems)
+        chem_string = u' '.join(map(attrgetter('chemical_formula'), chems_used))
+        return chem_string
 
     def clean(self):
         # cleaning method. first thing, check if file extension is there
