@@ -169,6 +169,7 @@ class Chemical(models.Model):
 class ChemicalInstance(models.Model):
     chemical = models.ForeignKey(Chemical, related_name = 'chemical_instance')
     company = models.CharField(max_length = 100, blank = True)
+    item_number = models.CharField(max_length = 100, blank = True)
     quantity = models.CharField(max_length = 100, blank = True)
     delivery_date = models.DateField(blank = True, null = True)
     group = models.CharField(max_length = 7, null = True, choices = GROUPS, default = 'DENIFL')
