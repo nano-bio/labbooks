@@ -290,6 +290,15 @@ class GasCylinder(models.Model):
     cas.admin_order_field = 'chemical__cas'
     cas.short_description = 'CAS'
 
+    # this gets the lowest free gas cylinder number. this seems kind of ugly, but I cannot think
+    # of a better solution right now.
+    @staticmethod
+    def get_lowest_free_number():
+        for i in range(0,1000):
+            amount_with_this_id = GasCylinder.objects.filter(cylinder_number = i).count()
+            if amount_with_this_id == 0:
+                return i
+
     def chemical__name(self):
         return self.chemical.name
     chemical__name.admin_order_field = 'chemical__name'

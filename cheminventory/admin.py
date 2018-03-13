@@ -83,6 +83,10 @@ class GasCylinderAdmin(admin.ModelAdmin):
 
     actions = ['QRcode']
 
+    def get_changeform_initial_data(self, request):
+        new_id = GasCylinder.get_lowest_free_number()
+        return {'cylinder_number': new_id}
+
     def QRcode(self, request, queryset):
         if len(queryset) == 1:
             s = queryset.get()
