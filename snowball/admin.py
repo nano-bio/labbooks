@@ -31,7 +31,9 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('operator', 'datafile', 'short_description', 'he_temp', 'he_pres', 'ee', 'ec', 'chan', 'starttime', 'text'), 'classes':('wide')})
+            'fields': ('operator', 'datafile', 'short_description', 'he_temp', 'he_pres', 'chan', 'starttime', 'text'), 'classes':('wide')}),
+        ('Ion Sources', {
+            'fields': (('ee', 'ec'), ('ee_2', 'ec_2'))})
     ,)
 
 #    not working right now
