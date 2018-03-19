@@ -7,6 +7,17 @@ Requires django >= 1.8 (tested until 1.11.8)
 Changelog
 =========
 
+~19.03.2018
+
+* CLUSTOF/NEW/Josi: New field for laser timing
+* SNOWBALL/NEW/Josi: New field for second electron energy
+* CHEMINVENTORY/NEW/Josi: When adding a new gas cylinder, the lowest free number will be autofilled as the ID
+* CHEMINVENTORY/NEW/Josi: Selected chemical instances can now be exported to Excel in a Chem Logistics approved format
+
+29.01.2018:
+
+* CHEMINTENVENTORY/NEW/Josi: CSV export
+
 05.12.2017
 
 *ALL/FIX/Josi: New render function for Django 1.11

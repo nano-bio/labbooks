@@ -8,3 +8,4 @@ django-modeladmin-reorder
 MySQL-python
 scipy
 Pillow
+openpyxl
