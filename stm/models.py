@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+import re
 
 from pyMTRX import experiment
 
 from django.db import models
 from django.conf import settings
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 
 # Create your models here.
 
@@ -55,7 +58,7 @@ class Measurement(models.Model):
     experiment_type = models.CharField(max_length=3, default=STM, choices=EXPERIMENT_CHOICES)
     tip_type = models.CharField(max_length=10)
     sample = models.ForeignKey('Sample')
-    name = models.CharField(max_length=100, blank=True)
+    name = models.CharField(max_length=100, blank=True, db_index=True)
 
     def __unicode__(self):
         return u'{}: {}'.format(self.id, self.sample)
@@ -84,15 +87,18 @@ class Measurement(models.Model):
         ex = experiment.Experiment(os.path.join(path, mainfile))
         image_count = 0
 
+        # filename parsing
+        filenumber_regex = '--([0-9]{1,2}_[0-9]{1,2})\.'
+        regex = re.compile(filenumber_regex)
+
         # read all images
         for scan, _ in ex._cmnt_lkup.items():
-            if 'I_mtrx' in scan:
+            if 'I_mtrx' in scan or 'Z_mtrx' in scan:
                 try:
                     image = ex.import_scan(os.path.join(path, scan))
                     success = True
                 except:
                     success = False
-                    print('{} could not be opened'.format(scan))
 
                 if success:
                     image_count = image_count + 1
@@ -103,14 +109,25 @@ class Measurement(models.Model):
                         except:
                             pass # todo maybe log that
 
+                    if 'I_mtrx' in scan:
+                        image_obj.type = Image.I
+                    else:
+                        image_obj.type = Image.V
+
+                    # note name
+                    matches = regex.search(scan)
+                    if matches is not None:
+                        groups = matches.groups()
+                        image_obj.name = groups[0]
+
                     image_obj.save()
 
                     # save png preview image
-                    fn = os.path.abspath(os.path.join(settings.MEDIA_ROOT, 'stm/preview_images/', '{}.png'.format(image_obj.id)))
+                    #fn = os.path.abspath(os.path.join(settings.MEDIA_ROOT, 'stm/preview_images/', '{}.png'.format(image_obj.id)))
+                    fn = NamedTemporaryFile(delete=True)
                     try:
-                        image[0][0].save_png(fn)
-                        image_obj.preview_image = str(os.path.join('stm/preview_images/', str(image_obj.id), '.png'))
-                        image_obj.save()
+                        image[0][0].save_png(fn.name)
+                        image_obj.preview_image.save('{}.png'.format(image_obj.id), File(fn), save=True)
                     except ValueError:
                         logger.write('Image {} could not be written'.format(image_obj.id))
         return image_count
@@ -118,9 +135,11 @@ class Measurement(models.Model):
 class Image(models.Model):
     I = 'I'
     V = 'V'
+    Z = 'Z'
     IMAGETYPES = (
         (I, 'I'),
         (V, 'V'),
+        (Z, 'Z'),
     )
 
     measurement = models.ForeignKey('Measurement')
@@ -488,4 +507,8 @@ class Image(models.Model):
     z_t_oversampling_factor = models.FloatField(blank=True, null=True, verbose_name='Z t Oversampling Factor')
 
     def __unicode__(self):
-        return u'{} ({})'.format(self.name, self.measurement)
+        if self.name is not None:
+            return u'{} ({}-type for {})'.format(self.name, self.type, self.measurement)
+        else:
+            return u'{}-type for ({})'.format(self.type, self.measurement)
+
