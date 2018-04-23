@@ -31,6 +31,7 @@ class Operator(models.Model):
 class Measurement(models.Model):
     time = models.DateTimeField(auto_now = False, auto_now_add = False)
     tof_settings_file = models.CharField(max_length = 1500, verbose_name = 'TOF Settings File')
+    laser_power_file = models.FileField(upload_to = 'clustof/powerfiles/', blank=True, verbose_name = 'Laser Power Measurement File')
     data_filename = models.CharField(max_length=1500, verbose_name = 'Filename', default = 'D:\\Data\\')
     operator = models.ForeignKey('Operator', related_name = 'op1')
     operator2 = models.ForeignKey('Operator', related_name = 'op2', blank = True, null = True)
@@ -42,7 +43,7 @@ class Measurement(models.Model):
     pressure_pu2 = models.FloatField(verbose_name = 'Pressure PU2', default = float('1e-6'))
     pressure_ion = models.FloatField(verbose_name = 'Pressure ION', default = float('2e-8'))
     pressure_tof = models.FloatField(verbose_name = 'Pressure TOF', default = float('3e-7'))
-    laser_timing = models.IntegerField(max_length=4, blank=True, null=True)
+    laser_timing = models.IntegerField(blank=True, null=True)
     stag_pressure_he = models.FloatField(verbose_name = 'He Stagnation Pressure', default = 25)
     temperature_he = models.FloatField(verbose_name = 'He Temp', default = 9.0)
     nozzle_diameter = models.FloatField(default = 5)
