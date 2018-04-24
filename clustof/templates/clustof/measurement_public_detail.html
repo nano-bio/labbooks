@@ -1,0 +1,59 @@
+{% extends "clustof/base_public.html" %}
+
+{% block content %}
+    <h2>{{ m.id }}</h2>
+    <table>
+        <tr>
+            <td><strong>ID</strong</td>
+            <td><strong>{{ m.id }}</strong></td>
+        </tr>
+        <tr>
+            <td><strong>Pressure CS</strong</td>
+            <td>{{ m.pressure_cs }}</td>
+
+        </tr>
+        <tr>
+            <td><strong>Pressure PU1</strong</td>
+            <td>{{ m.pressure_pu1 }}</td>
+        </tr>
+        <tr>
+            <td><strong>Pressure PU2</strong</td>
+            <td>{{ m.pressure_pu2 }}</td>
+        </tr>
+        <tr>
+            <td><strong>Pressure TOF</strong</td>
+            <td>{{ m.pressure_tof }}</td>
+        </tr>
+        <tr>
+            <td><strong>He stagnation pressure</strong</td>
+            <td>{{ m.stag_pressure_he }}</td>
+        </tr>
+        <tr>
+            <td><strong>Temperature</strong</td>
+            <td>{{ m.temperature_he }}</td>
+        </tr>
+        <tr>
+            <td><strong>Electron Energy</strong</td>
+            <td>{{ m.real_electron_energy }}</td>
+        </tr>
+        <tr>
+            <td><strong>Oven 1 Temperature</strong</td>
+            <td>{{ m.oven_1_temperature }}</td>
+        </tr>
+        <tr>
+            <td><strong>Oven 1 Temperature</strong</td>
+            <td>{{ m.oven_2_temperature }}</td>
+        </tr>
+        <tr>
+            <td><strong>Polarity</strong</td>
+            <td>{{ m.polarity }}</td>
+        </tr>
+        <tr>
+            <td><strong>Filename</strong</td>
+            <td><a href="export/">{{ m.data_filename|cut:"D:\Data\\" }}</a></td>
+        </tr>
+
+    </table>
+    <br /><p><a href="../">Back</a></p>
+
+{% endblock %}

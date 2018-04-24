@@ -1,0 +1,62 @@
+{% extends "clustof/base_public.html" %}
+
+{% block content %}
+    <h2>Public Measurements</h2>
+    {% if is_paginated %}
+    <div class="general">
+            <a href="?page=1">&lt;&lt; first &nbsp;&nbsp;</a>
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&lt; previous&nbsp;&nbsp;</a>
+            {% endif %}
+
+            <a href="#">Page {{ page_obj.number }} of {{ paginator.num_pages }}</a>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&nbsp;&nbsp; next &gt;</a>
+            {% endif %}
+
+            <a href="?page=last">&nbsp;&nbsp; last &gt;&gt;</a>
+    </div><br />
+    {% endif %}
+    <table>
+        <tr>
+            <td><strong>ID</strong></td>
+            <td><strong>Date</strong></td>
+            <td><strong>Description</strong></td>
+            <td><strong>Substances</strong></td>
+            <td><strong>Nozzle Temp</strong></td>
+            <td><strong>Download</strong></td>
+        </tr>
+        </tr>
+          <td>&nbsp;</td>
+        </tr>
+        {% for m in measurement_list %}
+        <tr>
+            <td><p><a href="{{ m.id }}/">{{ m.id }}</a></p></td>
+            <td><p><a href="{{ m.id }}/">{{ m.time|date:"d.m.Y H:i" }}</a></p></td>
+            <td><p>{{ m.substance|truncatewords:25 }}</p></td>
+            <td><p>{{ m.chems }}</p></td>
+            <td><p>{{ m.temperature_he }}</p></td>
+            <td><p><a href="{{ m.id }}/export/">{{ m.data_filename|cut:"D:\Data\\" }}</a></p></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% if is_paginated %}
+    <div class="general">
+            <a href="?page=1">&lt;&lt; first &nbsp;&nbsp;</a>
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&lt; previous&nbsp;&nbsp;</a>
+            {% endif %}
+
+            <a href="#">Page {{ page_obj.number }} of {{ paginator.num_pages }}</a>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&nbsp;&nbsp; next &gt;</a>
+            {% endif %}
+
+            <a href="?page=last">&nbsp;&nbsp; last &gt;&gt;</a>
+    </div><br />
+    {% endif %}
+{% endblock %}
