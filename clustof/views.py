@@ -9,6 +9,7 @@ from django.template import Context, Template
 from django.core.files import File
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import ListView, DetailView
 from django.core.files.storage import FileSystemStorage
 
 import json
@@ -378,3 +379,26 @@ def filetest(request):
         return HttpResponse('File URL: ' + uploaded_file_url, content_type="text/plain")
     else:
         return HttpResponse('No file logfile')
+
+
+# =========================================================
+# The following two classes export our measurements older than 5 years publicly
+# Mainly intended for B. R.
+# =========================================================
+
+class PublicMeasurementList(ListView):
+    five_years_ago = datetime.datetime.today() - datetime.timedelta(365*5)
+    queryset = models.Measurement.objects.filter(time__lt = five_years_ago).all()
+    context_object_name = 'measurement_list'
+    template_name = 'clustof/measurement_public.html'
+    paginate_by = 100
+
+class PublicMeasurementDetailView(DetailView):
+    model = models.Measurement
+    template_name = 'clustof/measurement_public_detail.html'
+    context_object_name = 'm'
+
+def exportfile_public(request, pk):
+    m = get_object_or_404(Measurement, id = pk)
+    return HttpResponseRedirect('/public/GVzZacSHmhQdmTv/files/' + m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\',''))
+

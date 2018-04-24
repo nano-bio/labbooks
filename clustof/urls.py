@@ -31,4 +31,7 @@ urlpatterns = [
     url(r'^vacuumstatus/output/(\d+)/$', clustof.views.writevacuumstatus),
     url(r'^vacuumstatus/output/$', clustof.views.writevacuumstatus),
     url(r'^filetest/$', clustof.views.filetest),
+    url(r'^public/$', clustof.views.PublicMeasurementList.as_view()),
+    url(r'^public/(?P<pk>[0-9]+)/$', clustof.views.PublicMeasurementDetailView.as_view()),
+    url(r'^public/(?P<pk>[0-9]+)/export/$', clustof.views.exportfile_public),
 ]
