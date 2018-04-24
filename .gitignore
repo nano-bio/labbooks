@@ -5,3 +5,4 @@ local_settings.py
 mediaroot/*
 .matplotlib/
 chemspider_token.txt
+database*

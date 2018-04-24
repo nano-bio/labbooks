@@ -16,6 +16,10 @@ SNOWBALLIP = '138.232.74.207'
 #snowball, josis computer
 PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 
+# storage location of measurement files
+STM_STORAGE = '/var/storage/stm'
+
+
 ADMINS = (
      ('Josi', 'johannes.postler@uibk.ac.at'),
 )
@@ -35,7 +39,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['138.232.74.41']
+ALLOWED_HOSTS = ['138.232.74.41', 'ideadb.uibk.ac.at', 'localhost']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -174,6 +178,7 @@ INSTALLED_APPS = (
     'snowball',
     'poweralarm',
     'admin_reorder',
+    'stm',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -212,6 +217,7 @@ ADMIN_REORDER = (
     'wippi',
     'surftof',
     'snowball',
+    'stm',
     {'app': 'poweralarm', 'models': ('poweralarm.Experiment', 'cheminventory.Person')},
     'auth',
     'sites',

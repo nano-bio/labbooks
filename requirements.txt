@@ -9,3 +9,5 @@ MySQL-python
 scipy
 Pillow
 openpyxl
+python-pptx
+pyMTRX
