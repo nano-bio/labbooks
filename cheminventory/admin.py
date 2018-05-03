@@ -123,7 +123,38 @@ class GasCylinderAdmin(admin.ModelAdmin):
 
     inlines = [GasCylinderUsageRecordInline]
 
-    actions = ['QRcode']
+    actions = ['QRcode', 'excel_export']
+
+    def excel_export(self, request, queryset):
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="gas-cylinders.xslx"'
+
+        template_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chemistry_template.xlsx'))
+
+        wb = load_workbook(template_path)
+        ws1 = wb.active
+
+        cis = queryset
+        row_offset = 2
+        i = 0
+        for ci in cis:
+            _ = ws1.cell(column=1, row=i+row_offset, value='{}'.format(ci.chemical.name))
+            _ = ws1.cell(column=2, row=i+row_offset, value='{}'.format(ci.chemical.cas))
+            _ = ws1.cell(column=4, row=i+row_offset, value='{}'.format(ci.company))
+            _ = ws1.cell(column=5, row=i+row_offset, value='')
+            _ = ws1.cell(column=6, row=i+row_offset, value='{}'.format(ci.quantity))
+            _ = ws1.cell(column=7, row=i+row_offset, value='L')
+
+            _ = ws1.cell(column=8, row=i+row_offset, value='1')
+            _ = ws1.cell(column=9, row=i+row_offset, value='Gas')
+            _ = ws1.cell(column=10, row=i+row_offset, value='{}'.format(ci.storage_location))
+            _ = ws1.cell(column=11, row=i+row_offset, value='{}'.format(ci.group))
+            i += 1
+
+        response.write(save_virtual_workbook(wb))
+        return response
+
 
     def get_changeform_initial_data(self, request):
         new_id = GasCylinder.get_lowest_free_number()
