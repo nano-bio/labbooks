@@ -10,7 +10,7 @@ class ImageAdmin(admin.ModelAdmin):
     search_fields = ('measurement__name', 'measurement__sample__material', 'name')
 
 class MeasurementAdmin(admin.ModelAdmin):
-    list_display = ('sample', 'name', 'operator', 'time', 'tip_type')
+    list_display = ('id', 'sample', 'name', 'operator', 'time', 'tip_type')
     list_filter = ('operator', 'time', 'tip_type')
     search_fields = ('sample', 'time', 'name')
 

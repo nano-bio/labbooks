@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 import os
 import re
+import datetime
+
 
 from pyMTRX import experiment
 
@@ -9,6 +11,7 @@ from django.db import models
 from django.conf import settings
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -43,6 +46,7 @@ class Log():
     def write(self, message):
         self.text = self.text + '\n' + message
 
+
 class Measurement(models.Model):
     STM = 'STM'
     STS = 'STS'
@@ -53,12 +57,22 @@ class Measurement(models.Model):
         (STA, 'STA'),
     )
 
-    operator = models.ForeignKey('Operator')
-    time = models.DateTimeField(auto_now = False, auto_now_add = True)
+    operator = models.ForeignKey('Operator', on_delete=models.CASCADE, default=lambda: Operator.objects.get(id=1))
+    time = models.DateTimeField(auto_now = False, auto_now_add = False, blank=True)
     experiment_type = models.CharField(max_length=3, default=STM, choices=EXPERIMENT_CHOICES)
     tip_type = models.CharField(max_length=10)
     sample = models.ForeignKey('Sample')
     name = models.CharField(max_length=100, blank=True, db_index=True)
+
+    def clean(self):
+        super(Measurement, self).clean()
+
+        if self.time is None:
+            try:
+                # try to parse the name as a date
+                self.time = datetime.datetime.strptime(self.name, '%d-%b-%Y')
+            except ValueError:
+                raise ValidationError('Could not parse the name of the model as a date. Please provide a date!')
 
     def __unicode__(self):
         return u'{}: {}'.format(self.id, self.sample)
@@ -123,7 +137,6 @@ class Measurement(models.Model):
                     image_obj.save()
 
                     # save png preview image
-                    #fn = os.path.abspath(os.path.join(settings.MEDIA_ROOT, 'stm/preview_images/', '{}.png'.format(image_obj.id)))
                     fn = NamedTemporaryFile(delete=True)
                     try:
                         image[0][0].save_png(fn.name)
