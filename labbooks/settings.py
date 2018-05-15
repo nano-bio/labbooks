@@ -179,6 +179,7 @@ INSTALLED_APPS = (
     'poweralarm',
     'admin_reorder',
     'stm',
+    'background_task', # this is for scheduled import of STM images
 )
 
 # A sample logging configuration. The only tangible logging

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from stm.models import Sample, Measurement, Image, Operator, StandardOperatingProcedure
+from stm.tasks import read_images_async
 
 class ImageAdmin(admin.ModelAdmin):
     list_display = ('name', 'type', 'measurement')
@@ -18,8 +19,8 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     def read_images(self, request, queryset):
         measurement = queryset.get()
-        image_count = measurement.read_images()
-        self.message_user(request, '{} images added'.format(image_count))
+        image_count = read_images_async(measurement.id)
+        self.message_user(request, 'Image loading scheduled!')
 
 # Register your models here.
 admin.site.register(Sample)

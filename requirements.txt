@@ -11,3 +11,4 @@ Pillow
 openpyxl
 python-pptx
 pyMTRX
+django-background-tasks
