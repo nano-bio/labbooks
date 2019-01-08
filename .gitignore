@@ -6,3 +6,4 @@ mediaroot/*
 .matplotlib/
 chemspider_token.txt
 database*
+.idea/

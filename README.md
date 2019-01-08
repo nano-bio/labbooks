@@ -7,7 +7,10 @@ Requires django >= 1.8 (tested until 1.11.8)
 Changelog
 =========
 
-~19.03.2018
+08.01.2019
+* BUGFIX: Django version from 1.11.10 to 1.11.18
+
+19.03.2018
 
 * CLUSTOF/NEW/Josi: New field for laser timing
 * SNOWBALL/NEW/Josi: New field for second electron energy
