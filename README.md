@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.8)
 Changelog
 =========
 
+09.01.2019
+* CHEMINVENTORY/MODIFY/Felix: replaced old chemspider API with new API
+
 08.01.2019
 * CLUSTOF/MODIFY/Felix: Add Scantype Laser-Scan
 * BUGFIX: Django version from 1.11.10 to 1.11.18

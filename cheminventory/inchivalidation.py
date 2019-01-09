@@ -1,32 +1,40 @@
 #!/usr/bin/python
 
-from suds.client import Client
-import suds
 import re
+import requests
+import json
 
-url = 'http://www.chemspider.com/InChI.asmx?WSDL'
-try:
-    client = Client(url)
-#except WebFault, f:
-#    print f
-except Exception, e:
-    print e 
+url = 'https://api.rsc.org/compounds/v1/tools/convert'
+headers = {'apikey': '3OQZOrXI0q00zVB4S7TheOnvV3vASoPi'}
+
 
 def inchi2inchikey(inchi):
     """Convert InChI to InChI-Key"""
+    request_body = {
+        'input': inchi,
+        'inputFormat': 'InChI',
+        'outputFormat': 'InChIKey'
+    }
     try:
-        result = client.service.InChIToInChIKey(inchi)
-    except suds.WebFault as detail:
+        result = json.loads(requests.post(url, json=request_body, headers=headers).text).get('output')
+    except (requests.exceptions.RequestException, ValueError):
         result = ''
     return result
 
+
 def inchikey2inchi(inchikey):
     """Convert InChI-Key to InChI"""
+    request_body = {
+        'input': inchikey,
+        'inputFormat': 'InChIKey',
+        'outputFormat': 'InChI'
+    }
     try:
-        result = client.service.InChIKeyToInChI(inchikey)
-    except suds.WebFault as detail:
+        result = json.loads(requests.post(url, json=request_body, headers=headers).text).get('output')
+    except (requests.exceptions.RequestException, ValueError):
         result = ''
     return result
+
 
 def inchi2chemicalformula(inchi):
     """Extract chemical formula from InChI"""
@@ -39,6 +47,7 @@ def inchi2chemicalformula(inchi):
             return splitup[1]
         else:
             return ''
+
 
 def inchikey2chemicalformula(inchikey):
     """Convert InChi to InChI-Key and extract chemical formula from InChI"""
