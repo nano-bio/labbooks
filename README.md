@@ -8,6 +8,7 @@ Changelog
 =========
 
 08.01.2019
+* CLUSTOF/MODIFY/Felix: Add Scantype Laser-Scan
 * BUGFIX: Django version from 1.11.10 to 1.11.18
 
 19.03.2018

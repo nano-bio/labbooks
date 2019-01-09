@@ -11,6 +11,7 @@ SCANTYPES = (
     ('MS', 'Mass Spectrum'),
     ('TS', 'Temperature-Scan'),
     ('PS', 'Pressure-Scan'),
+    ('LS', 'Laser-Scan'),
     ('OLD', 'Unknown (Old File)'),
 )
 
