@@ -179,6 +179,7 @@ INSTALLED_APPS = (
     'poweralarm',
     'admin_reorder',
     'stm',
+    'labinventory',
     'background_task', # this is for scheduled import of STM images
 )
 
@@ -213,6 +214,7 @@ LOGGING = {
 
 ADMIN_REORDER = (
     'cheminventory',
+    'labinventory',
     'clustof',
     'vg',
     'wippi',

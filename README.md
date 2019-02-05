@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.8)
 Changelog
 =========
 
+05.02.2019
+* LABINVENTORY/NEW/Felix: add application for lab inventory. one model for pressure gauges
+
 09.01.2019
 * CHEMINVENTORY/MODIFY/Felix: replaced old chemspider API with new API
 

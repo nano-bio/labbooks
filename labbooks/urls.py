@@ -1,5 +1,6 @@
 from django.conf.urls import include, url
 
+import labinventory.urls
 import vg.urls
 import clustof.urls
 import surftof.urls
@@ -30,5 +31,6 @@ urlpatterns = [
     url(r'^snowball/', include(snowball.urls)),
     url(r'^cheminventory/', include(cheminventory.urls)),
     url(r'^poweralarm/', include(poweralarm.urls)),
+    url(r'^labinventory/', include(labinventory.urls)),
     url(r'^$', flatpageviews.flatpage, {'url': '/'}, name='home'),
 ]
