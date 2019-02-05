@@ -14,7 +14,7 @@ class GaugeType(models.Model):
     modus = models.CharField(max_length=4, choices=MODUS)
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.get_modus_display(), self.company)
+        return u'%s (%s, %s)' % (self.get_modus_display(), self.company, self.type)
 
 class PressureGauge(models.Model):
     number = models.CharField(max_length=4)
