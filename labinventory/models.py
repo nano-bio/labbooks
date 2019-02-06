@@ -5,7 +5,8 @@ from cheminventory.models import Person, UsageLocation
 MODUS = (
     ('PIR', 'Pirani'),
     ('FULL', 'Full Range'),
-    ('COLD', 'Cold Cathode')
+    ('COLD', 'Cold Cathode'),
+    ('UNKN', 'Unknown')
 )
 
 class GaugeType(models.Model):
