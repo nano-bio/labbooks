@@ -2,10 +2,13 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
-Requires django >= 1.8 (tested until 1.11.8)
+Requires django >= 1.8 (tested until 1.11.20)
 
 Changelog
 =========
+
+18.02.2019
+* BUGFIX/Felix: Django version from 1.11.18 to 1.11.20
 
 05.02.2019
 * LABINVENTORY/NEW/Felix: add application for lab inventory. one model for pressure gauges
