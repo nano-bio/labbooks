@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+27.02.2019
+* POWERALARM/MODIFY/Felix: add email field to Person model. On power alarm server now sends SMS and email
+
 18.02.2019
 * BUGFIX/Felix: Django version from 1.11.18 to 1.11.20
 

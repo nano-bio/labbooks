@@ -61,6 +61,7 @@ class Person(models.Model):
     name = models.CharField(max_length = 200)
     office_phone = models.IntegerField()
     mobile = models.CharField(max_length = 15)
+    email = models.EmailField(blank=True)
 
     def __unicode__(self):
         return u'%s' % (self.name)
