@@ -176,6 +176,7 @@ INSTALLED_APPS = (
     'cheminventory',
     'surftof',
     'snowball',
+    'toffy',
     'poweralarm',
     'admin_reorder',
     'stm',

@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+06.05.2019
+* TOFFY/NEW/Felix: add app for TOFFY measurements.
+
 27.02.2019
 * POWERALARM/MODIFY/Felix: add email field to Person model. On power alarm server now sends SMS and email
 
