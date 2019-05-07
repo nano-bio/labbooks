@@ -40,18 +40,18 @@ class Measurement(models.Model):
     oven_voltage = models.FloatField(verbose_name="Voltage [V]", blank=True, null=True)
     oven_current = models.FloatField(verbose_name="Current [I]", blank=True, null=True)
     oven_power = models.FloatField(verbose_name="Power [W]", blank=True, null=True)
-    oven_temperature = models.FloatField(verbose_name="Temperature [°C]", blank=True, null=True)
+    oven_temperature = models.FloatField(verbose_name="Temperature [C]", blank=True, null=True)
 
-    evaporation_gas = models.FloatField(verbose_name="Gas", blank=True, null=True, default="Helium")
+    evaporation_gas = models.CharField(verbose_name="Gas", max_length=100, blank=True, null=True, default="Helium")
     evaporation_pressure = models.FloatField(verbose_name="Pressure [mbar]", blank=True, null=True)
 
-    collision_gas = models.FloatField(verbose_name="Gas", blank=True, null=True, default="Argon")
+    collision_gas = models.CharField(verbose_name="Gas", max_length=100, blank=True, null=True, default="Argon")
     collision_pressure = models.FloatField(verbose_name="Pressure [mbar]", blank=True, null=True)
     collision_energy = models.FloatField(verbose_name="Energy [eV]", blank=True, null=True)
 
     # this provides a link to the data file in the admin interface
     def get_data_file(self):
-        return "<a href='%s'>Data file</a>" % ('/toffy/dataFiles/' + str(self.data_file))
+        return "<a href='%s' download>Data file</a>" % ('/files/' + str(self.data_file))
 
     get_data_file.allow_tags = True
 

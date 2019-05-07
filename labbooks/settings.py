@@ -222,6 +222,7 @@ ADMIN_REORDER = (
     'surftof',
     'snowball',
     'stm',
+    'toffy',
     {'app': 'poweralarm', 'models': ('poweralarm.Experiment', 'cheminventory.Person')},
     'auth',
     'sites',

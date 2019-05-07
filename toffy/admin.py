@@ -13,7 +13,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     proper_time.short_description = 'Time and date'
 
-    list_display = ('proper_time', 'id', 'operator', 'get_short_description' 'get_data_file',)
+    list_display = ('proper_time', 'id', 'operator', 'get_short_description', 'get_data_file',)
     list_filter = ('operator',)
     search_fields = ('comment', 'data_file', 'short_description', 'id',)
     readonly_fields = ('id',)
