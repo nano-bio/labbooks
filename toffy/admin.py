@@ -87,8 +87,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         }),
     )
 
-    @staticmethod
-    def create_new_measurement_based_on_existing_one(request, queryset):
+    def create_new_measurement_based_on_existing_one(self, request, queryset):
         # we can only base it on one measurement
         if len(queryset) == 1:
             s = queryset.get()

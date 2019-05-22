@@ -1,0 +1,108 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <title>TOFFY - Preview Data</title>
+    <style>
+        .card {
+            margin-top: 10px;
+        }
+
+        .card-body {
+            padding: 5px;
+        }
+
+        .card-header {
+            padding: 5px 15px;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .list-group-item {
+            padding: 3px 10px;
+        }
+
+        #graphdiv {
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        #tree img {
+            width: 22px;
+            height: 22px;
+        }
+    </style>
+</head>
+<body translate="no">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-xl-9">
+            <!-- Graph -->
+            <div id="graphdiv"></div>
+        </div>
+        <div class="col-lg-4 col-xl-3">
+            <div class="card">
+                <div class="card-header">Files &nbsp;
+                    <button type="button" class="btn btn-sm btn-outline-dark" onclick="getDataList();">reload</button>
+                </div>
+                <div class="card-body">
+                    <div id="tree"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
+<script>
+    const tree = $('#tree');
+    const imgEdit = '<img src="../../static/toffyPreview/edit.png">';
+    const imgView = '<img src="../../static/toffyPreview/view.png">';
+    const imgDown = '<img src="../../static/toffyPreview/download.png">';
+
+    function getDataList() {
+        $.getJSON("/toffy/preview_file_list/").done(function (data) {
+            let treeContent = '<ul class="list-group">';
+            data.forEach(function (dates) {
+                treeContent += '<li class="list-group-item no-border">' + dates.date + '<ul class="list-group">';
+                dates.times.forEach(function (times) {
+                    treeContent += '<li class="list-group-item">' +
+                        '<a href="#" data-id="' + times.id + '">' +
+                        times.time + ' (ID ' + times.id + ') ' + imgView + '</a> ' +
+                        '<a href="' + times.downloadUrl + '" download>' + imgDown + '</a> ' +
+                        '<a href="/admin/toffy/measurement/' + times.id + '/change/">' + imgEdit + '</a></li>';
+                });
+                treeContent += '</ul></li>';
+            });
+            treeContent += '</ul>';
+            tree.html(treeContent);
+            $('#tree a').click(function () {
+                plot($(this).attr('data-id'));
+            });
+        });
+    }
+
+    getDataList();
+
+    g = new Dygraph(
+        document.getElementById("graphdiv"),  // containing div
+        [[0, 0]],                                   // data
+        {}                                    // options
+    );
+
+    function plot(id) {
+        $.getJSON("/toffy/preview_data/" + id + "/").done(function (data) {
+            console.log(data.data[0]);
+            g.updateOptions({'file': data.data});
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+22.05.2019
+* TOFFY/NEW/Felix: add preview of data
+
 06.05.2019
 * TOFFY/NEW/Felix: add app for TOFFY measurements.
 
