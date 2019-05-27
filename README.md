@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+27.05.2019
+* SURFTOF/RENEW/Felix: renew all models of surftof. first implemented potential settings
+
 22.05.2019
 * TOFFY/NEW/Felix: add preview of data
 
