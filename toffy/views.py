@@ -28,6 +28,6 @@ def preview_file_list(request):
             tmp['times'].append({
                 'time': val.time.strftime('%H:%M'),
                 'id': val.id,
-                'downloadUrl': "/files/{}".format(val.data_file.url)})
+                'downloadUrl': "{}".format(val.data_file.url)})
         response.append(tmp)
     return JsonResponse(response, safe=False)

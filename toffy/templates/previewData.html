@@ -62,9 +62,9 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
 <script>
     const tree = $('#tree');
-    const imgEdit = '<img src="../../static/toffyPreview/edit.png">';
-    const imgView = '<img src="../../static/toffyPreview/view.png">';
-    const imgDown = '<img src="../../static/toffyPreview/download.png">';
+    const imgEdit = '<img src="../../staticfiles/toffyPreview/edit.png">';
+    const imgView = '<img src="../../staticfiles/toffyPreview/view.png">';
+    const imgDown = '<img src="../../staticfiles/toffyPreview/download.png">';
 
     function getDataList() {
         $.getJSON("/toffy/preview_file_list/").done(function (data) {
