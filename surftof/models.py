@@ -45,6 +45,7 @@ class PotentialSettings(models.Model):
     ion_spacer = models.FloatField(blank=True, null=True)
     extraction = models.FloatField(blank=True, null=True)
     focus_4 = models.FloatField(blank=True, null=True)
+    slit_disc = models.FloatField(blank=True, null=True)
     tof_is_ref = models.FloatField(blank=True, null=True)
     pusher = models.FloatField(blank=True, null=True)
     tof_zero_level = models.FloatField(blank=True, null=True)

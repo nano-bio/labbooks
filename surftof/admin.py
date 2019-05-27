@@ -32,8 +32,8 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
             'fields': (
                 ('spark_plug', 'nozzle'), 'skimmer', ('wien_in', 'wien_out'), ('wien_e_top', 'wien_e_bottom'),
                 'wien_magnet', 'focus_1', ('quad_ref', 'quad_field_axis'), ('focus_2_inner', 'focus_2_outer'),
-                'surface', ('focus_3_outer', 'focus_3_inner'), 'ion_spacer', 'extraction', 'focus_4', 'tof_is_ref',
-                'pusher', 'tof_zero_level', ('tof_drift_l1', 'tof_l2', 'tof_ll'), 'mcp')}),
+                'surface', ('focus_3_outer', 'focus_3_inner'), 'ion_spacer', 'extraction', 'focus_4', 'slit_disc',
+                'tof_is_ref', 'pusher', 'tof_zero_level', ('tof_drift_l1', 'tof_l2', 'tof_ll'), 'mcp')}),
         ('Comment', {'fields': ('comment',)})
     )
 
