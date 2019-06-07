@@ -7,3 +7,4 @@ mediaroot/*
 chemspider_token.txt
 database*
 .idea/
+**/migrations/

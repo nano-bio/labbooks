@@ -3,7 +3,7 @@ from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 from django.utils import http
 
-from surftof.models import PotentialSettings, Measurement
+from surftof.models import PotentialSettings, Measurement, Operator, Gas, Projectile, Surface
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
@@ -143,3 +143,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
 
 admin.site.register(PotentialSettings, PotentialSettingsAdmin)
 admin.site.register(Measurement, MeasurementsAdmin)
+admin.site.register(Operator)
+admin.site.register(Gas)
+admin.site.register(Projectile)
+admin.site.register(Surface)
