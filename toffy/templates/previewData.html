@@ -73,7 +73,7 @@
                 treeContent += '<li class="list-group-item no-border">' + dates.date + '<ul class="list-group">';
                 dates.times.forEach(function (times) {
                     treeContent += '<li class="list-group-item">' +
-                        '<a href="#" data-id="' + times.id + '">' +
+                        '<a href="#" data-id="' + times.id + '" data-path="' + times.downloadUrl + '">' +
                         times.time + ' (ID ' + times.id + ') ' + imgView + '</a> ' +
                         '<a href="' + times.downloadUrl + '" download>' + imgDown + '</a> ' +
                         '<a href="/admin/toffy/measurement/' + times.id + '/change/">' + imgEdit + '</a></li>';
@@ -83,7 +83,7 @@
             treeContent += '</ul>';
             tree.html(treeContent);
             $('#tree a').click(function () {
-                plot($(this).attr('data-id'));
+                plotPath($(this).attr('data-path'));
             });
         });
     }
@@ -93,14 +93,17 @@
     g = new Dygraph(
         document.getElementById("graphdiv"),  // containing div
         [[0, 0]],                                   // data
-        {}                                    // options
+        {labels:['time', 'counts']}                                    // options
     );
 
-    function plot(id) {
+    function plotId(id) {
         $.getJSON("/toffy/preview_data/" + id + "/").done(function (data) {
             console.log(data.data[0]);
             g.updateOptions({'file': data.data});
         });
+    }
+    function plotPath(path) {
+        g.updateOptions({'file': path});
     }
 
 </script>
