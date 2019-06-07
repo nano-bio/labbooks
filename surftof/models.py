@@ -7,8 +7,8 @@ class Operator(models.Model):
     lastname = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
 
-    def __unicode__(self):
-        return u'%s %s' % (self.firstname, self.lastname)
+    def __str__(self):
+        return "{} {}.".format(self.firstname, self.lastname[0:1])
 
 
 POTENTIAL_TYPES = (
@@ -53,6 +53,8 @@ class PotentialSettings(models.Model):
     tof_l2 = models.FloatField(blank=True, null=True, verbose_name="TOF L2")
     tof_ll = models.FloatField(blank=True, null=True, verbose_name="TOF LL")
     mcp = models.FloatField(blank=True, null=True, verbose_name="MCP")
+    slit_disc_angle = models.FloatField(blank=True, null=True, verbose_name="Slit disc angle in degrees")
+    surface_angle = models.FloatField(blank=True, null=True, verbose_name="Surface angle in degrees")
 
     # Additional comments
     comment = models.TextField(max_length=5000, blank=True)
@@ -60,71 +62,86 @@ class PotentialSettings(models.Model):
     def get_short_description(self):
         return "{}...".format(self.short_description[:30])
 
+    get_short_description.short_description = "SHORT DESCRIPTION"
 
-"""
-POLARITIES = (
+
+ION_POLARITIES = (
     ('NEG', 'Negative'),
     ('POS', 'Positive'),
 )
 
+
 class Projectile(models.Model):
     name = models.CharField(max_length=50)
-    polarity = models.CharField(max_length=3, choices=POLARITIES, default='POS')
-    comment = models.TextField(max_length=500, blank=True)
+    polarity = models.CharField(max_length=3, choices=ION_POLARITIES, default='POS')
 
     def __str__(self):
-        return self.name
+        return "{} ({})".format(self.name, self.polarity)
+
+
+class Gas(models.Model):
+    name = models.CharField(max_length=100)
+    chemical_formula = models.CharField(max_length=100)
+
+    def __str__(self):
+        return "{} ({})".format(self.name, self.chemical_formula)
+
+
+class Surface(models.Model):
+    name = models.CharField(max_length=100)
+    chemical_formula = models.CharField(max_length=100, blank=True)
+    comment = models.TextField(
+        blank=True, max_length=5000,
+        help_text="Additional information like purity, charge, serial number,...")
+
+    def __str__(self):
+        return "{} ({})".format(self.name, self.chemical_formula)
 
 
 class Measurement(models.Model):
     # General
     time = models.DateTimeField(default=now)
-    operator = models.ForeignKey(Operator, on_delete=models.PROTECT)
-    data_file = models.FileField(upload_to='surftof/dataFiles/')
-    settings_potentials = models.ForeignKey(Settings, on_delete=models.PROTECT)
-    surface_temperature = models.FloatField(blank=True, null=True)
-    surface_material = models.CharField(max_length=1500, blank=True)
+    operator = models.ForeignKey(Operator, on_delete=models.PROTECT, related_name="operator")
+    file_tof = models.FileField(upload_to='surftof/dataFilesTof/', blank=True)
+    file_surface_current = models.FileField(upload_to='surftof/dataFilesSurface/', blank=True)
+    file_others = models.FileField(upload_to='surftof/dataFilesOthers/', blank=True)
+    type_file_others = models.CharField(max_length=100, blank=True,
+                                        help_text="Specify, what will be found in 'file others'")
+    potential_settings = models.ForeignKey(PotentialSettings, on_delete=models.PROTECT, blank=True, null=True)
 
-    gas_is = models.CharField(verbose_name="Gas IS", max_length=500, blank=True)
-    gas_surf = models.CharField(verbose_name="Gas Surface", max_length=500, blank=True)
-    projectile = models.ForeignKey(Projectile, on_delete=models.PROTECT)
+    # Chemical relevance
+    gas_is = models.ForeignKey(Gas, on_delete=models.PROTECT, related_name="gas_is")
+    gas_surf = models.ForeignKey(Gas, on_delete=models.PROTECT, related_name="gas_surf")
+    projectile = models.ForeignKey(Projectile, on_delete=models.PROTECT, blank=True, null=True)
+    surface_material = models.CharField(max_length=1500, blank=True)
+    surface_temperature = models.FloatField(blank=True, null=True)
+    tof_ions = models.CharField(max_length=3, choices=ION_POLARITIES, default='POS')
+    impact_energy = models.FloatField(blank=True, null=True)
+    quadrupole_mass = models.FloatField(blank=True, null=True)
+    quadrupole_resolution = models.FloatField(blank=True, null=True)
 
     # Pressures
     pressure_ion_source_line = models.FloatField(blank=True, null=True)
     pressure_ion_source_chamber = models.FloatField(blank=True, null=True)
     pressure_surface_chamber = models.FloatField(blank=True, null=True)
-    pressure_tof = models.FloatField(blank=True, null=True)
+    pressure_tof_chamber = models.FloatField(blank=True, null=True)
 
-    # this provides a link to the eval file in the admin interface
-    def eval_file(self):
-        if self.evaluation_file:
-            return "<a href='%s'>Eval. file</a>" % (self.evaluation_file.url)
-        else:
-            return ''
+    # Filament ion source
+    filament_voltage = models.FloatField(blank=True, null=True)
+    filament_current = models.FloatField(blank=True, null=True)
+    filament_bottom_potential = models.FloatField(blank=True, null=True)
+    filament_bottom_current = models.FloatField(blank=True, null=True,
+                                                help_text="The current is produced by the filament top")
 
-    eval_file.allow_tags = True
+    # Evaluation
+    file_evaluation = models.FileField(upload_to='surftof/evaluation', blank=True)
+    evaluated_by = models.ForeignKey(Operator, on_delete=models.PROTECT,
+                                     related_name="evaluated_by", blank=True, null=True)
+    evaluation_comment = models.TextField(blank=True, max_length=5000)
 
-    # same for the actual data file
-    def data_file(self):
-        return "<a href='%s'>Data file</a>" % ('/surftof/export/' + str(self.id))
-
-    data_file.allow_tags = True
-
-    def __unicode__(self):
-        return u'%s, %s: %s on %s ...' % (self.time, self.operator, self.projectile[0:10], self.surface_material[0:80])
-
-    def collision_energy(self):
-        ee = self.u_is - self.u_surf
-        return ee
-
-    def clean(self):
-        # cleaning method. first thing, check if file extension is there
-        try:
-            fn = self.data_filename.split('\\')[2]
-        except IndexError:
-            raise ValidationError('Something is odd about this filename. Did you forget the path?')
+    # Comment
+    comment = models.TextField(max_length=5000, blank=True)
 
     class Meta:
         ordering = ['-time']
         get_latest_by = 'time'
-"""
