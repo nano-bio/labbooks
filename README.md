@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+07.06.2019
+* STM/MODIFY/Felix: adding proper logging to the background task for importing STM data
+
 27.05.2019
 * SURFTOF/RENEW/Felix: renew all models of surftof. first implemented potential settings
 

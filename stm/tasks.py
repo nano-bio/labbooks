@@ -13,11 +13,14 @@ from django.utils import timezone
 
 
 class Log():
-    def __init__(self):
-        self.text = ''
-
+    def __init__(self, name):
+        text = "Started import at {}\n".format(timezone.now().isoformat())
+        self.path = "{}/{}.log".format(settings.STM_STORAGE, name)
+        with open(self.path, "w") as file:
+            file.write(text)
     def write(self, message):
-        self.text = self.text + '\n' + message
+        with open(self.path, "a") as file:
+            file.write("{}\n".format(message))
 
 @background(schedule=timezone.now())
 def read_images_async(id):
@@ -30,9 +33,11 @@ def read_images_async(id):
     m = Measurement.objects.get(id=id)
 
     path = os.path.join(settings.STM_STORAGE, m.name)
-    logger = Log()
+    logger = Log(m.name)
 
     files = os.listdir(path)
+    logger.write("found {} files in this path".format(len(files)))
+
     mainfile = None
     for file in files:
         if file.find('_0001.mtrx') != -1:
@@ -41,7 +46,7 @@ def read_images_async(id):
             break
 
     if mainfile is None:
-        pass # TODO: warning
+        logger.write("didn't found the _0001.mtrx file!")
 
     ex = experiment.Experiment(os.path.join(path, mainfile))
     image_count = 0
@@ -50,6 +55,8 @@ def read_images_async(id):
     filenumber_regex = '--([0-9]{1,2}_[0-9]{1,2})\.'
     regex = re.compile(filenumber_regex)
 
+    logger.write("start looping over all items")
+
     # read all images
     for scan, _ in ex._cmnt_lkup.items():
         if 'I_mtrx' in scan or 'Z_mtrx' in scan:
@@ -57,6 +64,7 @@ def read_images_async(id):
                 image = ex.import_scan(os.path.join(path, scan))
                 success = True
             except:
+                logger.write("something went wrong in loop \"{}\"".format(scan))
                 success = False
 
             if success:
@@ -86,6 +94,7 @@ def read_images_async(id):
                 try:
                     image[0][0].save_png(fn.name)
                     image_obj.preview_image.save('{}.png'.format(image_obj.id), File(fn), save=True)
+                    logger.write('Image {} written with success'.format(image_obj.id))
                 except ValueError:
                     logger.write('Image {} could not be written'.format(image_obj.id))
     return image_count
