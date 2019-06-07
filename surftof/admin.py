@@ -3,7 +3,7 @@ from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 from django.utils import http
 
-from surftof.models import PotentialSettings, Measurement, Operator, Gas, Projectile, Surface
+from surftof.models import PotentialSettings, Measurement, Operator, Gas, Projectile, Surface, MeasurementType
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
@@ -81,14 +81,8 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 
 
 class MeasurementsAdmin(admin.ModelAdmin):
-
-    def title(self, obj):
-        return '{}: {} on {} ...'.format(
-            obj.time.strftime('%d.%m.%Y, %H:%M'), obj.projectile[0:10], obj.surface_material[0:80])
-
-    title.short_description = 'Date, time'
-    list_display = ('title', 'id', 'operator', 'projectile', 'surface_material')
-    list_filter = ('operator', 'projectile', 'surface_material', 'gas_is', 'gas_surf')
+    list_display = ('time', 'id', 'operator', 'projectile', 'surface_material')
+    list_filter = ('operator', 'measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf')
     search_fields = ('comment', 'operator', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'id',)
     readonly_fields = ('id',)
     ordering = ('-time',)
@@ -101,7 +95,8 @@ class MeasurementsAdmin(admin.ModelAdmin):
                 ('time', 'operator'),
                 ('file_tof', 'file_surface_current'),
                 ('file_others', 'type_file_others'),
-                'potential_settings')}),
+                'potential_settings',
+                'measurement_type')}),
         ('Chemical relevance', {
             'fields': (
                 ('gas_is', 'gas_surf'), 'projectile',
@@ -143,6 +138,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
 
 admin.site.register(PotentialSettings, PotentialSettingsAdmin)
 admin.site.register(Measurement, MeasurementsAdmin)
+admin.site.register(MeasurementType)
 admin.site.register(Operator)
 admin.site.register(Gas)
 admin.site.register(Projectile)

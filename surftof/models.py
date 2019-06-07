@@ -64,6 +64,9 @@ class PotentialSettings(models.Model):
 
     get_short_description.short_description = "SHORT DESCRIPTION"
 
+    def __str__(self):
+        return "[{}] {}: {}...".format(self.id, self.time.strftime("%d.%m."), self.short_description[:20])
+
 
 ION_POLARITIES = (
     ('NEG', 'Negative'),
@@ -98,22 +101,31 @@ class Surface(models.Model):
         return "{} ({})".format(self.name, self.chemical_formula)
 
 
+class MeasurementType(models.Model):
+    name = models.CharField(max_length=100)
+    comment = models.TextField(max_length=5000, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Measurement(models.Model):
     # General
     time = models.DateTimeField(default=now)
-    operator = models.ForeignKey(Operator, on_delete=models.PROTECT, related_name="operator")
+    operator = models.ForeignKey(Operator, on_delete=models.PROTECT, related_name="operator", blank=True, null=True)
     file_tof = models.FileField(upload_to='surftof/dataFilesTof/', blank=True)
     file_surface_current = models.FileField(upload_to='surftof/dataFilesSurface/', blank=True)
     file_others = models.FileField(upload_to='surftof/dataFilesOthers/', blank=True)
     type_file_others = models.CharField(max_length=100, blank=True,
                                         help_text="Specify, what will be found in 'file others'")
     potential_settings = models.ForeignKey(PotentialSettings, on_delete=models.PROTECT, blank=True, null=True)
+    measurement_type = models.ForeignKey(MeasurementType, on_delete=models.PROTECT, blank=True, null=True)
 
     # Chemical relevance
-    gas_is = models.ForeignKey(Gas, on_delete=models.PROTECT, related_name="gas_is")
-    gas_surf = models.ForeignKey(Gas, on_delete=models.PROTECT, related_name="gas_surf")
+    gas_is = models.ForeignKey(Gas, on_delete=models.PROTECT, related_name="gas_is", blank=True, null=True)
+    gas_surf = models.ForeignKey(Gas, on_delete=models.PROTECT, related_name="gas_surf", blank=True, null=True)
     projectile = models.ForeignKey(Projectile, on_delete=models.PROTECT, blank=True, null=True)
-    surface_material = models.CharField(max_length=1500, blank=True)
+    surface_material = models.ForeignKey(Surface, blank=True, null=True, on_delete=models.PROTECT)
     surface_temperature = models.FloatField(blank=True, null=True)
     tof_ions = models.CharField(max_length=3, choices=ION_POLARITIES, default='POS')
     impact_energy = models.FloatField(blank=True, null=True)
