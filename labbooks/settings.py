@@ -13,27 +13,26 @@ SURFTOFIP = '138.232.71.196'
 SNOWBALLIP = '138.232.74.207'
 
 # set IPS for all pressure writing devices here
-#snowball, josis computer
+# snowball, josis computer
 PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 
 # storage location of measurement files
 STM_STORAGE = '/var/storage/stm'
 
-
 ADMINS = (
-     ('Josi', 'johannes.postler@uibk.ac.at'),
+    ('FelixD', 'felix.duensing@uibk.ac.at'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'labbooks',                      # Or path to database file if using sqlite3.
-        'USER': 'labbooks',                      # Not used with sqlite3.
-        'PASSWORD': 'labbooks',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'labbooks',  # Or path to database file if using sqlite3.
+        'USER': 'labbooks',  # Not used with sqlite3.
+        'PASSWORD': 'labbooks',  # Not used with sqlite3.
+        'HOST': '',  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',  # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -99,18 +98,18 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'i=d0pz8apxr+0!25lwozu)e$)q*^1k4x=494ga6xi-++67d_*&amp;'
 
 # List of callables that know how to import templates from various sources.
-#TEMPLATE_LOADERS = (
+# TEMPLATE_LOADERS = (
 #    'django.template.loaders.filesystem.Loader',
 #    'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
-#)
+# )
 
 TEMPLATES = [
     {
@@ -143,7 +142,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'admin_reorder.middleware.ModelAdminReorder',
+    # 'admin_reorder.middleware.ModelAdminReorder',
 )
 
 ROOT_URLCONF = 'labbooks.urls'
@@ -178,10 +177,10 @@ INSTALLED_APPS = (
     'snowball',
     'toffy',
     'poweralarm',
-    'admin_reorder',
+    # 'admin_reorder',
     'stm',
     'labinventory',
-    'background_task', # this is for scheduled import of STM images
+    'background_task',  # this is for scheduled import of STM images
 )
 
 # A sample logging configuration. The only tangible logging
@@ -212,7 +211,7 @@ LOGGING = {
         },
     }
 }
-
+"""
 ADMIN_REORDER = (
     'cheminventory',
     'labinventory',
@@ -226,4 +225,5 @@ ADMIN_REORDER = (
     {'app': 'poweralarm', 'models': ('poweralarm.Experiment', 'cheminventory.Person')},
     'auth',
     'sites',
-)
+
+)"""

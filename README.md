@@ -8,6 +8,9 @@ Changelog
 =========
 
 07.06.2019
+* STM/MODIFY/Felix: STM creates single tasks per image per import scan instead of one task for the whole import per scan
+
+07.06.2019
 * STM/MODIFY/Felix: adding proper logging to the background task for importing STM data
 * ALL/MODIFY/Felix: minor template improvements
 * SURFTOF/NEW/Felix: add measurements and depended models
