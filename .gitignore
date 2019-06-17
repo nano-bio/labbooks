@@ -7,10 +7,10 @@ mediaroot/*
 chemspider_token.txt
 database*
 .idea/
-**/migrations/
 bin/
 include/
 lib/
 lib64/
+lib64
 nginx*
 pip-selfcheck.json
