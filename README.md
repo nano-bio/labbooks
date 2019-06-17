@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+17.06.2019
+* TOFFY/MODIFY/Felix: admin view
+
 07.06.2019
 * STM/MODIFY/Felix: STM creates single tasks per image per import scan instead of one task for the whole import per scan
 
