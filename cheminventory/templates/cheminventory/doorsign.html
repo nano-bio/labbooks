@@ -5,169 +5,171 @@
 <head>
     <title>DOORPLATE</title>
     <style>
-    	p {
-    		padding: 0px;
-    		margin:0px;
-    		font-family: Arial, Helvetica, sans-serif;}
+        p {
+            padding: 0px;
+            margin: 0px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-	    #subtitle{
-	    	font-weight:bold;
-	    	font-size:24px;
-	    	color: white;
-	    	padding:15px 0px 5px 0px;
-		    background-color: black;
-	    }
+        #subtitle {
+            font-weight: bold;
+            font-size: 24px;
+            color: white;
+            padding: 15px 0px 5px 0px;
+            background-color: black;
+        }
 
-  	 	table{
-		    background-color: white;
-		    width: 1000px;
-		    border-collapse: seperate;
-		    border-spacing: 0px 20px
-      	}
+        table {
+            background-color: white;
+            width: 1000px;
+            border-collapse: separate;
+            border-spacing: 0px 20px
+        }
     </style>
 </head>
 
 <body>
-    <table>
-	  <tr bgcolor="darkred">
-	    <td width="20%" align="center">
-	  			 <p><br><img src="http://ideadb.uibk.ac.at/files/images/IAPhi_white.svg" height="90px"></p>
-	  	</td>
-	    <td colspan=2 align="center">
-	    <p style="font-weight:bold; font-size:64px; color:white">
-	    	{{ lab.name }}
-	    </p>
+<table>
+    <tr bgcolor="darkred">
+        <td width="20%" align="center">
+            <p><br><img src="http://ideadb.uibk.ac.at/static/files/images/IAPhi_white.svg" height="90px"></p>
 
-	    <p style="font-weight:bold; font-size:24px; color:white">
-	    	+43 512 507 52660 - last update: {{ datum|date:"d M Y" }}
-	    </p>
+        </td>
+        <td colspan=2 align="center">
+            <p style="font-weight:bold; font-size:64px; color:white">
+                {{ lab.name }}
+            </p>
 
-	    <p style="font-weight:bold; font-size:24px; color:white">
-	  		Institute for Ion Physics and Applied Physics - AG Scheier/Denifl
-	    </p>
-	  	</td>
-	  </tr>
+            <p style="font-weight:bold; font-size:24px; color:white">
+                +43 512 507 52660 - last update: {{ datum|date:"d M Y" }}
+            </p>
 
-	  <tr id="subtitle">
-	  	<td colspan=2>
-	    <p>
-	  		Responsible Persons:
-	  	</p>
-	  	</td>
-	  </tr>
-{% for person in lab.responsible_persons.all %}
-	  <tr>
-	  	<td>
-	  		<p>{{ person.name }}</p>
-	  	</td>
-	  	<td>
-	  		<p>{{ person.office_phone }}<br>
-	  		   {{ person.mobile }}</p>
-	  	</td>
-	  </tr>
-{% endfor %}
-{% if gases %}
-	  <tr id="subtitle">
-	  	  	<td>
-	  	    <p>
-	  	  		Gas Cylinder(s):
-	  	  	</p>
-	  	  	</td>
-	  	  	<td>
-			<p style="font-weight:normal">
-{% for gas in gases %}
-     {{ gas.name }} /
-{% endfor %}
-			</p>
-	  		</td>
-	  </tr>
+            <p style="font-weight:bold; font-size:24px; color:white">
+                Institute for Ion Physics and Applied Physics - AG Scheier/Denifl
+            </p>
+        </td>
+    </tr>
 
-	  <tr>
-	  		<td colspan=2 align="center"><p>
-     <img src="http://ideadb.uibk.ac.at/files/images/gas.svg" height="200px">
-{% for gaswarning in gaswarnings %}
-     <img src="http://ideadb.uibk.ac.at/files/images/{{ gaswarning }}.svg" height="200px">
-{% endfor %}
-	   		</p></td>
-	  </tr>
-{% endif %}
-{% if chems %}
-	  <tr id="subtitle">
-	  	   	<td>
-	  	    <p>
-	  	   		Chemical(s):
-	  	   	</p>
-	  	   	</td>
-	  	   	<td>
-	  		<p style="font-weight:normal">
-{% for chem in chems %}
-    {{ chem.name }} ({{ chem.chemical_formula }}) /
-{% endfor %}
-	  		</p>
-	  	  	</td>
-	  </tr>
+    <tr id="subtitle">
+        <td colspan=2>
+            <p>
+                Responsible Persons:
+            </p>
+        </td>
+    </tr>
+    {% for person in lab.responsible_persons.all %}
+        <tr>
+            <td>
+                <p>{{ person.name }}</p>
+            </td>
+            <td>
+                <p>{{ person.office_phone }}<br>
+                    {{ person.mobile }}</p>
+            </td>
+        </tr>
+    {% endfor %}
+    {% if gases %}
+        <tr id="subtitle">
+            <td>
+                <p>
+                    Gas Cylinder(s):
+                </p>
+            </td>
+            <td>
+                <p style="font-weight:normal">
+                    {% for gas in gases %}
+                        {{ gas.name }} /
+                    {% endfor %}
+                </p>
+            </td>
+        </tr>
 
-	  <tr>
-	  	  	<td colspan=2 align="center"><p>
-{% for chemwarning in chemwarnings %}
-     <img src="http://ideadb.uibk.ac.at/files/images/{{ chemwarning }}.svg" height="200px">
-{% endfor %}
+        <tr>
+            <td colspan=2 align="center"><p>
+                <img src="http://ideadb.uibk.ac.at/static/files/images/gas.svg" height="200px">
+                {% for gaswarning in gaswarnings %}
+                    <img src="http://ideadb.uibk.ac.at/files/images/{{ gaswarning }}.svg" height="200px">
+                {% endfor %}
+            </p></td>
+        </tr>
+    {% endif %}
+    {% if chems %}
+        <tr id="subtitle">
+            <td>
+                <p>
+                    Chemical(s):
+                </p>
+            </td>
+            <td>
+                <p style="font-weight:normal">
+                    {% for chem in chems %}
+                        {{ chem.name }} ({{ chem.chemical_formula }}) /
+                    {% endfor %}
+                </p>
+            </td>
+        </tr>
 
-	  	  	</p></td>
-	  </tr>
-{% endif %}
+        <tr>
+            <td colspan=2 align="center"><p>
+                {% for chemwarning in chemwarnings %}
+                    <img src="http://ideadb.uibk.ac.at/static/files/images/{{ chemwarning }}.svg" height="200px">
+                {% endfor %}
 
-	  <tr id="subtitle">
-	  	  	<td colspan=2>
-	  	    <p>
-	  	  		H- and P-Statements
-	  	  	</p>
-	  	  	</td>
-	  </tr>
-{% for chem in chems %}
-	  <tr>
+            </p></td>
+        </tr>
+    {% endif %}
 
-		  	  	<td colspan=2>
-		  	  	<p style="Font-Size:14px; Font-weight:bold">
-		  	  		{{ chem.name }} ({{ chem.chemical_formula }})
-		  	  	</p>
-		  	  	<p  style="Font-Size:12px">
-{% for h in chem.hs %}
-					<b>{{ h.number }}: </b>{{ h.text }}
-{% endfor %}
-<br />
-{% for p in chem.ps %}
-                                        <b>{{ p.number }}: </b>{{ p.text }}
-{% endfor %}
-		  	  	</p></td>
-          </tr>
-{% endfor %}
+    <tr id="subtitle">
+        <td colspan=2>
+            <p>
+                H- and P-Statements
+            </p>
+        </td>
+    </tr>
+    {% for chem in chems %}
+        <tr>
 
-{% for gas in gases %}
-          <tr>
-                                <td colspan=2>
-                                <p style="Font-Size:14px; Font-weight:bold">
-                                        {{ gas.name }} ({{ gas.chemical_formula }})
-                                </p>
-                                <p style="Font-Size:12px">
-{% for h in gas.hs %}
-                                        <b>{{ h.number }}: </b>{{ h.text }}
-{% endfor %}
-<br />
-{% for p in gas.ps %}
-                                        <b>{{ p.number }}: </b>{{ p.text }}
-{% endfor %}
-                                </p></td>
-	  </tr>
-{% endfor %}
-	  <tr id="subtitle">
-	  	  	<td colspan=2 align="center">
-	  	    <p style="color:yellow; font-size: 20px">
-	  	  		If you notice anything unusual, please call one of the above numbers!<br>
-	  	  		Wenn Sie etwas Ungew&ouml;hnliches bemerken, rufen Sie bitte eine der oben genannten Nummern an!
-	  	    </p>
-	  	  	</td>
-	  </tr>
+            <td colspan=2>
+                <p style="Font-Size:14px; Font-weight:bold">
+                    {{ chem.name }} ({{ chem.chemical_formula }})
+                </p>
+                <p style="Font-Size:12px">
+                    {% for h in chem.hs %}
+                        <b>{{ h.number }}: </b>{{ h.text }}
+                    {% endfor %}
+                    <br/>
+                    {% for p in chem.ps %}
+                        <b>{{ p.number }}: </b>{{ p.text }}
+                    {% endfor %}
+                </p></td>
+        </tr>
+    {% endfor %}
+
+    {% for gas in gases %}
+        <tr>
+            <td colspan=2>
+                <p style="Font-Size:14px; Font-weight:bold">
+                    {{ gas.name }} ({{ gas.chemical_formula }})
+                </p>
+                <p style="Font-Size:12px">
+                    {% for h in gas.hs %}
+                        <b>{{ h.number }}: </b>{{ h.text }}
+                    {% endfor %}
+                    <br/>
+                    {% for p in gas.ps %}
+                        <b>{{ p.number }}: </b>{{ p.text }}
+                    {% endfor %}
+                </p></td>
+        </tr>
+    {% endfor %}
+    <tr id="subtitle">
+        <td colspan=2 align="center">
+            <p style="color:yellow; font-size: 20px">
+                If you notice anything unusual, please call one of the above numbers!<br>
+                Wenn Sie etwas Ungew&ouml;hnliches bemerken, rufen Sie bitte eine der oben genannten Nummern an!
+            </p>
+        </td>
+    </tr>
 </table>
 </body>
 
