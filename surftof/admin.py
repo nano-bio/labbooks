@@ -96,7 +96,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
                 ('file_tof', 'file_surface_current'),
                 ('file_others', 'type_file_others'),
                 'potential_settings',
-                'measurement_type')}),
+                'measurement_type', 'estimated_impact_energy')}),
         ('Chemical relevance', {
             'fields': (
                 ('gas_is', 'gas_surf'), 'projectile',
