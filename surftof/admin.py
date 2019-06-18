@@ -23,7 +23,7 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
     fieldsets = (
         ('General', {
             'fields': (
-                'id', 'time', 'short_description', 'potential_type')}),
+                'id', 'time', 'short_description', 'potential_type', 'estimated_impact_energy')}),
         ('Potentials source', {
             'fields': (
                 ('spark_plug', 'nozzle'),
@@ -96,7 +96,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
                 ('file_tof', 'file_surface_current'),
                 ('file_others', 'type_file_others'),
                 'potential_settings',
-                'measurement_type', 'estimated_impact_energy')}),
+                'measurement_type')}),
         ('Chemical relevance', {
             'fields': (
                 ('gas_is', 'gas_surf'), 'projectile',
