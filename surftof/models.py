@@ -24,6 +24,7 @@ class PotentialSettings(models.Model):
     time = models.DateTimeField(default=now)
     potential_type = models.CharField(max_length=4, choices=POTENTIAL_TYPES, default='ALL')
     short_description = models.CharField(max_length=500, blank=True)
+    estimated_impact_energy = models.FloatField(null=True, blank=True)
 
     # Ion lens potentials
     spark_plug = models.FloatField(blank=True, null=True)

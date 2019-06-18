@@ -23,7 +23,7 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
     fieldsets = (
         ('General', {
             'fields': (
-                'id', 'time', 'short_description', 'potential_type')}),
+                'id', 'time', 'short_description', 'potential_type', 'estimated_impact_energy')}),
         ('Potentials source', {
             'fields': (
                 ('spark_plug', 'nozzle'),
