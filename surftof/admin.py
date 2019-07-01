@@ -13,8 +13,8 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 
     proper_time.short_description = 'Time and date'
 
-    list_display = ('proper_time', 'id', 'get_short_description', 'potential_type')
-    list_filter = ('potential_type',)
+    list_display = ('proper_time', 'id', 'get_short_description', 'estimated_impact_energy')
+    list_filter = ()
     search_fields = ('comment', 'short_description', 'id',)
     readonly_fields = ('id',)
     ordering = ('-time',)
@@ -23,7 +23,7 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
     fieldsets = (
         ('General', {
             'fields': (
-                'id', 'time', 'short_description', 'potential_type', 'estimated_impact_energy')}),
+                'id', 'time', 'short_description', 'estimated_impact_energy')}),
         ('Potentials source', {
             'fields': (
                 ('spark_plug', 'nozzle'),
@@ -52,7 +52,14 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
                 'mcp')}),
         ('Stepper', {
             'fields': (
-                ('surface_angle', 'slit_disc_angle')
+                ('surface_angle', 'slit_disc_angle'),
+                ('stepper_surface_current_max', 'stepper_surface_current_standby'),
+                ('stepper_slit_disc_current_max', 'stepper_slit_disc_current_standby')
+            )
+        }),
+        ('TDC', {
+            'fields': (
+                ('tdc_extraction_time', 'tdc_frequency')
             )
         }),
         ('Comment', {
@@ -81,8 +88,8 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 
 
 class MeasurementsAdmin(admin.ModelAdmin):
-    list_display = ('time', 'id', 'operator', 'projectile', 'surface_material')
-    list_filter = ('operator', 'measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf')
+    list_display = ('time', 'id', 'get_short_description', 'projectile', 'surface_material')
+    list_filter = ('measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf')
     search_fields = ('comment', 'operator', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'id',)
     readonly_fields = ('id',)
     ordering = ('-time',)
@@ -94,9 +101,12 @@ class MeasurementsAdmin(admin.ModelAdmin):
                 'id',
                 ('time', 'operator'),
                 ('file_tof', 'file_surface_current'),
+                'file_pressure_log',
                 ('file_others', 'type_file_others'),
                 'potential_settings',
-                'measurement_type')}),
+                'measurement_type',
+                'short_description',
+                'rating')}),
         ('Chemical relevance', {
             'fields': (
                 ('gas_is', 'gas_surf'), 'projectile',
@@ -108,6 +118,13 @@ class MeasurementsAdmin(admin.ModelAdmin):
                 ('pressure_ion_source_line', 'pressure_ion_source_chamber'),
                 ('pressure_surface_chamber', 'pressure_tof_chamber')
             )}),
+        ('Filaments', {
+            'fields': (
+                ('filament_source_voltage', 'filament_source_current'),
+                ('filament_tof_voltage', 'filament_tof_current'),
+                ('filament_tof_bottom_potential', 'filament_tof_bottom_current'),
+            )
+        }),
         ('Evaluation', {
             'fields': (
                 ('file_evaluation', 'evaluated_by'),

@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+01.07.2019
+* SURFTOF/MODIFY/Felix: add more fields
+
 18.06.2019
 * SURFTOF/MODIFY/Felix: add estimated impact energy field
 
