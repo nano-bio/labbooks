@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+02.07.2019
+* BUGFIX/Felix: Django version from 1.11.20 to 1.11.22
+
 01.07.2019
 * SURFTOF/MODIFY/Felix: add more fields
 
