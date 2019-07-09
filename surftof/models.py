@@ -133,12 +133,13 @@ class Measurement(models.Model):
     # General
     time = models.DateTimeField(default=now)
     operator = models.ForeignKey(Operator, on_delete=models.PROTECT, related_name="operator", blank=True, null=True)
-    file_tof = models.FileField(upload_to='surftof/dataFilesTof/', blank=True)
+    file_tof = models.FileField(upload_to='surftof/dataFilesTof/', blank=True, help_text="zip all tof files")
     file_surface_current = models.FileField(upload_to='surftof/dataFilesSurface/', blank=True)
     file_pressure_log = models.FileField(upload_to='surftof/dataFilesPressure/', blank=True)
     file_others = models.FileField(upload_to='surftof/dataFilesOthers/', blank=True)
-    type_file_others = models.CharField(max_length=100, blank=True,
-                                        help_text="Specify, what will be found in 'file others'")
+    type_file_others = models.CharField(
+        max_length=100, blank=True,
+        help_text="If you use \"file others\", specify, what kind of file will be found in 'file others'")
     potential_settings = models.ForeignKey(PotentialSettings, on_delete=models.PROTECT, blank=True, null=True)
     measurement_type = models.ForeignKey(MeasurementType, on_delete=models.PROTECT, blank=True, null=True)
     short_description = models.CharField(max_length=500, blank=True)
@@ -156,7 +157,6 @@ class Measurement(models.Model):
     quadrupole_resolution = models.FloatField(blank=True, null=True)
 
     # Pressures
-    pressure_ion_source_line = models.FloatField(blank=True, null=True)
     pressure_ion_source_chamber = models.FloatField(blank=True, null=True)
     pressure_surface_chamber = models.FloatField(blank=True, null=True)
     pressure_tof_chamber = models.FloatField(blank=True, null=True)

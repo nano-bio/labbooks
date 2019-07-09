@@ -115,8 +115,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
                 ('quadrupole_mass', 'quadrupole_resolution'))}),
         ('Pressures', {
             'fields': (
-                ('pressure_ion_source_line', 'pressure_ion_source_chamber'),
-                ('pressure_surface_chamber', 'pressure_tof_chamber')
+                ('pressure_ion_source_chamber', 'pressure_surface_chamber', 'pressure_tof_chamber')
             )}),
         ('Filaments', {
             'fields': (
