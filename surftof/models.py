@@ -105,7 +105,7 @@ class Surface(models.Model):
         help_text="Additional information like purity, charge, serial number,...")
 
     def __str__(self):
-        return "{} ({}...)".format(self.name, self.comment[:20])
+        return self.name
 
 
 class MeasurementType(models.Model):
