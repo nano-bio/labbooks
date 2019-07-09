@@ -9,6 +9,7 @@ Changelog
 
 09.07.2019
 * SURFTOF/MODIFY/Felix: change some fields
+* CLUSTOF/ADD/Felix: cluster size distribution file
 
 02.07.2019
 * BUGFIX/Felix: Django version from 1.11.20 to 1.11.22

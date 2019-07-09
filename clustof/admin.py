@@ -50,7 +50,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General', {
-            'fields': ('id', ('operator', 'operator2', 'operator3'), 'data_filename', 'tof_settings_file', 'laser_power_file', 'scantype', 'time', ('evaluated_by', 'evaluation_file'), ('flagged', 'marked'), 'rating', 'laser_timing')
+            'fields': ('id', ('operator', 'operator2', 'operator3'), 'data_filename', 'tof_settings_file', 'laser_power_file', 'cluster_size_distribution', 'scantype', 'time', ('evaluated_by', 'evaluation_file'), ('flagged', 'marked'), 'rating', 'laser_timing')
         }),
         ('Pressures', {
             'fields': ('pressure_cs', 'pressure_pu1', 'pressure_pu2', 'pressure_ion', 'pressure_tof'),
