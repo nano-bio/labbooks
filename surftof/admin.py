@@ -89,12 +89,13 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 
 class MeasurementsAdmin(admin.ModelAdmin):
     list_display = (
-        'time', 'id', 'get_short_description', 'projectile', 'surface_material', 'impact_energy', 'surface_temperature')
+        'time', 'id', 'get_short_description', 'projectile', 'surface_material', 'impact_energy', 'surface_temperature', 'gas_surf')
     list_filter = ('measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf')
     search_fields = ('comment', 'operator', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'id',)
     readonly_fields = ('id',)
     ordering = ('-time',)
     actions = ['create_new_measurement_based_on_existing_one', ]
+    save_on_top = True
 
     fieldsets = (
         ('General', {
