@@ -2,8 +2,7 @@ import pytz
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 from django.utils import http
-
-from surftof.models import PotentialSettings, Measurement, Operator, Gas, Projectile, Surface, MeasurementType
+from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
@@ -62,6 +61,13 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
                 ('tdc_extraction_time', 'tdc_frequency')
             )
         }),
+        ('Filaments', {
+            'fields': (
+                ('filament_source_voltage', 'filament_source_current'),
+                ('filament_tof_voltage', 'filament_tof_current'),
+                ('filament_tof_bottom_potential', 'filament_tof_bottom_current'),
+            )
+        }),
         ('Comment', {
             'fields': (
                 'comment',)})
@@ -89,11 +95,11 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 
 class MeasurementsAdmin(admin.ModelAdmin):
     list_display = (
-        'time', 'id', 'get_short_description', 'projectile', 'surface_material', 'impact_energy', 'surface_temperature', 'gas_surf')
-    list_filter = ('measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf')
-    search_fields = ('comment', 'operator', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'id',)
+        'id', 'get_date', 'get_short_description', 'projectile', 'get_surface', 'get_impact_energy_surface',
+        'get_surface_temperature', 'gas_surf')
+    list_filter = ('measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'short_description')
+    search_fields = ('comment', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'id',)
     readonly_fields = ('id',)
-    ordering = ('-time',)
     actions = ['create_new_measurement_based_on_existing_one', ]
     save_on_top = True
 
@@ -101,10 +107,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
         ('General', {
             'fields': (
                 'id',
-                ('time', 'operator'),
-                ('file_tof', 'file_surface_current'),
-                'file_pressure_log',
-                ('file_others', 'type_file_others'),
+                'time',
                 'potential_settings',
                 'measurement_type',
                 'short_description',
@@ -113,24 +116,14 @@ class MeasurementsAdmin(admin.ModelAdmin):
             'fields': (
                 ('gas_is', 'gas_surf'), 'projectile',
                 ('surface_material', 'surface_temperature'), 'tof_ions',
-                'impact_energy',
                 ('quadrupole_mass', 'quadrupole_resolution'))}),
+        ('Impact energies', {
+            'fields': (
+                'impact_energy_surface',
+                ('electron_impact_energy_source', 'electron_impact_energy_tof'))}),
         ('Pressures', {
             'fields': (
-                ('pressure_ion_source_chamber', 'pressure_surface_chamber', 'pressure_tof_chamber')
-            )}),
-        ('Filaments', {
-            'fields': (
-                ('filament_source_voltage', 'filament_source_current'),
-                ('filament_tof_voltage', 'filament_tof_current'),
-                ('filament_tof_bottom_potential', 'filament_tof_bottom_current'),
-            )
-        }),
-        ('Evaluation', {
-            'fields': (
-                ('file_evaluation', 'evaluated_by'),
-                'evaluation_comment'
-            )}),
+                ('pressure_ion_source_chamber', 'pressure_surface_chamber', 'pressure_tof_chamber'))}),
         ('Comment', {'fields': ('comment',)})
     )
 
@@ -146,7 +139,11 @@ class MeasurementsAdmin(admin.ModelAdmin):
             for item in s.__dict__:
                 if item not in forbidden_items:
                     if s.__dict__[item] is not None:
-                        redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
+                        # ForeignKey fields have to be named without "_id", so the last 3 chars are truncated
+                        if "id" in http.urlquote(item) and len(http.urlquote(item)) > 2:
+                            redirect_address += http.urlquote(item)[:-3] + '=' + http.urlquote(s.__dict__[item]) + '&'
+                        else:
+                            redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
 
             # redirect to newly created address
             return HttpResponseRedirect(redirect_address)
@@ -157,7 +154,5 @@ class MeasurementsAdmin(admin.ModelAdmin):
 admin.site.register(PotentialSettings, PotentialSettingsAdmin)
 admin.site.register(Measurement, MeasurementsAdmin)
 admin.site.register(MeasurementType)
-admin.site.register(Operator)
 admin.site.register(Gas)
-admin.site.register(Projectile)
 admin.site.register(Surface)

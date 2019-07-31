@@ -8,6 +8,9 @@ Changelog
 =========
 
 09.07.2019
+* SURFTOF/MODIFY/Felix: remove all file fields. files are saved on bigshare only.
+
+09.07.2019
 * SURFTOF/MODIFY/Felix: change some fields
 * CLUSTOF/ADD/Felix: cluster size distribution file
 
