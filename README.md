@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+12.08.2019
+* TOFFY/MODIFY/Felix: preview data returned 500 when no file was uploaded.
+
 09.07.2019
 * SURFTOF/MODIFY/Felix: remove all file fields. files are saved on bigshare only.
 

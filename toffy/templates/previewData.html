@@ -93,7 +93,7 @@
     g = new Dygraph(
         document.getElementById("graphdiv"),  // containing div
         [[0, 0]],                                   // data
-        {labels:['time', 'counts']}                                    // options
+        {labels: ['time', 'counts']}                                    // options
     );
 
     function plotId(id) {
@@ -102,8 +102,13 @@
             g.updateOptions({'file': data.data});
         });
     }
+
     function plotPath(path) {
-        g.updateOptions({'file': path});
+        if (path.includes("opj")) {
+            window.alert('This is a "OPJ" file. Not able to open it by this preview!');
+        } else {
+            g.updateOptions({'file': path});
+        }
     }
 
 </script>

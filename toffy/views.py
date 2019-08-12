@@ -25,9 +25,10 @@ def preview_file_list(request):
 
         tmp = {'date': key, 'times': []}
         for val in group:
-            tmp['times'].append({
-                'time': val.time.strftime('%H:%M'),
-                'id': val.id,
-                'downloadUrl': "{}".format(val.data_file.url)})
+            if val.data_file:
+                tmp['times'].append({
+                    'time': val.time.strftime('%H:%M'),
+                    'id': val.id,
+                    'downloadUrl': "{}".format(val.data_file.url)})
         response.append(tmp)
     return JsonResponse(response, safe=False)
