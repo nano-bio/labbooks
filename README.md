@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+22.08.2019
+* SURFTOF/ADD/Felix: export iseq channel potentials as json
+
 12.08.2019
 * TOFFY/MODIFY/Felix: preview data returned 500 when no file was uploaded.
 
