@@ -31,7 +31,8 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
         ('Potentials source', {
             'fields': (
                 ('source_pusher', 'source_ion_spacer'),
-                ('focus_1a', 'focus_1b'))}),
+                ('focus_1a', 'focus_1b'),
+                'source_cage')}),
         ('Potentials quadrupole', {
             'fields': (
                 ('quad_ref', 'quad_field_axis'),)}),
@@ -42,7 +43,7 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
                 ('focus_3_outer', 'focus_3_inner'),)}),
         ('Potentials ion space', {
             'fields': (
-                'ion_spacer', 'extraction', 'focus_4', 'slit_disc',)}),
+                ('ion_spacer', 'extraction'), ('focus_4', 'slit_disc'),)}),
         ('Potentials TOF', {
             'fields': (
                 ('tof_is_ref', 'tof_zero_level'),
