@@ -30,16 +30,11 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
                 'id', 'time', 'short_description', 'estimated_impact_energy')}),
         ('Potentials source', {
             'fields': (
-                ('spark_plug', 'nozzle'),
-                'skimmer',)}),
-        ('Potentials wien', {
-            'fields': (
-                ('wien_in', 'wien_out'),
-                ('wien_e_top', 'wien_e_bottom'),
-                'wien_magnet',)}),
+                ('source_pusher', 'source_ion_spacer'),
+                ('focus_1a', 'focus_1b'))}),
         ('Potentials quadrupole', {
             'fields': (
-                'focus_1', ('quad_ref', 'quad_field_axis'),)}),
+                ('quad_ref', 'quad_field_axis'),)}),
         ('Potentials Surface', {
             'fields': (
                 ('focus_2_inner', 'focus_2_outer'),

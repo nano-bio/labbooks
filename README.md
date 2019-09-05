@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+05.09.2019
+* SURFTOF/MODIFY/Felix: changed from plasma source to electron impact source.
+
 22.08.2019
 * SURFTOF/ADD/Felix: export iseq channel potentials as json
 

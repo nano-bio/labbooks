@@ -9,15 +9,20 @@ class PotentialSettings(models.Model):
     estimated_impact_energy = models.FloatField(null=True, blank=True)
 
     # Ion lens potentials
-    spark_plug = models.FloatField(blank=True, null=True)
-    nozzle = models.FloatField(blank=True, null=True)
-    skimmer = models.FloatField(blank=True, null=True)
-    wien_in = models.FloatField(blank=True, null=True)
-    wien_out = models.FloatField(blank=True, null=True)
-    wien_e_top = models.FloatField(blank=True, null=True)
-    wien_e_bottom = models.FloatField(blank=True, null=True)
-    wien_magnet = models.FloatField(blank=True, null=True)
-    focus_1 = models.FloatField(blank=True, null=True)
+    spark_plug = models.FloatField(blank=True, null=True)  # deprecated
+    nozzle = models.FloatField(blank=True, null=True)  # deprecated
+    skimmer = models.FloatField(blank=True, null=True)  # deprecated
+    wien_in = models.FloatField(blank=True, null=True)  # deprecated
+    wien_out = models.FloatField(blank=True, null=True)  # deprecated
+    wien_e_top = models.FloatField(blank=True, null=True)  # deprecated
+    wien_e_bottom = models.FloatField(blank=True, null=True)  # deprecated
+    wien_magnet = models.FloatField(blank=True, null=True)  # deprecated
+    focus_1 = models.FloatField(blank=True, null=True)  # deprecated
+    source_pusher = models.FloatField(blank=True, null=True)
+    source_ion_spacer = models.FloatField(blank=True, null=True)
+    focus_1a = models.FloatField(blank=True, null=True)
+    focus_1b = models.FloatField(blank=True, null=True)
+    source_cage = models.FloatField(blank=True, null=True)
     quad_ref = models.FloatField(blank=True, null=True)
     quad_field_axis = models.FloatField(blank=True, null=True)
     focus_2_inner = models.FloatField(blank=True, null=True)
@@ -45,10 +50,6 @@ class PotentialSettings(models.Model):
     filament_tof_bottom_potential = models.FloatField(blank=True, null=True)
     filament_tof_bottom_current = models.FloatField(blank=True, null=True,
                                                     help_text="The current is produced by the filament top")
-
-    # TDC settings
-    tdc_extraction_time = models.FloatField(blank=True, null=True)
-    tdc_frequency = models.FloatField(blank=True, null=True)
 
     # Stepper settings
     slit_disc_angle = models.FloatField(blank=True, null=True, verbose_name="Slit disc angle in degrees")
