@@ -56,11 +56,6 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
                 ('stepper_slit_disc_current_max', 'stepper_slit_disc_current_standby')
             )
         }),
-        ('TDC', {
-            'fields': (
-                ('tdc_extraction_time', 'tdc_frequency')
-            )
-        }),
         ('Filaments', {
             'fields': (
                 ('filament_source_voltage', 'filament_source_current'),
