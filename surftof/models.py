@@ -158,7 +158,10 @@ class Measurement(models.Model):
     comment = models.TextField(max_length=5000, blank=True)
 
     def get_short_description(self):
-        return "{}...".format(self.short_description[:30])
+        if len(self.short_description) > 50:
+            return "{}...".format(self.short_description[:45])
+        else:
+            return self.short_description
 
     def get_date(self):
         return self.time.strftime('%Y-%m-%d')
