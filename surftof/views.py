@@ -1,5 +1,6 @@
+from json import dumps
 from django.db.models import FloatField
-from django.http import JsonResponse
+from django.http import HttpResponse
 from surftof.models import IsegAssignments, PotentialSettings
 
 
@@ -51,4 +52,7 @@ def export_iseg_profile(request, pk):
                         getattr(potential_setting, field.name)) == float:
                     channel_voltages["{}{}".format(int(key[1:2]) - 1, int(key[5:]))] = getattr(potential_setting,
                                                                                                field.name)
-    return JsonResponse(channel_voltages, safe=False)
+
+    response = HttpResponse(dumps(channel_voltages), content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename=iseg-voltages.txt'
+    return response
