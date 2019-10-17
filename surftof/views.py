@@ -1,7 +1,9 @@
 from json import dumps
 from django.db.models import FloatField
 from django.http import HttpResponse
-from surftof.models import IsegAssignments, PotentialSettings
+from django.shortcuts import get_object_or_404
+from surftof.models import IsegAssignments, PotentialSettings, Measurement
+from django.core import serializers
 
 
 def export_iseg_profile(request, pk):
@@ -56,3 +58,14 @@ def export_iseg_profile(request, pk):
     response = HttpResponse(dumps(channel_voltages), content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename=iseg-voltages.txt'
     return response
+
+
+def measurement_json_export(request, pk):
+    obj = get_object_or_404(Measurement, pk=pk)
+    serialized_obj = serializers.serialize('json', [obj, ])
+    return HttpResponse(serialized_obj, content_type='application/json')
+
+def potential_settings_json_export(request, pk):
+    obj = get_object_or_404(PotentialSettings, pk=pk)
+    serialized_obj = serializers.serialize('json', [obj, ])
+    return HttpResponse(serialized_obj, content_type='application/json')

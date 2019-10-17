@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+17.10.2019
+* SURFTOF/ADD/Felix: export potentials settings and measurement information as json
+
 05.09.2019
 * SURFTOF/MODIFY/Felix: changed from plasma source to electron impact source.
 
