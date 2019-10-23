@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+23.10.2019
+* SURFTOF/ADD/Felix: preview TOF spectra
+
 17.10.2019
 * SURFTOF/ADD/Felix: export potentials settings and measurement information as json
 

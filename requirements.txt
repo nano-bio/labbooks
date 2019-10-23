@@ -13,3 +13,4 @@ python-pptx
 pyMTRX
 django-background-tasks
 requests
+h5py

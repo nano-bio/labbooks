@@ -1,0 +1,286 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link href="/staticfiles/json-viewer/jquery.json-viewer.css" rel="stylesheet">
+    <title>SurfTOF - Preview Data</title>
+    <style>
+        .card {
+            margin-top: 10px;
+        }
+
+        input {
+            min-width: 50px;
+        }
+
+        .card-header {
+            padding: 5px 15px;
+        }
+
+        .list-group-item {
+            padding: 3px 10px;
+        }
+
+        #graphdiv {
+            width: 100%;
+            height: 500px;
+            margin: 20px 0;
+        }
+
+        #tree img {
+            width: 22px;
+            height: 22px;
+        }
+
+        .btn-group {
+            margin-bottom: 20px;
+        }
+
+        .dygraph-legend {
+            left: 70px !important;
+            background-color: transparent !important;
+            width: 100%;
+        }
+    </style>
+</head>
+<body translate="no">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-9 col-xl-10 col-md-8">
+            <div id="graphdiv"></div>
+        </div>
+        <div class="col-lg-3 col-xl-2 col-md-4">
+            <div class="card">
+                <div class="card-header">General</div>
+                <div class="card-body">
+                    <h5># Files</h5>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-secondary active" id="plot1File">1</button>
+                        <button type="button" class="btn btn-secondary" id="plot2Files">2</button>
+                        <button type="button" class="btn btn-secondary" id="plotDiff">Diff</button>
+                    </div>
+                    <h5>x-Axis</h5>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-secondary active" id="button-time-bin">time-bin</button>
+                        <button type="button" class="btn btn-secondary" id="button-mass">mass/z</button>
+                    </div>
+                    <h5>y-Axis</h5>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-secondary active" id="button-lin-plot">Lin</button>
+                        <button type="button" class="btn btn-secondary" id="button-log-plot">Log</button>
+                    </div>
+                    <h5>Mass calibration</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary btn-block dropdown-toggle" type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">select
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"
+                             id="dropDownCalibration"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">File 1: Info</div>
+                <div class="card-body">
+                    <pre id="json-viewer1"></pre>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">File 1: IDs
+                    <button type="button" class="btn btn-sm btn-outline-dark" onclick="getDataList();">reload</button>
+                </div>
+                <div class="card-body">
+                    <div id="tree1"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col" id="col-card-file2-info" style="display: none">
+            <div class="card">
+                <div class="card-header">File 2: Info</div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="inputScaleFile2" class="col col-lg-8 col-form-label">Scale Intensity of File
+                            2:</label>
+                        <div class="col col-lg-4">
+                            <input type="number" step="0.01" class="form-control" id="inputScaleFile2" value="1">
+                        </div>
+                    </div>
+                    <pre id="json-viewer2"></pre>
+                </div>
+            </div>
+        </div>
+        <div class="col" id="col-card-file2-ids" style="display: none">
+            <div class="card">
+                <div class="card-header">File 2: IDs
+                    <button type="button" class="btn btn-sm btn-outline-dark" onclick="getDataList();">reload</button>
+                </div>
+                <div id="tree2"></div>
+                <div class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
+<script src="/staticfiles/json-viewer/jquery.json-viewer.js"></script>
+<script src="/staticfiles/json-viewer/jquery.json-viewer.js"></script>
+
+<script>
+    let dataIdFile1 = null;
+    let dataIdFile2 = null;
+    let timeBinOrMass = 'timebin';
+    let calibrationId = null;
+    let scaleDataFile2 = $('#inputScaleFile2');
+    let binnedBy = 8;
+    let maxTimeBin = 200000;
+    let diffPlot = false;
+
+    function getDataList() {
+        $.getJSON("/surftof/preview_file_list/").done(function (data) {
+            let tree1 = $('#tree1');
+            let tree2 = $('#tree2');
+            let treeContent = '<ul class="list-group">';
+            data.forEach(function (dates) {
+                treeContent += '<li class="list-group-item no-border">' + dates.date + '<ul class="list-group">';
+                dates.times.forEach(function (times) {
+                    treeContent += '<li class="list-group-item">' +
+                        '<a href="#" data-id="' + times.id + '">' + times.name + '</a></li>';
+                });
+                treeContent += '</ul></li>';
+            });
+            treeContent += '</ul>';
+            tree1.html(treeContent);
+            tree2.html(treeContent);
+            $('#tree1 a').click(function () {
+                dataIdFile1 = $(this).attr('data-id');
+                plot();
+            });
+            $('#tree2 a').click(function () {
+                dataIdFile2 = $(this).attr('data-id');
+                plot();
+            });
+        });
+        $.getJSON("/surftof/calibration-list/").done(function (data) {
+            let calibrationDropDown = $('#dropDownCalibration');
+            let elements = "";
+            data.forEach(function (element) {
+                elements += '<a class="dropdown-item" href ="#" data-id ="' + element.id + '">' + element.name + '</a>'
+            });
+            calibrationDropDown.html(elements);
+            $('#dropDownCalibration .dropdown-item').click(function () {
+                calibrationId = $(this).data('id');
+                plot();
+            })
+        });
+    }
+
+    getDataList();
+
+    g = new Dygraph(
+        document.getElementById("graphdiv"),  // containing div
+        [[0, 0]],                             // data
+        {legend: 'always'}                                    // options
+    );
+
+    function loadFileInfo(file, dataId) {
+        $.getJSON('/surftof/measurement-json/' + dataId + '/').done(function (data) {
+            $('#json-viewer' + file).jsonViewer(data[0].fields, {collapsed: true});
+        })
+    }
+
+    function plot() {
+        let url = "/surftof/preview_data/" + timeBinOrMass + "/" + calibrationId + "/" + dataIdFile1 + "/" +
+            dataIdFile2 + "/" + parseFloat(scaleDataFile2.val()).toFixed(3) + "/" + diffPlot + "/" + binnedBy + "/" +
+            maxTimeBin + "/";
+        console.log(url);
+        $.getJSON(url).done(function (data) {
+            g.updateOptions({
+                'file': data.data,
+                'labels': data.labels
+            });
+            loadFileInfo(1, dataIdFile1);
+            if (data.data[0].length === 3) {
+                loadFileInfo(2, dataIdFile2);
+            }
+        });
+    }
+
+    $('#plot1File').click(function () {
+        $(this).addClass('active');
+        $('#plot2Files').removeClass('active');
+        $('#plotDiff').removeClass('active');
+        dataIdFile2 = null;
+        diffPlot = false;
+        $('#col-card-file2-info').hide('slow');
+        $('#col-card-file2-ids').hide('slow');
+        plot();
+    });
+    $('#plot2Files').click(function () {
+        $(this).addClass('active');
+        $('#plotDiff').removeClass('active');
+        $('#plot1File').removeClass('active');
+        diffPlot = false;
+        $('#col-card-file2-info').show('slow');
+        $('#col-card-file2-ids').show('slow');
+    });
+    $('#plotDiff').click(function () {
+        $(this).addClass('active');
+        $('#plot1File').removeClass('active');
+        $('#plot2Files').removeClass('active');
+        diffPlot = true;
+        $('#col-card-file2-info').show('slow');
+        $('#col-card-file2-ids').show('slow');
+        plot();
+    });
+
+    $('#button-time-bin').click(function () {
+        $(this).addClass('active');
+        $('#button-mass').removeClass('active');
+        timeBinOrMass = 'timebin';
+        plot();
+    });
+    $('#button-mass').click(function () {
+        $(this).addClass('active');
+        $('#button-time-bin').removeClass('active');
+        timeBinOrMass = 'mass';
+        plot();
+    });
+
+    $('#button-lin-plot').click(function () {
+        $(this).addClass('active');
+        $('#button-log-plot').removeClass('active');
+        setLogScale(false);
+    });
+    $('#button-log-plot').click(function () {
+        $(this).addClass('active');
+        $('#button-lin-plot').removeClass('active');
+        setLogScale(true);
+    });
+
+    $('#inputScaleFile2').change(function () {
+        plot();
+    });
+
+    function setLogScale(val) {
+        console.log(111);
+        g.updateOptions({logscale: val});
+    }
+</script>
+</body>
+</html>

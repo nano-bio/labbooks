@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect
 from django.utils import http
 from django.utils.html import format_html
 
-from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, IsegAssignments
+from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, IsegAssignments, \
+    MassCalibration
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
@@ -153,3 +154,4 @@ admin.site.register(MeasurementType)
 admin.site.register(Gas)
 admin.site.register(Surface)
 admin.site.register(IsegAssignments)
+admin.site.register(MassCalibration)

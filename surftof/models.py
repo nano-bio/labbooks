@@ -222,3 +222,14 @@ class IsegAssignments(models.Model):
 
     class Meta:
         verbose_name_plural = "ISEG assignments"
+
+
+class MassCalibration(models.Model):
+    potential_settings = models.ForeignKey(PotentialSettings, on_delete=models.CASCADE)
+    a = models.FloatField(help_text="mass = a * (t - t0)^2")
+    to = models.FloatField()
+
+    def __str__(self):
+        return "Pusher: {:0.0f}, Drift: {:0.0f}, L2: {:0.0f}, LL: {:0.0f}".format(
+            self.potential_settings.pusher, self.potential_settings.tof_drift_l1,
+            self.potential_settings.tof_l2, self.potential_settings.tof_ll)
