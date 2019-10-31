@@ -9,6 +9,7 @@ Changelog
 
 31.10.2019
 * SURFTOF/MODIFY/Felix: preview TOF spectra shows more measurement information, impact energy is calculated, measurement rating in admin list
+* BUGFIX/Felix: Django version from 1.11.23 to 1.11.25
 
 23.10.2019
 * SURFTOF/ADD/Felix: preview TOF spectra

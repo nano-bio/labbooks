@@ -1,10 +1,9 @@
-django==1.11.23
+django==1.11.25
 gunicorn
 periodictable
 suds
 numpy
 matplotlib
-django-modeladmin-reorder
 MySQL-python
 scipy
 Pillow
