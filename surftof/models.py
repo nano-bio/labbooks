@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.html import format_html
 from django.utils.timezone import now
 
 
@@ -68,7 +69,14 @@ class PotentialSettings(models.Model):
         else:
             return self.short_description
 
+    def get_impact_energy(self):
+        if self.source_ion_spacer is not None and self.surface is not None:
+            return "{} eV".format(self.source_ion_spacer - self.surface)
+        else:
+            return "-"
+
     get_short_description.short_description = "SHORT DESCRIPTION"
+    get_impact_energy.short_description = "IMPACT E"
 
     def __str__(self):
         return "[{}] {}: {}...".format(self.id, self.time.strftime("%d.%m."), self.short_description[:20])
@@ -119,10 +127,11 @@ ION_POLARITIES = (
 )
 
 RATING = (
-    (1, '1 - Science'),
-    (2, '2 - Interesting'),
+    (5, '5 - Science'),
+    (4, '4 - Interesting'),
     (3, '3 - Normal'),
-    (4, '4 - Not interesting')
+    (2, '2 - Not interesting'),
+    (1, '1 - Trash')
 )
 
 
@@ -173,13 +182,28 @@ class Measurement(models.Model):
         return self.surface_temperature
 
     def get_impact_energy_surface(self):
-        return self.impact_energy_surface
+        if self.potential_settings:
+            return self.potential_settings.get_impact_energy()
+        else:
+            return "-"
+
+    def get_rating_stars(self):
+        html_string = ""
+        for i in range(1, 6):
+            if self.rating < i:
+                symbol = "&#9956;"
+            else:
+                symbol = "&#11088;"
+            html_string += '<a href="/surftof/set-rating-of-measurement/{}/{}/">{}</a>'.format(self.id, i, symbol)
+
+        return format_html(html_string)
 
     get_short_description.short_description = "DESCRIPTION"
     get_date.short_description = "DATE"
     get_surface.short_description = "SURFACE"
     get_surface_temperature.short_description = "TEMPERATURE"
     get_impact_energy_surface.short_description = "IMPACT E"
+    get_rating_stars.short_description = "RATING"
 
 
 class IsegAssignments(models.Model):

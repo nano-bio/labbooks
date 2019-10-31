@@ -18,7 +18,7 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 
     proper_time.short_description = 'Time and date'
 
-    list_display = ('proper_time', 'id', 'get_short_description', 'estimated_impact_energy', 'iseg_export')
+    list_display = ('proper_time', 'id', 'get_short_description', 'get_impact_energy', 'iseg_export')
     list_filter = ()
     search_fields = ('comment', 'short_description', 'id',)
     readonly_fields = ('id',)
@@ -28,7 +28,7 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
     fieldsets = (
         ('General', {
             'fields': (
-                'id', 'time', 'short_description', 'estimated_impact_energy')}),
+                'id', 'time', 'short_description')}),
         ('Potentials source', {
             'fields': (
                 ('source_pusher', 'source_ion_spacer'),
@@ -93,9 +93,9 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 class MeasurementsAdmin(admin.ModelAdmin):
     list_display = (
         'id', 'get_date', 'get_short_description', 'projectile', 'get_surface', 'get_impact_energy_surface',
-        'get_surface_temperature', 'gas_surf')
+        'get_surface_temperature', 'gas_surf', 'get_rating_stars')
     list_filter = ('measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'short_description')
-    search_fields = ('comment', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'id',)
+    search_fields = ('comment', 'projectile', 'surface_material__name', 'gas_is__name', 'gas_surf__name', 'id',)
     readonly_fields = ('id',)
     actions = ['create_new_measurement_based_on_existing_one', ]
     save_on_top = True
@@ -116,11 +116,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
                 ('quadrupole_mass', 'quadrupole_resolution'))}),
         ('Impact energies', {
             'fields': (
-                'impact_energy_surface',
                 ('electron_impact_energy_source', 'electron_impact_energy_tof'))}),
-        ('Pressures', {
-            'fields': (
-                ('pressure_ion_source_chamber', 'pressure_surface_chamber', 'pressure_tof_chamber'))}),
         ('Comment', {'fields': ('comment',)})
     )
 

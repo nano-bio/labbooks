@@ -142,7 +142,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'admin_reorder.middleware.ModelAdminReorder',
 )
 
 ROOT_URLCONF = 'labbooks.urls'
@@ -177,7 +176,6 @@ INSTALLED_APPS = (
     'snowball',
     'toffy',
     'poweralarm',
-    # 'admin_reorder',
     'stm',
     'labinventory',
     'background_task',  # this is for scheduled import of STM images
@@ -211,19 +209,3 @@ LOGGING = {
         },
     }
 }
-"""
-ADMIN_REORDER = (
-    'cheminventory',
-    'labinventory',
-    'clustof',
-    'vg',
-    'wippi',
-    'surftof',
-    'snowball',
-    'stm',
-    'toffy',
-    {'app': 'poweralarm', 'models': ('poweralarm.Experiment', 'cheminventory.Person')},
-    'auth',
-    'sites',
-
-)"""

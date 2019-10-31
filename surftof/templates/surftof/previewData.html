@@ -1,13 +1,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css"
+          crossorigin="anonymous"/>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
-    <link href="/staticfiles/json-viewer/jquery.json-viewer.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css">
     <title>SurfTOF - Preview Data</title>
     <style>
+        #loading {
+            display: none;
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            width: 64px;
+            height: 64px;
+            background-color: rgba(255, 255, 255, 0.5);
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        #inputScaleFile2 {
+            margin-top: 15px;
+        }
+
+        #loading div {
+            margin: 20px;
+        }
+
         .card {
             margin-top: 10px;
         }
@@ -43,6 +68,22 @@
             left: 70px !important;
             background-color: transparent !important;
             width: 100%;
+            font-size: large;
+        }
+
+        .f1f2button {
+            -ms-flex: 0 0 130px;
+            flex: 0 0 130px;
+        }
+
+        .f1f2button .btn-group {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .ids-body {
+            max-height: 400px;
+            overflow-y: scroll;
         }
     </style>
 </head>
@@ -64,8 +105,8 @@
                     </div>
                     <h5>x-Axis</h5>
                     <div class="btn-group btn-block" role="group">
-                        <button type="button" class="btn btn-secondary active" id="button-time-bin">time-bin</button>
-                        <button type="button" class="btn btn-secondary" id="button-mass">mass/z</button>
+                        <button type="button" class="btn btn-secondary" id="button-time-bin">time-bin</button>
+                        <button type="button" class="btn btn-secondary active" id="button-mass">mass/z</button>
                     </div>
                     <h5>y-Axis</h5>
                     <div class="btn-group btn-block" role="group">
@@ -81,6 +122,12 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"
                              id="dropDownCalibration"></div>
                     </div>
+                    <div class="form-group form-row">
+                        <label for="inputScaleFile2" class="col col-form-label">Scale Intensity of File 2:</label>
+                        <div class="col">
+                            <input type="number" step="0.01" class="form-control" id="inputScaleFile2" value="1">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,45 +136,30 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">File 1: Info</div>
-                <div class="card-body">
-                    <pre id="json-viewer1"></pre>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div class="card-header">File 1: IDs
-                    <button type="button" class="btn btn-sm btn-outline-dark" onclick="getDataList();">reload</button>
-                </div>
-                <div class="card-body">
-                    <div id="tree1"></div>
-                </div>
+                <div class="card-body" id="fileInfoBody1"></div>
             </div>
         </div>
         <div class="col" id="col-card-file2-info" style="display: none">
             <div class="card">
                 <div class="card-header">File 2: Info</div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="inputScaleFile2" class="col col-lg-8 col-form-label">Scale Intensity of File
-                            2:</label>
-                        <div class="col col-lg-4">
-                            <input type="number" step="0.01" class="form-control" id="inputScaleFile2" value="1">
-                        </div>
-                    </div>
-                    <pre id="json-viewer2"></pre>
-                </div>
+                <div class="card-body" id="fileInfoBody2"></div>
             </div>
         </div>
-        <div class="col" id="col-card-file2-ids" style="display: none">
+        <div class="col">
             <div class="card">
-                <div class="card-header">File 2: IDs
+                <div class="card-header">Measurements
                     <button type="button" class="btn btn-sm btn-outline-dark" onclick="getDataList();">reload</button>
                 </div>
-                <div id="tree2"></div>
-                <div class="card-body"></div>
+                <div class="card-body ids-body">
+                    <div id="tree1"></div>
+                </div>
             </div>
         </div>
+    </div>
+</div>
+<div id="loading">
+    <div class="spinner-border text-success" role="status">
+        <span class="sr-only">Loading...</span>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -138,41 +170,39 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
-<script src="/staticfiles/json-viewer/jquery.json-viewer.js"></script>
-<script src="/staticfiles/json-viewer/jquery.json-viewer.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
 
 <script>
     let dataIdFile1 = null;
     let dataIdFile2 = null;
-    let timeBinOrMass = 'timebin';
+    let timeBinOrMass = 'mass';
     let calibrationId = null;
-    let scaleDataFile2 = $('#inputScaleFile2');
     let binnedBy = 8;
     let maxTimeBin = 200000;
     let diffPlot = false;
+    const scaleDataFile2 = $('#inputScaleFile2');
+    const fileInfoBody1 = $('#fileInfoBody1');
+    const fileInfoBody2 = $('#fileInfoBody2');
+    const spinner = $('#loading');
+    const tree1 = $('#tree1');
 
     function getDataList() {
         $.getJSON("/surftof/preview_file_list/").done(function (data) {
-            let tree1 = $('#tree1');
-            let tree2 = $('#tree2');
             let treeContent = '<ul class="list-group">';
-            data.forEach(function (dates) {
-                treeContent += '<li class="list-group-item no-border">' + dates.date + '<ul class="list-group">';
-                dates.times.forEach(function (times) {
-                    treeContent += '<li class="list-group-item">' +
-                        '<a href="#" data-id="' + times.id + '">' + times.name + '</a></li>';
-                });
-                treeContent += '</ul></li>';
+            data.forEach(function (times) {
+                treeContent += '<li class="list-group-item">' +
+                    '<div class="row">' +
+                    '<div class="col">' + times.name + '</div>' +
+                    '<div class="col f1f2button">' +
+                    '<div class="btn-group btn-block" role="group">' +
+                    '    <button type="button" class="btn btn-secondary" onclick="setFileId(\'Y1\', ' + times.id + ')">Y1</button>' +
+                    '    <button type="button" class="btn btn-secondary" onclick="setFileId(\'Y2\', ' + times.id + ')">Y2</button>' +
+                    '</div></div></div></li>';
             });
             treeContent += '</ul>';
             tree1.html(treeContent);
-            tree2.html(treeContent);
             $('#tree1 a').click(function () {
                 dataIdFile1 = $(this).attr('data-id');
-                plot();
-            });
-            $('#tree2 a').click(function () {
-                dataIdFile2 = $(this).attr('data-id');
                 plot();
             });
         });
@@ -191,34 +221,67 @@
     }
 
     getDataList();
-
     g = new Dygraph(
         document.getElementById("graphdiv"),  // containing div
         [[0, 0]],                             // data
-        {legend: 'always'}                                    // options
+        {                                     // options
+            legend: 'always',
+            ylabel: 'Counts per second',
+            xlabel: 'mass / z',
+        }
     );
 
-    function loadFileInfo(file, dataId) {
-        $.getJSON('/surftof/measurement-json/' + dataId + '/').done(function (data) {
-            $('#json-viewer' + file).jsonViewer(data[0].fields, {collapsed: true});
-        })
+    function setFileId(variable, id) {
+        if (variable === 'Y1') {
+            dataIdFile1 = id;
+        } else {
+            dataIdFile2 = id;
+            $('#col-card-file2-info').show('slow');
+        }
+        plot();
     }
 
+
     function plot() {
+        spinner.show('slow');
         let url = "/surftof/preview_data/" + timeBinOrMass + "/" + calibrationId + "/" + dataIdFile1 + "/" +
             dataIdFile2 + "/" + parseFloat(scaleDataFile2.val()).toFixed(3) + "/" + diffPlot + "/" + binnedBy + "/" +
             maxTimeBin + "/";
-        console.log(url);
         $.getJSON(url).done(function (data) {
             g.updateOptions({
                 'file': data.data,
+                'xlabel': data.xlabel,
                 'labels': data.labels
             });
-            loadFileInfo(1, dataIdFile1);
-            if (data.data[0].length === 3) {
-                loadFileInfo(2, dataIdFile2);
+            $.getJSON('/surftof/get-file-info-for-preview/' + dataIdFile1 + '/').done(function (data) {
+                fileInfoBody1.html(
+                    buildHtmlForFileInfo(data));
+            });
+            if (dataIdFile2 != null) {
+                $.getJSON('/surftof/get-file-info-for-preview/' + dataIdFile2 + '/').done(function (data) {
+                    fileInfoBody2.html(
+                        buildHtmlForFileInfo(data));
+                });
             }
+        }).fail(function () {
+            $.toast({
+                heading: 'Error',
+                text: 'Something went wrong',
+                showHideTransition: 'fade',
+                icon: 'warning'
+            })
+        }).always(function () {
+            spinner.hide();
         });
+    }
+
+    function buildHtmlForFileInfo(data) {
+        let content = '<table class="table">';
+        data.forEach(function (row) {
+            content += '<tr><td>' + row.key + '</td><td>' + row.value + '</td></tr>';
+        });
+        content += '</table>';
+        return content;
     }
 
     $('#plot1File').click(function () {
@@ -228,7 +291,6 @@
         dataIdFile2 = null;
         diffPlot = false;
         $('#col-card-file2-info').hide('slow');
-        $('#col-card-file2-ids').hide('slow');
         plot();
     });
     $('#plot2Files').click(function () {
@@ -237,7 +299,7 @@
         $('#plot1File').removeClass('active');
         diffPlot = false;
         $('#col-card-file2-info').show('slow');
-        $('#col-card-file2-ids').show('slow');
+        plot();
     });
     $('#plotDiff').click(function () {
         $(this).addClass('active');
@@ -245,7 +307,6 @@
         $('#plot2Files').removeClass('active');
         diffPlot = true;
         $('#col-card-file2-info').show('slow');
-        $('#col-card-file2-ids').show('slow');
         plot();
     });
 
@@ -265,22 +326,17 @@
     $('#button-lin-plot').click(function () {
         $(this).addClass('active');
         $('#button-log-plot').removeClass('active');
-        setLogScale(false);
+        g.updateOptions({logscale: false});
     });
     $('#button-log-plot').click(function () {
         $(this).addClass('active');
         $('#button-lin-plot').removeClass('active');
-        setLogScale(true);
+        g.updateOptions({logscale: true});
     });
 
-    $('#inputScaleFile2').change(function () {
+    scaleDataFile2.change(function () {
         plot();
     });
-
-    function setLogScale(val) {
-        console.log(111);
-        g.updateOptions({logscale: val});
-    }
 </script>
 </body>
 </html>

@@ -1,11 +1,14 @@
 labbooks
 ========
 
-The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF).
+The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF, STM, TOFFY, SNOWBALL).
 Requires django >= 1.8 (tested until 1.11.20)
 
 Changelog
 =========
+
+31.10.2019
+* SURFTOF/MODIFY/Felix: preview TOF spectra shows more measurement information, impact energy is calculated, measurement rating in admin list
 
 23.10.2019
 * SURFTOF/ADD/Felix: preview TOF spectra

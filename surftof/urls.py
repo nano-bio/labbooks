@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.views.generic import TemplateView
 
 from surftof.views import export_iseg_profile, measurement_json_export, potential_settings_json_export, \
-    preview_file_list, calibration_list, preview_data
+    preview_file_list, calibration_list, preview_data, set_rating_of_measurement, get_file_info_for_preview
 
 urlpatterns = [
     url(r'^iseg-export/(?P<pk>\d+)/$', export_iseg_profile),
@@ -24,4 +24,8 @@ urlpatterns = [
         r'(?P<max_time_bin>\d+)/$',
         preview_data),
     url(r'^calibration-list/$', calibration_list),
+    url(r'^get-file-info-for-preview/(?P<measurement_id>\d+)/$', get_file_info_for_preview),
+
+    # update the rating of a measurement
+    url(r'^set-rating-of-measurement/(?P<id>\d+)/(?P<rating>[1-5])/$', set_rating_of_measurement)
 ]
