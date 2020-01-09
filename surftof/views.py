@@ -4,13 +4,18 @@ from glob import glob
 from json import dumps
 import numpy as np
 import h5py
-from django.db.models import FloatField
-from django.http import HttpResponse, JsonResponse
+from django.db.models import FloatField, Count
+from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
-from surftof.models import IsegAssignments, PotentialSettings, Measurement, MassCalibration
+from rest_framework import viewsets
+from rest_framework.permissions import BasePermission
+from scipy.optimize import curve_fit
+from surftof.models import IsegAssignments, PotentialSettings, Measurement, CountsPerMass
 from django.core import serializers
+from surftof.serializers import CountsPerMassSerializer
 
 root = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
+
 
 def export_iseg_profile(request, pk):
     channel_voltages = {
@@ -78,24 +83,43 @@ def potential_settings_json_export(request, pk):
     return HttpResponse(serialized_obj, content_type='application/json')
 
 
-def preview_data(request, time_bin_or_mass, calibration_id, data_id_file_1, data_id_file_2, scale_data_file_2,
+# for preview_data
+def masses_from_file(h5py_file, length_y_data, binned_by):
+    def quadratic_fit_function(x, a, t0):
+        return a * (x + t0) ** 2
+
+    x_data = np.array(h5py_file['CALdata']['Mapping'])
+    masses = []
+    times = []
+    for row in x_data:
+        if row[0] != 0 and row[1] != 0:
+            masses.append(row[0])
+            times.append(row[1])
+    popt, pcov = curve_fit(quadratic_fit_function, times, masses, p0=(1e-8, 10000))
+    return quadratic_fit_function(np.array(np.arange(length_y_data) * binned_by), *popt)
+
+
+def preview_data(request, time_bin_or_mass, data_id_file_1, data_id_file_2, scale_data_file_2,
                  diff_plot, binned_by, max_time_bin):
     max_time_bin = int(max_time_bin)
     binned_by = int(binned_by)
-
-    # x-axis
-    if time_bin_or_mass == 'mass':
-        mass_data = calibrate_mass_axis(calibration_id, binned_by, max_time_bin)
-        xlabel = "m/z"
-    else:
-        mass_data = range(binned_by - 1, max_time_bin, binned_by)
-        xlabel = "time bins"
 
     # get y-axis data from h5 file
     file = glob("{}{}/*h5".format(root, int(data_id_file_1)))[-1]
     with h5py.File(file, 'r')as f:
         y_data1 = np.array(f['SPECdata']['AverageSpec'])
         y_data1 = reduce_data_by_mean(y_data1, binned_by, 1)
+
+        # x-axis
+        if time_bin_or_mass == 'mass':
+            xlabel = "m/z"
+            x_data = masses_from_file(f, len(y_data1), binned_by)
+            # x_data = reduce_data_by_mean(x_data, binned_by, 1)
+
+        else:
+            x_data = range(binned_by - 1, max_time_bin, binned_by)
+            xlabel = "time bins"
+
     if data_id_file_2 != 'null':
         file = glob("{}{}/*h5".format(root, int(data_id_file_2)))[-1]
         with h5py.File(file, 'r')as f:
@@ -104,13 +128,13 @@ def preview_data(request, time_bin_or_mass, calibration_id, data_id_file_1, data
 
     # create json string from y-axis data
     response = '{"data":['
-    for i in range(min([len(y_data1), len(mass_data)])):
+    for i in range(min([len(y_data1), len(x_data)])):
         if data_id_file_2 == 'null':
-            response += "[{},{:.2e}],".format(mass_data[i], y_data1[i])
+            response += "[{},{:.2e}],".format(x_data[i], y_data1[i])
         elif diff_plot == 'true':
-            response += "[{},{:.2e}],".format(mass_data[i], y_data1[i] - y_data2[i])
+            response += "[{},{:.2e}],".format(x_data[i], y_data1[i] - y_data2[i])
         else:
-            response += "[{},{:.2e},{:.2e}],".format(mass_data[i], y_data1[i], y_data2[i])
+            response += "[{},{:.2e},{:.2e}],".format(x_data[i], y_data1[i], y_data2[i])
     response = response[:-1]  # remove last ','
 
     # append labels to json string
@@ -203,18 +227,6 @@ def reduce_data_by_mean(data, binning, scale):
     return reduced_date
 
 
-# for preview_data
-def calibrate_mass_axis(calibration_id, binned_by, max_time_bin):
-    mass_data = []
-    if calibration_id == 'null':
-        calibration = MassCalibration.objects.last()
-    else:
-        calibration = MassCalibration.objects.get(pk=int(calibration_id))
-    for i in range(binned_by - 1, max_time_bin, binned_by):
-        mass_data.append(calibration.a * (i + calibration.to) ** 2)
-    return mass_data
-
-
 # for preview data
 def preview_file_list(request):
     # get all measurements from DB
@@ -243,15 +255,6 @@ def preview_file_list(request):
     return JsonResponse(response, safe=False)
 
 
-# for preview data
-def calibration_list(reqest):
-    calibrations = MassCalibration.objects.all()
-    response = []
-    for c in calibrations:
-        response.append({'id': c.id, 'name': c.__str__()})
-    return JsonResponse(response, safe=False)
-
-
 # update the rating of a measurement
 def set_rating_of_measurement(request, id, rating):
     if request.user.has_perm('surftof.add_measurement'):
@@ -259,3 +262,129 @@ def set_rating_of_measurement(request, id, rating):
         obj.rating = int(rating)
         obj.save()
         return redirect('/admin/surftof/measurement/')
+
+
+class SurfTofPermission(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.has_perm('surftof.add_measurement')
+
+
+class CountsPerMassViewSet(viewsets.ModelViewSet):
+    permission_classes = [SurfTofPermission]
+    queryset = CountsPerMass.objects.all()
+    serializer_class = CountsPerMassSerializer
+
+
+def cpm_filter_ids(request):
+    if request.method == 'POST':
+        # get POST data
+        # get energy
+        filter_energy = request.POST.get('filterEnergy', True)
+        filter_energy_lower = request.POST.get('filterEnergyLower', -1e20)
+        filter_energy_upper = request.POST.get('filterEnergyUpper', 1e20)
+
+        # get temperature
+        filter_temp = request.POST.get('filterTemp', True)
+        filter_temp_lower = request.POST.get('filterTempLower', 0)
+        filter_temp_upper = request.POST.get('filterTempUpper', 1e20)
+
+        # build query
+        ids = CountsPerMass.objects.all()
+        if filter_energy:
+            ids.filter(surface_impact_energy__gte=filter_energy_lower)
+            ids.filter(surface_impact_energy__lte=filter_energy_upper)
+        if filter_temp:
+            ids.filter(surface_temperature__gte=filter_temp_lower)
+            ids.filter(surface_temperature__lte=filter_temp_upper)
+
+        measurement_ids = list(dict.fromkeys(  # removes duplicates
+            list(ids.values_list('measurement_id', flat=True))))
+        masses = list(dict.fromkeys(  # removes duplicates
+            list(ids.order_by('mass').values_list('mass', flat=True))))
+
+        return JsonResponse({'measurements': measurement_ids, 'masses': masses}, safe=False)
+
+
+def cpm_data(request):
+    if request.method == 'POST':
+
+        # parse request
+        measurement_ids = [int(x) for x in request.POST.getlist('ids[]')]
+        masses = [int(x) for x in request.POST.getlist('masses[]')]
+        x_axis = request.POST.get('x')
+        diff_plots = request.POST.get('diffPlots')
+
+        if x_axis == 'mass':
+            x_label = 'm/z'
+            order_by = 'mass'
+
+        elif x_axis == 'energy':
+            x_label = 'Energy [eV]'
+            order_by = 'surface_impact_energy'
+
+        elif x_axis == 'temperature':
+            x_label = 'Temperature'
+            order_by = 'surface_temperature'
+
+        else:
+            return Http404()
+
+        # get objects
+        data = CountsPerMass.objects.all()
+
+        # filter measurements
+        data = data.filter(measurement_id__in=measurement_ids)
+
+        # filter masses
+        data = data.filter(mass__in=masses)
+
+        # order by x axis
+        data = data.order_by(order_by)
+
+        response = {
+            'data': [],
+            'xLabel': x_label
+        }
+        if diff_plots == 'single':
+            response['labels'] = [x_label, 'counts']
+            for i in data:
+                if i.__getattribute__(order_by):
+                    response['data'].append([
+                        i.__getattribute__(order_by),
+                        [i.counts - i.counts_err, i.counts, i.counts + i.counts_err]
+                    ])
+        else:
+            # group by x axis
+            groups = list(dict.fromkeys(
+                data.values(diff_plots).annotate(dcount=Count(diff_plots)).values_list(diff_plots, flat=True)))
+            groups = [i for i in groups if i]
+
+            data_dict = {}
+            response['labels'] = [x_label, ]
+
+            for filter in groups:
+                kwargs = {'{0}'.format(diff_plots): filter}
+
+                filtered = data.filter(**kwargs)
+                for i in filtered:
+                    if i.__getattribute__(order_by) is None:
+                        continue
+                    elif i.__getattribute__(order_by) in data_dict:
+                        data_dict[i.__getattribute__(order_by)][filter] = [i.counts - i.counts_err, i.counts,
+                                                                           i.counts + i.counts_err]
+                    else:
+                        data_dict[i.__getattribute__(order_by)] = {
+                            filter: [i.counts - i.counts_err, i.counts, i.counts + i.counts_err]}
+                response['labels'].append(str(filter))
+            data_list = []
+            for k, v in data_dict.items():
+                e = [k]
+                for i in groups:
+                    if i in v:
+                        e.append(v[i])
+                    else:
+                        e.append(None)
+                data_list.append(e)
+            response['data'] = data_list
+
+        return JsonResponse(response, safe=False)

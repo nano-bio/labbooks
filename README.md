@@ -6,6 +6,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 
 Changelog
 =========
+09.01.2020
+* SURFTOF/MODIFY/Felix: preview TOF spectra. Mass axis is calculated by calibration of h5 files
+* SURFTOF/ADD/Felix: Counts per mass model added.
 
 31.10.2019
 * SURFTOF/MODIFY/Felix: preview TOF spectra shows more measurement information, impact energy is calculated, measurement rating in admin list

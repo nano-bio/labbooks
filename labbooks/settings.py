@@ -179,6 +179,7 @@ INSTALLED_APPS = (
     'stm',
     'labinventory',
     'background_task',  # this is for scheduled import of STM images
+    'rest_framework'
 )
 
 # A sample logging configuration. The only tangible logging

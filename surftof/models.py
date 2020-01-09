@@ -198,6 +198,9 @@ class Measurement(models.Model):
 
         return format_html(html_string)
 
+    def __str__(self):
+        return "ID {}".format(self.id)
+
     get_short_description.short_description = "DESCRIPTION"
     get_date.short_description = "DATE"
     get_surface.short_description = "SURFACE"
@@ -248,12 +251,22 @@ class IsegAssignments(models.Model):
         verbose_name_plural = "ISEG assignments"
 
 
-class MassCalibration(models.Model):
-    potential_settings = models.ForeignKey(PotentialSettings, on_delete=models.CASCADE)
-    a = models.FloatField(help_text="mass = a * (t - t0)^2")
-    to = models.FloatField()
+class CountsPerMass(models.Model):
+    measurement = models.ForeignKey(Measurement, on_delete=models.CASCADE)
+    last_edit = models.DateTimeField(auto_now=True)
+    mass = models.FloatField(help_text='Use only the integer masses here, except "half masses" (28.5m/z)')
+    counts = models.FloatField(verbose_name='Normalized Counts')
+    counts_err = models.FloatField()
+    surface_impact_energy = models.FloatField(blank=True, null=True)
+    surface_temperature = models.FloatField(blank=True, null=True)
+    surface_current = models.FloatField(blank=True, null=True)
+    pressure_is = models.FloatField(blank=True, null=True)
+    pressure_surf = models.FloatField(blank=True, null=True)
+    pressure_tof = models.FloatField(blank=True, null=True)
+    molecule = models.CharField(blank=True, max_length=100, verbose_name='Molecular formula',
+                                help_text='E.g. Be2D3. Only use this field, if you are sure,'
+                                          ' that the counts are not a combination of different molecules!')
+    comment = models.TextField(blank=True, max_length=500)
 
     def __str__(self):
-        return "Pusher: {:0.0f}, Drift: {:0.0f}, L2: {:0.0f}, LL: {:0.0f}".format(
-            self.potential_settings.pusher, self.potential_settings.tof_drift_l1,
-            self.potential_settings.tof_l2, self.potential_settings.tof_ll)
+        return "ID {} Mass {}".format(self.measurement_id, self.mass)

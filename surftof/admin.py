@@ -5,7 +5,7 @@ from django.utils import http
 from django.utils.html import format_html
 
 from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, IsegAssignments, \
-    MassCalibration
+    CountsPerMass
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
@@ -44,11 +44,13 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
                 ('focus_3_outer', 'focus_3_inner'),)}),
         ('Potentials ion space', {
             'fields': (
-                ('ion_spacer', 'extraction'), ('focus_4', 'slit_disc'),)}),
+                ('ion_spacer', 'extraction'),
+                ('focus_4', 'slit_disc'),
+                'tof_is_ref',)}),
         ('Potentials TOF', {
             'fields': (
-                ('tof_is_ref', 'tof_zero_level'),
-                ('pusher', 'tof_drift_l1'),
+                ('tof_zero_level', 'pusher'),
+                'tof_drift_l1',
                 ('tof_l2', 'tof_ll'),
                 'mcp')}),
         ('Stepper', {
@@ -144,10 +146,17 @@ class MeasurementsAdmin(admin.ModelAdmin):
             messages.error(request, 'You can only base a new potential setting on ONE existing setting, stupid.')
 
 
+class CountsPerMassAdmin(admin.ModelAdmin):
+    list_display = ['measurement', 'mass', 'counts', 'counts_err', 'surface_impact_energy']
+    list_filter = ['measurement', 'mass', 'surface_impact_energy']
+    search_fields = ['measurement__id', 'mass']
+    save_on_top = True
+
+
 admin.site.register(PotentialSettings, PotentialSettingsAdmin)
 admin.site.register(Measurement, MeasurementsAdmin)
+admin.site.register(CountsPerMass, CountsPerMassAdmin)
 admin.site.register(MeasurementType)
 admin.site.register(Gas)
 admin.site.register(Surface)
 admin.site.register(IsegAssignments)
-admin.site.register(MassCalibration)
