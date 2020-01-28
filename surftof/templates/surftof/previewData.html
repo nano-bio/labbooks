@@ -136,6 +136,12 @@
                             <input type="number" step="0.01" class="form-control" id="inputScaleFile2" value="1">
                         </div>
                     </div>
+                    <div class="form-group form-row">
+                        <label for="inputBinning" class="col col-form-label">Binning:</label>
+                        <div class="col">
+                            <input type="number" step="1" class="form-control" id="inputBinning" value="8">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,9 +190,9 @@
     let dataIdFile1 = null;
     let dataIdFile2 = null;
     let timeBinOrMass = 'mass';
-    let binnedBy = 8;
     let maxTimeBin = 200000;
     let diffPlot = false;
+    const inputBinning = $('#inputBinning');
     const scaleDataFile2 = $('#inputScaleFile2');
     const fileInfoBody1 = $('#fileInfoBody1');
     const fileInfoBody2 = $('#fileInfoBody2');
@@ -240,6 +246,7 @@
 
     function plot() {
         spinner.show('slow');
+        let binnedBy = parseInt(inputBinning.val());
         let url = "/surftof/preview_data/" + timeBinOrMass + "/" + dataIdFile1 + "/" +
             dataIdFile2 + "/" + parseFloat(scaleDataFile2.val()).toFixed(3) + "/" + diffPlot + "/" + binnedBy + "/" +
             maxTimeBin + "/";

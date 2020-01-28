@@ -298,7 +298,8 @@ def cpm_filter_ids(request):
             ids.filter(surface_temperature__lte=filter_temp_upper)
 
         measurement_ids = list(dict.fromkeys(  # removes duplicates
-            list(ids.values_list('measurement_id', flat=True))))
+            list(ids.values_list('measurement__id', flat=True))))
+        measurement_ids.sort(reverse=True)
         masses = list(dict.fromkeys(  # removes duplicates
             list(ids.order_by('mass').values_list('mass', flat=True))))
 
@@ -350,14 +351,18 @@ def cpm_data(request):
             for i in data:
                 if i.__getattribute__(order_by):
                     response['data'].append([
-                        i.__getattribute__(order_by),
-                        [i.counts - i.counts_err, i.counts, i.counts + i.counts_err]
+                        i.__getattribute__(order_by), [
+                            i.counts - i.counts_err,
+                            i.counts,
+                            i.counts + i.counts_err]
                     ])
         else:
             # group by x axis
             groups = list(dict.fromkeys(
                 data.values(diff_plots).annotate(dcount=Count(diff_plots)).values_list(diff_plots, flat=True)))
             groups = [i for i in groups if i]
+            groups.sort()
+            response['log'] = groups
 
             data_dict = {}
             response['labels'] = [x_label, ]
@@ -370,11 +375,16 @@ def cpm_data(request):
                     if i.__getattribute__(order_by) is None:
                         continue
                     elif i.__getattribute__(order_by) in data_dict:
-                        data_dict[i.__getattribute__(order_by)][filter] = [i.counts - i.counts_err, i.counts,
-                                                                           i.counts + i.counts_err]
+                        data_dict[i.__getattribute__(order_by)][filter] = [
+                            i.counts - i.counts_err,
+                            i.counts,
+                            i.counts + i.counts_err]
                     else:
                         data_dict[i.__getattribute__(order_by)] = {
-                            filter: [i.counts - i.counts_err, i.counts, i.counts + i.counts_err]}
+                            filter: [
+                                i.counts - i.counts_err,
+                                i.counts,
+                                i.counts + i.counts_err]}
                 response['labels'].append(str(filter))
             data_list = []
             for k, v in data_dict.items():

@@ -51,7 +51,10 @@ def get_temp_from_file(measurement_id):
                         line_time = datetime.strptime(line.strip().split(',')[0][:19], '%Y-%m-%dT%H:%M:%S')
                         if file_start < line_time < file_end:
                             temps.append(float(line.strip().split(',')[1]))
-            return "{:.1f} &#176;C".format(np.median(temps))
+            return_value = "{:.1f} &#176;C".format(np.median(temps))
+            if "nan" in return_value:
+                return "-1 &#176;C"
+            return return_value
     except:
         return "-1 &#176;C"
 
