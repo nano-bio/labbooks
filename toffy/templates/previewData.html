@@ -37,6 +37,10 @@
             width: 22px;
             height: 22px;
         }
+
+        .active {
+            background-color: rgba(0, 255, 0, 0.5) !important;
+        }
     </style>
 </head>
 <body translate="no">
@@ -45,6 +49,7 @@
         <div class="col-lg-8 col-xl-9">
             <!-- Graph -->
             <div id="graphdiv"></div>
+            <div id="idtext"></div>
         </div>
         <div class="col-lg-4 col-xl-3">
             <div class="card">
@@ -83,7 +88,9 @@
             treeContent += '</ul>';
             tree.html(treeContent);
             $('#tree a').click(function () {
-                plotPath($(this).attr('data-path'));
+                plotPath($(this).attr('data-path'), $(this).attr('data-id'));
+                $('.list-group-item').removeClass('active');
+                $(this).parent().addClass('active');
             });
         });
     }
@@ -103,10 +110,11 @@
         });
     }
 
-    function plotPath(path) {
+    function plotPath(path, dataid) {
         if (path.includes("opj")) {
             window.alert('This is a "OPJ" file. Not able to open it by this preview!');
         } else {
+            $('#idtext').text("ID: " + dataid);
             g.updateOptions({'file': path});
         }
     }
