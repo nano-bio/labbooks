@@ -178,6 +178,7 @@ INSTALLED_APPS = (
     'poweralarm',
     'stm',
     'labinventory',
+    'pulsetube',
     'background_task',  # this is for scheduled import of STM images
     'rest_framework'
 )
