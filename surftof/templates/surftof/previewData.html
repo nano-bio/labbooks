@@ -29,6 +29,10 @@
             border-radius: 10px;
         }
 
+        #modal-ready-loading {
+            color: green;
+        }
+
         #inputScaleFile2 {
             margin-top: 15px;
         }
@@ -163,11 +167,11 @@
                     </div>
 
                     <button class="btn btn-block btn-secondary" id="button-traces-counts" type="button">
-                        get traces / counts
+                        Get traces
                     </button>
 
                     <button type="button" class="btn btn-block btn-secondary" id="button-download-plot">
-                        download plot as csv
+                        Download plot as csv
                     </button>
                 </div>
             </div>
@@ -176,7 +180,7 @@
     <div class="form-row">
         <div class="col" id="col-card-traces-counts" style="display: none">
             <div class="card">
-                <div class="card-header">Traces / Counts</div>
+                <div class="card-header">Traces</div>
                 <div class="card-body">
                     <div class="form-group form-row">
                         <div class="col">
@@ -240,7 +244,8 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Maybe this will take some time. Therefor you get a cartoon :-)</h5>
+                <h5 class="modal-title">Maybe this will take some time. Therefore
+                    you get a cartoon :-) <span id="modal-ready-loading"></span></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -282,6 +287,7 @@
     const fileInfoBody2 = $('#fileInfoBody2');
     const spinner = $('#loading');
     const tree1 = $('#tree1');
+    const modalReadyLoading = $('#modal-ready-loading');
 
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
@@ -300,6 +306,7 @@
     }
 
     $('#button-create-trace').click(function () {
+        modalReadyLoading.text('');
         if (
             typeof parseFloat(massMin.val()) !== 'number' ||
             typeof parseFloat(massMax.val()) !== 'number'
@@ -324,6 +331,7 @@
                 massMax: minMaxBin.maxIndex,
                 measurementId: dataIdFile1,
             }).done(function (data) {
+                modalReadyLoading.text('READY');
                 g.updateOptions({
                     'file': data.data,
                     'xlabel': 'time [s]'
@@ -557,7 +565,9 @@
         $('#button-lin-plot').removeClass('active');
         g.updateOptions({logscale: true});
     });
-
+    setInterval(function () {
+        $('#modal-ready-loading').fadeIn(300).fadeOut(500);
+    }, 1000);
     scaleDataFile2.change(function () {
         plot();
     });
