@@ -1,18 +1,20 @@
 import itertools
 from datetime import datetime, timedelta
 from glob import glob
-from json import dumps
 import numpy as np
 import h5py
 from django.db.models import FloatField, Count
 from django.http import HttpResponse, JsonResponse, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 from scipy.optimize import curve_fit
 from surftof.models import IsegAssignments, PotentialSettings, Measurement, CountsPerMass
 from django.core import serializers
 from surftof.serializers import CountsPerMassSerializer
+from requests import get
+from json import loads, dumps
+from random import randint
 
 root = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
 
@@ -148,6 +150,46 @@ def preview_data(request, time_bin_or_mass, data_id_file_1, data_id_file_2, scal
     response += '],"xlabel":"{}","labels":{}}}'.format(xlabel, labels)
 
     return HttpResponse(response, content_type='application/json')
+
+
+def preview_trace(request):
+    if request.method != "POST":
+        raise Http404("Wrong method")
+
+    mass_min = int(request.POST.get('massMin'))
+    mass_max = int(request.POST.get('massMax'))
+    measurement_id = int(request.POST.get('measurementId'))
+
+    file = glob("{}{}/*h5".format(root, int(measurement_id)))[-1]
+    infile = h5py.File(file, 'r')
+    data = infile[u'SPECdata/Intensities']
+    trace_points = data.shape[0]
+
+    norm_factor = infile.attrs["Single Spec Duration (ms)"][0] / 1000
+
+    integrated_intervals = np.zeros([trace_points])
+
+    for b in range(trace_points):
+        integrated_intervals[b] = np.sum(data[b, mass_min:mass_max])
+
+    integrated_intervals *= norm_factor
+    times = np.arange(trace_points) * norm_factor + norm_factor / 2
+
+    return JsonResponse({'data': np.column_stack((times, integrated_intervals)).tolist()}, safe=False)
+
+
+def preview_xkcd(request):
+    url = "https://xkcd.com/info.0.json"
+    data = loads(get(url).content.decode())
+    rand_num = randint(1, int(data['num']))
+
+    url = "https://xkcd.com/{}/info.0.json".format(rand_num)
+    data = loads(get(url).content.decode())
+    return render(request, 'surftof/modal_content.html', {
+        'title': data['safe_title'],
+        'img_url': data['img'],
+        'img_alt': data['alt'],
+    })
 
 
 def import_pressure(id):

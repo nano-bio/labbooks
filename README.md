@@ -6,6 +6,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 
 Changelog
 =========
+09.01.2020
+* SURFTOF/MODIFY/Felix: preview: get time dependent traces from h5
+
 19.02.2020
 * PULSETUBE/NEW/Felix: New labbook for the new cluster source
 
