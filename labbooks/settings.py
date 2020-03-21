@@ -179,6 +179,7 @@ INSTALLED_APPS = (
     'stm',
     'labinventory',
     'pulsetube',
+    'moses',
     'background_task',  # this is for scheduled import of STM images
     'rest_framework'
 )
