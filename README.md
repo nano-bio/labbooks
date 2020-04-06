@@ -6,6 +6,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 
 Changelog
 =========
+06.04.2020
+* TOFFY/MODIFY/Felix: rename bender fields in measurement 
+
 19.03.2020
 * MOSES/ADD/Felix: New Moses App to save images, eval. files, few settings
 

@@ -28,8 +28,8 @@ class Measurement(models.Model):
     electron_energy = models.FloatField(verbose_name="Electron energy [eV]", blank=True, null=True)
     electron_current = models.FloatField(verbose_name="Electron current [uA]", blank=True, null=True)
 
-    bender_inner_voltage = models.FloatField(verbose_name="Inner voltage [V]", blank=True, null=True)
-    bender_outer_voltage = models.FloatField(verbose_name="Outer voltage [V]", blank=True, null=True)
+    bender_float_voltage = models.FloatField(verbose_name="Float voltage [V]", blank=True, null=True)
+    bender_deflect_voltage = models.FloatField(verbose_name="Deflect voltage [V]", blank=True, null=True)
 
     deflector_float_z = models.FloatField(verbose_name="Float Z [V]", blank=True, null=True)
     deflector_u_z = models.FloatField(verbose_name="U Z [V]", blank=True, null=True)
