@@ -9,10 +9,12 @@
     <style>
         .card {
             margin-top: 10px;
+            height: 100%;
         }
 
         .card-body {
             padding: 5px;
+            overflow: scroll;
         }
 
         .card-header {
@@ -41,6 +43,18 @@
         .active {
             background-color: rgba(0, 255, 0, 0.5) !important;
         }
+
+        .row {
+            height: 100%;
+        }
+
+        #idtext {
+            float: left;
+        }
+
+        #button-lin-plot {
+            float: right;
+        }
     </style>
 </head>
 <body translate="no">
@@ -50,6 +64,8 @@
             <!-- Graph -->
             <div id="graphdiv"></div>
             <div id="idtext"></div>
+            <button type="button" class="btn btn-secondary" id="button-lin-plot">Lin / Log
+            </button>
         </div>
         <div class="col-lg-4 col-xl-3">
             <div class="card">
@@ -118,6 +134,15 @@
             g.updateOptions({'file': path});
         }
     }
+
+
+    $('#button-lin-plot').click(function () {
+        if (g.getOption('logscale') === true) {
+            g.updateOptions({logscale: false});
+        } else {
+            g.updateOptions({logscale: true});
+        }
+    });
 
 </script>
 </body>
