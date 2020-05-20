@@ -64,6 +64,10 @@ class MeasurementAdmin(admin.ModelAdmin):
             'fields': ('electron_energy_set', 'real_electron_energy', 'ion_block', 'pusher', 'wehnelt', ('extraction_1', 'extraction_1_left', 'extraction_1_right'), 'extraction_2', 'deflector_1', 'deflector_2', 'filament_current', 'trap_current', 'housing_current', 'faraday_cup', 'polarity'),
             'classes': ('wide',)
         }),
+        ('LIS', {
+            'fields': ('lis_filament_current', 'lis_trap_current', ('lis_deflector_y', 'lis_deflector_z'), 'lis_ion_block', 'lis_electron_energy'),
+            'classes': ('wide',),
+        }),
         ('Pickup', {
             'fields': (('oven_1_temperature', 'oven_1_power'), ('oven_2_temperature', 'oven_2_power'), ('chem_pu1_oven', 'chem_pu1_gas'), ('chem_pu2_oven', 'chem_pu2_gas'), 'is_inlet_gas', 'substance'),
             'classes': ('wide',)

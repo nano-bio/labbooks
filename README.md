@@ -6,6 +6,10 @@ Requires django >= 1.8 (tested until 1.11.20)
 
 Changelog
 =========
+
+20.05.2020
+* CLUSTOF/ADD/Felix: Add fields for new Ion source LIS
+
 06.04.2020
 * TOFFY/MODIFY/Felix: rename bender fields in measurement 
 
