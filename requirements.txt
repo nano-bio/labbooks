@@ -1,4 +1,4 @@
-django==1.11.27
+django==1.11.29
 gunicorn
 periodictable
 suds
