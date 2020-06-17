@@ -26,7 +26,7 @@ class Measurement(models.Model):
     # general
     operator = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='operator')
     operator_2 = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, blank=True, related_name='operator_2')
-    data_file = models.CharField(max_length=400, blank=True)
+    data_file = models.FileField(upload_to='pulsetube/dataFiles/', blank=True)
     date_time = models.DateTimeField(default=now)
     scan_type = models.CharField(max_length=20, choices=SCAN_TYPE, null=True, blank=True)
 
@@ -61,10 +61,11 @@ class Measurement(models.Model):
             self.date_time.strftime("%Y-%m-%d %H:%M"),
             self.operator)
 
-    def file_link(self):
-        return "...{}".format(self.data_file[-30:])
+    # this provides a link to the data file in the admin interface
+    def get_data_file(self):
+        return "<a href='%s' download>Data file</a>" % ('/files/' + str(self.data_file))
 
-    # file_link.allow_tags = True
+    get_data_file.allow_tags = True
 
     def get_comment(self):
 

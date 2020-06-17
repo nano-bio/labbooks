@@ -11,7 +11,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
         'he_temp',
         'ion_source_electron_energy',
         'ion_source_filament_current',
-        'file_link',
+        'get_data_file',
         'scan_type'
     )
     list_filter = (

@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 
+17.06.2020
+* PULSETUBE/MODIFY/Felix: change data file to FileField
+
 20.05.2020
 * CLUSTOF/ADD/Felix: Add fields for new Ion source LIS
 
