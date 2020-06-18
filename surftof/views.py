@@ -6,10 +6,13 @@ import h5py
 from django.db.models import FloatField, Count
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import ListView
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 from scipy.optimize import curve_fit
-from surftof.models import IsegAssignments, PotentialSettings, Measurement, CountsPerMass
+
+from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
+from surftof.models import IsegAssignments, PotentialSettings, Measurement, CountsPerMass, Gas, Surface, MeasurementType
 from django.core import serializers
 from surftof.serializers import CountsPerMassSerializer
 from requests import get
@@ -73,14 +76,18 @@ def export_iseg_profile(request, pk):
     return response
 
 
-def measurement_json_export(request, pk):
-    obj = get_object_or_404(Measurement, pk=pk)
-    serialized_obj = serializers.serialize('json', [obj, ])
-    return HttpResponse(serialized_obj, content_type='application/json')
-
-
-def potential_settings_json_export(request, pk):
-    obj = get_object_or_404(PotentialSettings, pk=pk)
+def json_export(request, table, pk):
+    try:
+        table = str(table).lower()
+        pk = int(pk)
+    except ValueError:
+        raise Http404("Table or pk format invalid!")
+    if table == "measurement":
+        obj = get_object_or_404(Measurement, pk=pk)
+    elif table == 'potentials' or table == 'potentialsettings':
+        obj = get_object_or_404(PotentialSettings, pk=pk)
+    else:
+        raise Http404("Table unknown!")
     serialized_obj = serializers.serialize('json', [obj, ])
     return HttpResponse(serialized_obj, content_type='application/json')
 
@@ -101,10 +108,17 @@ def masses_from_file(h5py_file, length_y_data, binned_by):
     return quadratic_fit_function(np.array(np.arange(length_y_data) * binned_by), *popt)
 
 
-def preview_data(request, time_bin_or_mass, data_id_file_1, data_id_file_2, scale_data_file_2,
-                 diff_plot, binned_by, max_time_bin):
-    max_time_bin = int(max_time_bin)
-    binned_by = int(binned_by)
+def preview_data(request):
+    if request.method == 'POST':
+        time_bin_or_mass = request.POST.get('timeBinOrMass')
+        data_id_file_1 = request.POST.get('dataIdFile1')
+        data_id_file_2 = request.POST.get('dataIdFile2')
+        scale_data_file_2 = request.POST.get('scaleDataFile2')
+        diff_plot = request.POST.get('diffPlot')
+        binned_by = int(request.POST.get('binnedBy'))
+        max_time_bin = int(request.POST.get('maxTimeBin'))
+    else:
+        return HttpResponse('This is a post only view')
 
     # get y-axis data from h5 file
     file = glob("{}{}/*h5".format(root, int(data_id_file_1)))[-1]
@@ -122,7 +136,7 @@ def preview_data(request, time_bin_or_mass, data_id_file_1, data_id_file_2, scal
             x_data = range(binned_by - 1, max_time_bin, binned_by)
             xlabel = "time bins"
 
-    if data_id_file_2 != 'null':
+    if data_id_file_2:
         file = glob("{}{}/*h5".format(root, int(data_id_file_2)))[-1]
         with h5py.File(file, 'r')as f:
             y_data2 = np.array(f['SPECdata']['AverageSpec'])
@@ -131,7 +145,7 @@ def preview_data(request, time_bin_or_mass, data_id_file_1, data_id_file_2, scal
     # create json string from y-axis data
     response = '{"data":['
     for i in range(min([len(y_data1), len(x_data)])):
-        if data_id_file_2 == 'null':
+        if not data_id_file_2:
             response += "[{},{:.2e}],".format(x_data[i], y_data1[i])
         elif diff_plot == 'true':
             response += "[{},{:.2e}],".format(x_data[i], y_data1[i] - y_data2[i])
@@ -140,7 +154,7 @@ def preview_data(request, time_bin_or_mass, data_id_file_1, data_id_file_2, scal
     response = response[:-1]  # remove last ','
 
     # append labels to json string
-    if data_id_file_2 == 'null':
+    if not data_id_file_2:
         labels = '["time bin","cps ID {}"]'.format(data_id_file_1)
     elif diff_plot == 'true':
         labels = '["time bin","cps ID {} - cps ID {}"]'.format(data_id_file_1, data_id_file_2)
@@ -217,7 +231,7 @@ def import_pressure(id):
     return pressures
 
 
-def get_file_info_for_preview(request, measurement_id):
+def preview_get_file_info(request, measurement_id):
     response = []
     measurement = get_object_or_404(Measurement, pk=int(measurement_id))
     pressures = import_pressure(measurement_id)
@@ -440,3 +454,37 @@ def cpm_data(request):
             response['data'] = data_list
 
         return JsonResponse(response, safe=False)
+
+
+class TableViewer(ListView):
+    paginate_by = 50
+    template_name = "surftof/table_list.html"
+
+    def get_queryset(self):
+        table = self.kwargs['table']
+        if table == "PotentialSettings":
+            self.model = PotentialSettings
+            self.model_admin = PotentialSettingsAdmin
+        elif table == "Measurement":
+            self.model = Measurement
+            self.model_admin = MeasurementsAdmin
+        else:
+            raise Http404("No model matches the given query.")
+        return self.model.objects.all().order_by('-id')
+
+    def get_context_data(self, **kwargs):
+        context = super(TableViewer, self).get_context_data(**kwargs)
+        context['fields'] = flat_field_list(self.model_admin)
+        return context
+
+
+def flat_field_list(model_admin):
+    field_list = []
+    for field_set in model_admin.fieldsets:
+        for field in field_set[1]['fields']:
+            if isinstance(field, tuple):
+                for inline_field in field:
+                    field_list.append(inline_field)
+            else:
+                field_list.append(field)
+    return field_list

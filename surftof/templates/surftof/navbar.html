@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url "surftof-base-template" %}">Surftof</a>
+    <button class=" navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "surftof-preview" %}">Preview</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "surftof-cpm" %}">CPM Plot</a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Table
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'surftof-table-data' 'Measurement' %}">Measurements</a>
+                    <a class="dropdown-item" href="{% url 'surftof-table-data' 'PotentialSettings' %}"> Potentials</a>
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Admin
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'admin:surftof_measurement_changelist' %}">
+                        Measurements</a>
+                    <a class="dropdown-item" href="{% url 'admin:surftof_potentialsettings_changelist' %}">
+                        Potentials</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'admin:index' %}">
+                        Index</a>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+</nav>

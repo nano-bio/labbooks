@@ -8,39 +8,55 @@ rest_router = routers.DefaultRouter()
 rest_router.register(r'counts-per-mass', views.CountsPerMassViewSet)
 
 urlpatterns = [
-    url(r'^iseg-export/(?P<pk>\d+)/$', views.export_iseg_profile),
-    url(r'^measurement-json/(?P<pk>\d+)/$', views.measurement_json_export),
-    url(r'^potentialsettings-json/(?P<pk>\d+)/$', views.potential_settings_json_export),
+    # base template
+    url(r'^$',
+        TemplateView.as_view(template_name="surftof/base.html"),
+        name="surftof-base-template"),
+
+    # json export
+    url(r'^(?P<table>\w+)/(?P<pk>\d+).json$',
+        views.json_export,
+        name="surftof-json-data"),
+
+    # table export
+    url(r'^(?P<table>\w+).html$',
+        views.TableViewer.as_view(),
+        name="surftof-table-data"),
 
     # preview data
-    url(r'^preview/$', TemplateView.as_view(template_name='surftof/previewData.html')),
-    url(r'^preview_file_list/$', views.preview_file_list),
-    url(
-        r'preview_data/'
-        r'(?P<time_bin_or_mass>timebin|mass|diff)/'
-        r'(?P<data_id_file_1>\d+)/'
-        r'(?P<data_id_file_2>\d+|null)/'
-        r'(?P<scale_data_file_2>\d+\.\d{3})/'
-        r'(?P<diff_plot>true|false)/'
-        r'(?P<binned_by>\d+)/'
-        r'(?P<max_time_bin>\d+)/$',
-        views.preview_data),
-    url(r'^get-file-info-for-preview/(?P<measurement_id>\d+)/$',
-        views.get_file_info_for_preview),
-    url(r'preview-trace/',
-        login_required(views.preview_trace)),
-    url(r'preview-wait/',
-        login_required(views.preview_xkcd)),
+    url(r'^preview/$',
+        TemplateView.as_view(template_name='surftof/previewData.html'),
+        name="surftof-preview"),
+    url(r'^preview/file_list/$',
+        views.preview_file_list,
+        name="surftof-preview-file-list"),
+    url(r'^preview/data/$',
+        views.preview_data,
+        name="surftof-preview-data"),
+    url(r'^preview/file-info/(?P<measurement_id>\d+)/$',
+        views.preview_get_file_info,
+        name="surftof-preview-file-info"),
+    url(r'^preview/trace/',
+        views.preview_trace,
+        name="surftof-preview-trace"),
+    url(r'^preview/wait/',
+        views.preview_xkcd,
+        name="surftof-preview-xkcd"),
 
     # update the rating of a measurement
-    url(r'^set-rating-of-measurement/(?P<id>\d+)/(?P<rating>[1-5])/$', views.set_rating_of_measurement),
+    url(r'^set-rating-of-measurement/(?P<id>\d+)/(?P<rating>[1-5])/$',
+        login_required(views.set_rating_of_measurement),
+        name="surftof-set-measurement-rating"),
 
     # counts per mass
-    url(r'', include(rest_router.urls)),
-    url(r'cpm-ids/',
-        login_required(views.cpm_filter_ids)),
-    url(r'cpm/',
-        login_required(TemplateView.as_view(template_name='surftof/counts_per_mass.html'))),
-    url(r'cpm-plot-data/',
-        login_required(views.cpm_data)),
+    url(r'api', include(rest_router.urls)),
+    url(r'^cpm/id-list/$',
+        views.cpm_filter_ids,
+        name="surftof-cpm-id-list"),
+    url(r'^cpm/$',
+        TemplateView.as_view(template_name='surftof/counts_per_mass.html'),
+        name="surftof-cpm"),
+    url(r'^cpm/plot-data/$',
+        views.cpm_data,
+        name="surftof-cpm-plot-data"),
 ]

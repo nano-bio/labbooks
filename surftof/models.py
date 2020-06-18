@@ -79,7 +79,8 @@ class PotentialSettings(models.Model):
     get_impact_energy.short_description = "IMPACT E"
 
     def __str__(self):
-        return "[{}] {}: {}...".format(self.id, self.time.strftime("%d.%m."), self.short_description[:20])
+        return "[{}] {}: {}, {}...".format(
+            self.id, self.time.strftime("%d.%m."), self.get_impact_energy(), self.short_description[:20])
 
     class Meta:
         verbose_name_plural = "potential settings"

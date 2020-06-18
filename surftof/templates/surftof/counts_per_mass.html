@@ -1,17 +1,10 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css"
-          crossorigin="anonymous"/>
+{% extends "surftof/base.html" %}
 
-    <title>Hello, world!</title>
+{% block title %}- Counts per Mass{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css"/>
+
     <style>
 
         #col-filter {
@@ -69,361 +62,365 @@
             height: 500px;
         }
     </style>
-</head>
-<body>
+{% endblock %}
 
 
-<div class="container-fluid">
-    <div class="form-row">
-        <div class="col" id="col-filter">
-            <div class="card">
-                <h4 class="card-header">Filter Measurements</h4>
-                <div class="card-body">
+{% block content %}
+    <div class="container-fluid">
+        <div class="form-row">
+            <div class="col" id="col-filter">
+                <div class="card">
+                    <h4 class="card-header">Filter Measurements</h4>
+                    <div class="card-body">
 
-                    <h5>Energy</h5>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="energy-radio1" name="energy-radio" value="all"
-                               class="custom-control-input" checked>
-                        <label class="custom-control-label" for="energy-radio1">all</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="energy-radio2" name="energy-radio" value="filter"
-                               class="custom-control-input">
-                        <label class="custom-control-label" for="energy-radio2">filter</label>
-                    </div>
-                    <div class="form-row">
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="lower limit" name="filter-energy-lower">
+                        <h5>Energy</h5>
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="energy-radio1" name="energy-radio" value="all"
+                                   class="custom-control-input" checked>
+                            <label class="custom-control-label" for="energy-radio1">all</label>
                         </div>
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="upper limit" name="filter-energy-upper">
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="energy-radio2" name="energy-radio" value="filter"
+                                   class="custom-control-input">
+                            <label class="custom-control-label" for="energy-radio2">filter</label>
                         </div>
-                    </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="lower limit" name="filter-energy-lower">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="upper limit" name="filter-energy-upper">
+                            </div>
+                        </div>
 
-                    <h5>Temperature</h5>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="temp-radio1" name="temp-radio" value="all"
-                               class="custom-control-input" checked>
-                        <label class="custom-control-label" for="temp-radio1">all</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="temp-radio2" name="temp-radio" value="filter"
-                               class="custom-control-input">
-                        <label class="custom-control-label" for="temp-radio2">filter</label>
-                    </div>
-                    <div class="form-row">
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="lower limit" name="filter-temp-lower">
+                        <h5>Temperature</h5>
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="temp-radio1" name="temp-radio" value="all"
+                                   class="custom-control-input" checked>
+                            <label class="custom-control-label" for="temp-radio1">all</label>
                         </div>
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="upper limit" name="filter-temp-upper">
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="temp-radio2" name="temp-radio" value="filter"
+                                   class="custom-control-input">
+                            <label class="custom-control-label" for="temp-radio2">filter</label>
                         </div>
-                    </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="lower limit" name="filter-temp-lower">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="upper limit" name="filter-temp-upper">
+                            </div>
+                        </div>
 
-                    <h5>Pressure IS</h5>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="pres-is-radio1" name="pres-is-radio" value="all"
-                               class="custom-control-input" checked>
-                        <label class="custom-control-label" for="pres-is-radio1">all</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="pres-is-radio2" name="pres-is-radio" value="filter"
-                               class="custom-control-input">
-                        <label class="custom-control-label" for="pres-is-radio2">filter</label>
-                    </div>
-                    <div class="form-row">
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="lower limit" name="filter-pres-is-lower">
+                        <h5>Pressure IS</h5>
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="pres-is-radio1" name="pres-is-radio" value="all"
+                                   class="custom-control-input" checked>
+                            <label class="custom-control-label" for="pres-is-radio1">all</label>
                         </div>
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="upper limit" name="filter-pres-is-upper">
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="pres-is-radio2" name="pres-is-radio" value="filter"
+                                   class="custom-control-input">
+                            <label class="custom-control-label" for="pres-is-radio2">filter</label>
                         </div>
-                    </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="lower limit" name="filter-pres-is-lower">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="upper limit" name="filter-pres-is-upper">
+                            </div>
+                        </div>
 
-                    <h5>Pressure Surf</h5>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="pres-surf-radio1" name="pres-surf-radio" value="all"
-                               class="custom-control-input" checked>
-                        <label class="custom-control-label" for="pres-surf-radio1">all</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="pres-surf-radio2" name="pres-surf-radio" value="filter"
-                               class="custom-control-input">
-                        <label class="custom-control-label" for="pres-surf-radio2">filter</label>
-                    </div>
-                    <div class="form-row">
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="lower limit" name="filter-pres-surf-lower">
+                        <h5>Pressure Surf</h5>
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="pres-surf-radio1" name="pres-surf-radio" value="all"
+                                   class="custom-control-input" checked>
+                            <label class="custom-control-label" for="pres-surf-radio1">all</label>
                         </div>
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="upper limit" name="filter-pres-surf-upper">
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="pres-surf-radio2" name="pres-surf-radio" value="filter"
+                                   class="custom-control-input">
+                            <label class="custom-control-label" for="pres-surf-radio2">filter</label>
                         </div>
-                    </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="lower limit" name="filter-pres-surf-lower">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="upper limit" name="filter-pres-surf-upper">
+                            </div>
+                        </div>
 
-                    <h5>Pressure Tof</h5>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="pres-tof-radio1" name="pres-tof-radio" value="all"
-                               class="custom-control-input" checked>
-                        <label class="custom-control-label" for="pres-tof-radio1">all</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline filter-radio">
-                        <input type="radio" id="pres-tof-radio2" name="pres-tof-radio" value="filter"
-                               class="custom-control-input">
-                        <label class="custom-control-label" for="pres-tof-radio2">filter</label>
-                    </div>
-                    <div class="form-row">
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="lower limit" name="filter-pres-tof-lower">
+                        <h5>Pressure Tof</h5>
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="pres-tof-radio1" name="pres-tof-radio" value="all"
+                                   class="custom-control-input" checked>
+                            <label class="custom-control-label" for="pres-tof-radio1">all</label>
                         </div>
-                        <div class="col">
-                            <input type="number" class="form-control form-control-sm filter-limit"
-                                   placeholder="upper limit" name="filter-pres-tof-upper">
+                        <div class="custom-control custom-radio custom-control-inline filter-radio">
+                            <input type="radio" id="pres-tof-radio2" name="pres-tof-radio" value="filter"
+                                   class="custom-control-input">
+                            <label class="custom-control-label" for="pres-tof-radio2">filter</label>
                         </div>
-                    </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="lower limit" name="filter-pres-tof-lower">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm filter-limit"
+                                       placeholder="upper limit" name="filter-pres-tof-upper">
+                            </div>
+                        </div>
 
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col" id="col-measurements">
-            <div class="card">
-                <h4 class="card-header">Measurements</h4>
-                <div class="card-body" id="card-measurements">
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="measurements-check-all">
-                        <label class="form-check-label" for="measurements-check-all"> Check all </label>
+            <div class="col" id="col-measurements">
+                <div class="card">
+                    <h4 class="card-header">Measurements</h4>
+                    <div class="card-body" id="card-measurements">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="measurements-check-all">
+                            <label class="form-check-label" for="measurements-check-all"> Check all </label>
+                        </div>
+                        <div id="measurement-ids"></div>
                     </div>
-                    <div id="measurement-ids"></div>
+                </div>
+                <div class="card">
+                    <h4 class="card-header">Masses</h4>
+                    <div class="card-body" id="card-masses">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="masses-check-all">
+                            <label class="form-check-label" for="masses-check-all"> Check all </label>
+                        </div>
+                        <div id="masses-list"></div>
+                    </div>
                 </div>
             </div>
-            <div class="card">
-                <h4 class="card-header">Masses</h4>
-                <div class="card-body" id="card-masses">
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="masses-check-all">
-                        <label class="form-check-label" for="masses-check-all"> Check all </label>
+
+            <div class="col">
+                <div class="card">
+                    <h4 class="card-header">Plot Parameters</h4>
+                    <div class="card-body" id="card-plot-parameters">
+                        <h5>x-Axis</h5>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-secondary active">
+                                <input type="radio" name="radio-x-axis" value="mass" autocomplete="off" checked>Mass
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="radio-x-axis" value="energy" autocomplete="off">Energy
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="radio-x-axis" value="temperature" autocomplete="off">Temperature
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="radio-x-axis" value="p-is" autocomplete="off">P (IS)
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="radio-x-axis" value="p-surf" autocomplete="off">P (Surf)
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="radio-x-axis" value="p-tof" autocomplete="off">P (Tof)
+                            </label>
+                        </div>
+
+                        <h5>Different Plots</h5>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="different-plots" value="mass" autocomplete="off">Mass
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="different-plots" value="surface_impact_energy"
+                                       autocomplete="off">Energy
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="different-plots" value="surface_temperature"
+                                       autocomplete="off">Temperature
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="different-plots" value="pressure_is" autocomplete="off">P (IS)
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="different-plots" value="pressure_surf" autocomplete="off">P
+                                (Surf)
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="different-plots" value="pressure_tof" autocomplete="off">P
+                                (Tof)
+                            </label>
+                            <label class="btn btn-secondary active">
+                                <input type="radio" name="different-plots" value="single" autocomplete="off" checked>Single
+                            </label>
+                        </div>
+
+                        <button id="plot" class="btn btn-success float-right">Plot</button>
                     </div>
-                    <div id="masses-list"></div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card">
-                <h4 class="card-header">Plot Parameters</h4>
-                <div class="card-body" id="card-plot-parameters">
-                    <h5>x-Axis</h5>
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-secondary active">
-                            <input type="radio" name="radio-x-axis" value="mass" autocomplete="off" checked>Mass
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="radio-x-axis" value="energy" autocomplete="off">Energy
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="radio-x-axis" value="temperature" autocomplete="off">Temperature
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="radio-x-axis" value="p-is" autocomplete="off">P (IS)
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="radio-x-axis" value="p-surf" autocomplete="off">P (Surf)
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="radio-x-axis" value="p-tof" autocomplete="off">P (Tof)
-                        </label>
+                <div class="card">
+                    <h4 class="card-header">Plot
+                        <div class="btn-group float-right" role="group">
+                            <button type="button" class="btn btn-secondary active" id="button-lin-plot">Lin</button>
+                            <button type="button" class="btn btn-secondary" id="button-log-plot">Log</button>
+                        </div>
+                    </h4>
+                    <div class="card-body" id="card-plot">
+                        <div id="div-plot"></div>
                     </div>
-
-                    <h5>Different Plots</h5>
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="different-plots" value="mass" autocomplete="off">Mass
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="different-plots" value="surface_impact_energy" autocomplete="off">Energy
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="different-plots" value="surface_temperature" autocomplete="off">Temperature
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="different-plots" value="pressure_is" autocomplete="off">P (IS)
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="different-plots" value="pressure_surf" autocomplete="off">P (Surf)
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="different-plots" value="pressure_tof" autocomplete="off">P (Tof)
-                        </label>
-                        <label class="btn btn-secondary active">
-                            <input type="radio" name="different-plots" value="single" autocomplete="off" checked>Single
-                        </label>
-                    </div>
-
-                    <button id="plot" class="btn btn-success float-right">Plot</button>
-                </div>
-            </div>
-            <div class="card">
-                <h4 class="card-header">Plot
-                    <div class="btn-group float-right" role="group">
-                        <button type="button" class="btn btn-secondary active" id="button-lin-plot">Lin</button>
-                        <button type="button" class="btn btn-secondary" id="button-log-plot">Log</button>
-                    </div>
-                </h4>
-                <div class="card-body" id="card-plot">
-                    <div id="div-plot"></div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-{% csrf_token %}
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+{% endblock %}
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
-<script>
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
+{% block extra_js %}
+    {#{% csrf_token %}#}
 
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", jQuery("[name=csrfmiddlewaretoken]").val());
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
+    <script>
+        {#function csrfSafeMethod(method) {#}
+        {#    // these HTTP methods do not require CSRF protection#}
+        {#    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));#}
+        {# }#}
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            }
+        });
+        {#$.ajaxSetup({#}
+        {#    beforeSend: function (xhr, settings) {#}
+        {#        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {#}
+        {#            xhr.setRequestHeader("X-CSRFToken", jQuery("[name=csrfmiddlewaretoken]").val());#}
+        {#        }#}
+        {#    }#}
+        {# });#}
+
+        $('.filter-radio').on('change', function () {
+            alert($('input[name=energy-radio]:checked', '.filter-radio').val() + $('input[name=energy-radio]:checked', '.filter-radio').attr('name'));
+        });
+
+        function filterData() {
+            return {
+                filterEnergy: true,
+                filterEnergyLower: 0,
+                filterEnergyUpper: 100,
             }
         }
-    });
 
-    $('.filter-radio').on('change', function () {
-        alert($('input[name=energy-radio]:checked', '.filter-radio').val() + $('input[name=energy-radio]:checked', '.filter-radio').attr('name'));
-    });
-
-    function filterData() {
-        return {
-            filterEnergy: true,
-            filterEnergyLower: 0,
-            filterEnergyUpper: 100,
+        function updateMeasurementList() {
+            $.post("{% url 'surftof-cpm-id-list' %}", filterData()).done(function (data) {
+                let measurementIdsHtml = "";
+                data.measurements.forEach(function (element) {
+                    measurementIdsHtml +=
+                        "<div class=\"form-check\">\n" +
+                        "  <input class=\"form-check-input\" type=\"checkbox\" value=\"" + element + "\" id=\"defaultCheck" + element + "\">\n" +
+                        "  <label class=\"form-check-label\" for=\"defaultCheck" + element + "\">\n" +
+                        "    ID " + element + "\n" +
+                        "  </label>\n" +
+                        "</div>"
+                });
+                $('#measurement-ids').html(measurementIdsHtml);
+                let massesHtml = "";
+                data.masses.forEach(function (element) {
+                    massesHtml +=
+                        "<div class=\"form-check\">\n" +
+                        "  <input class=\"form-check-input\" type=\"checkbox\" value=\"" + element + "\" id=\"defaultCheck" + element + "\">\n" +
+                        "  <label class=\"form-check-label\" for=\"defaultCheck" + element + "\">\n" +
+                        "    Mass " + element + "\n" +
+                        "  </label>\n" +
+                        "</div>"
+                });
+                $('#masses-list').html(massesHtml);
+            });
         }
-    }
 
-    function updateMeasurementList() {
-        $.post("/surftof/cpm-ids/", filterData()).done(function (data) {
-            let measurementIdsHtml = "";
-            data.measurements.forEach(function (element) {
-                measurementIdsHtml +=
-                    "<div class=\"form-check\">\n" +
-                    "  <input class=\"form-check-input\" type=\"checkbox\" value=\"" + element + "\" id=\"defaultCheck" + element + "\">\n" +
-                    "  <label class=\"form-check-label\" for=\"defaultCheck" + element + "\">\n" +
-                    "    ID " + element + "\n" +
-                    "  </label>\n" +
-                    "</div>"
+        updateMeasurementList();
+
+        $('#col-filter input').change(function () {
+            updateMeasurementList()
+        });
+
+        $("#measurements-check-all").change(function () {
+            $("#card-measurements input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+        $("#masses-check-all").change(function () {
+            $("#card-masses input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+        data = "Date,A,Aerr\n" +
+            "20061001,4,2\n" +
+            "20061002,9,2\n" +
+            "20061003,2.44328097731,0.644967734352\n";
+        data = [
+            [1, [1, 0.1]],
+            [2, [1, 0.5]],
+            [3, [2, 0.1]],
+            [4, [1, 0.1]],
+        ];
+        let g = new Dygraph(
+            document.getElementById("div-plot"), data, {
+                legend: 'always',
+                ylabel: 'Normalized counts',
+                xlabel: ' ',
+                customBars: true,
+                labels: ['a', 'b']
             });
-            $('#measurement-ids').html(measurementIdsHtml);
-            let massesHtml = "";
-            data.masses.forEach(function (element) {
-                massesHtml +=
-                    "<div class=\"form-check\">\n" +
-                    "  <input class=\"form-check-input\" type=\"checkbox\" value=\"" + element + "\" id=\"defaultCheck" + element + "\">\n" +
-                    "  <label class=\"form-check-label\" for=\"defaultCheck" + element + "\">\n" +
-                    "    Mass " + element + "\n" +
-                    "  </label>\n" +
-                    "</div>"
+
+        $("#plot").click(function () {
+            //console.log($("input[name='different-plots']:checked").val());
+            console.log();
+            plot();
+        });
+
+        function plot() {
+            // mass list
+            let massesList = [];
+            $("#masses-list input:checked").each(function () {
+                massesList.push($(this).val())
             });
-            $('#masses-list').html(massesHtml);
-        });
-    }
 
-    updateMeasurementList();
-
-    $('#col-filter input').change(function () {
-        updateMeasurementList()
-    });
-
-    $("#measurements-check-all").change(function () {
-        $("#card-measurements input:checkbox").prop('checked', $(this).prop("checked"));
-    });
-    $("#masses-check-all").change(function () {
-        $("#card-masses input:checkbox").prop('checked', $(this).prop("checked"));
-    });
-    data = "Date,A,Aerr\n" +
-        "20061001,4,2\n" +
-        "20061002,9,2\n" +
-        "20061003,2.44328097731,0.644967734352\n";
-    data = [
-        [1, [1, 0.1]],
-        [2, [1, 0.5]],
-        [3, [2, 0.1]],
-        [4, [1, 0.1]],
-    ];
-    let g = new Dygraph(
-        document.getElementById("div-plot"), data, {
-            legend: 'always',
-            ylabel: 'Normalized counts',
-            xlabel: ' ',
-            customBars: true,
-            labels: ['a', 'b']
-        });
-
-    $("#plot").click(function () {
-        //console.log($("input[name='different-plots']:checked").val());
-        console.log();
-        plot();
-    });
-
-    function plot() {
-        // mass list
-        let massesList = [];
-        $("#masses-list input:checked").each(function () {
-            massesList.push($(this).val())
-        });
-
-        // measurement IDs
-        let idList = [];
-        $("#measurement-ids input:checked").each(function () {
-            idList.push($(this).val())
-        });
-
-        $.post("/surftof/cpm-plot-data/", {
-            x: $("input[name='radio-x-axis']:checked").val(),
-            ids: idList,
-            masses: massesList,
-            diffPlots: $("input[name='different-plots']:checked").val()
-        }).done(function (data) {
-            g.updateOptions({
-                'file': data.data,
-                'labels': data.labels,
-                'xLabel': data.xlabel
+            // measurement IDs
+            let idList = [];
+            $("#measurement-ids input:checked").each(function () {
+                idList.push($(this).val())
             });
+
+            $.post("{% url 'surftof-cpm-plot-data' %}", {
+                x: $("input[name='radio-x-axis']:checked").val(),
+                ids: idList,
+                masses: massesList,
+                diffPlots: $("input[name='different-plots']:checked").val()
+            }).done(function (data) {
+                g.updateOptions({
+                    'file': data.data,
+                    'labels': data.labels,
+                    'xLabel': data.xlabel
+                });
+            });
+        }
+
+        $('#button-lin-plot').click(function () {
+            $(this).addClass('active');
+            $('#button-log-plot').removeClass('active');
+            g.updateOptions({logscale: false, axes: {x: {logscale: false}}});
         });
-    }
+        $('#button-log-plot').click(function () {
+            $(this).addClass('active');
+            $('#button-lin-plot').removeClass('active');
+            g.updateOptions({logscale: true, axes: {x: {logscale: true}}});
+        });
 
-    $('#button-lin-plot').click(function () {
-        $(this).addClass('active');
-        $('#button-log-plot').removeClass('active');
-        g.updateOptions({logscale: false, axes: {x: {logscale: false}}});
-    });
-    $('#button-log-plot').click(function () {
-        $(this).addClass('active');
-        $('#button-lin-plot').removeClass('active');
-        g.updateOptions({logscale: true, axes: {x: {logscale: true}}});
-    });
+    </script>
 
-</script>
-
-</body>
-</html>
+{% endblock %}

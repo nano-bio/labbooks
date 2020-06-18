@@ -1,0 +1,152 @@
+{% extends "surftof/base.html" %}
+{% load static verbose_name %}
+
+{% block title %}- Table List{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css">
+
+    <style>
+        .form-check-inline {
+            margin-right: 1rem;
+        }
+
+        .card {
+            display: inherit;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div id="button-row" class="mb-2 mt-2">
+
+            <button class="btn btn-outline-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapseExample">
+                Show configuration
+            </button>
+
+            <button id="reset" type="button" class="btn btn-outline-danger float-right mr-4">Reset columns</button>
+
+            <nav class="float-left">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="1" href="?page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_obj.previous_page_number }}"
+                               href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <a class="page-link" data-page="{{ page_obj.number }}"
+                           href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+                    </li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_obj.next_page_number }}"
+                               href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_obj.paginator.num_pages }}"
+                               href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="collapse mt-2 mb-2" id="collapseExample">
+            <div class="card card-body toggle-columns">
+                {% for column_header in column_headers %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="checkbox-{{ column_header.name }}" checked
+                               data-key="{{ column_header.name }}">
+                        <label class="form-check-label"
+                               for="checkbox-{{ column_header.name }}">{{ column_header.verbose_name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <table class="table table-hover table-sm">
+
+            {% for row in object_list %}
+                {% if forloop.counter0|divisibleby:10 %} {# table header #}
+                    <tr>
+                        {% for field_name in fields %}
+                            <th class="{{ field_name }}">{% get_verbose_field_name row field_name %}</th>
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+                <tr>
+                    {% for field_name in fields %}
+                        {% if row|get_from_key:field_name == None %}
+                            <td class="{{ field_name }}"></td>
+                        {% else %}
+                            <td class="{{ field_name }}">{{ row|get_from_key:field_name }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        function parseParams(str) {
+            return str.split('&').reduce(function (params, param) {
+                let paramSplit = param.split('=').map(function (value) {
+                    return decodeURIComponent(value.replace(/\+/g, ' '));
+                });
+                params[paramSplit[0]] = (paramSplit[1] === 't');
+                return params;
+            }, {});
+        }
+
+        $(function () {
+            let searchString = window.location.search;
+            if (searchString !== "") {
+                let columnConfig = parseParams(searchString.slice(1));
+                $.each(columnConfig, function (key, value) {
+                    $('#checkbox-' + key).prop('checked', value);
+                    if (!value) {
+                        $('.' + key).hide();
+                    }
+                })
+            }
+        });
+
+        $('.toggle-columns :checkbox').change(function () {
+            // hide column
+            $('.' + $(this).data('key')).toggle(this.checked);
+
+            // update url
+            history.pushState({}, '', "?" + paramCulumns());
+        });
+
+        function paramCulumns() {
+            let colums = {};
+            $('.toggle-columns :checkbox').each(function () {
+                colums[$(this).data('key')] = ($(this).is(":checked") ? 't' : 'f')
+            });
+            return $.param(colums);
+        }
+
+        $('#reset').click(function () {
+            window.location = window.location.pathname;
+        });
+
+        $('.pagination a').click(function (e) {
+            e.preventDefault();
+            window.location = "?" + paramCulumns() + "&page=" + $(this).data('page')
+        });
+
+    </script>
+{% endblock %}
