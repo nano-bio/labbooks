@@ -122,8 +122,8 @@
                 })
             }
         });
-
-        $('.toggle-columns :checkbox').change(function () {
+        const toggleColumnsCheckbox = $('.toggle-columns :checkbox');
+        toggleColumnsCheckbox.change(function () {
             // hide column
             $('.' + $(this).data('key')).toggle(this.checked);
 
@@ -133,7 +133,7 @@
 
         function paramCulumns() {
             let colums = {};
-            $('.toggle-columns :checkbox').each(function () {
+            toggleColumnsCheckbox.each(function () {
                 colums[$(this).data('key')] = ($(this).is(":checked") ? 't' : 'f')
             });
             return $.param(colums);
