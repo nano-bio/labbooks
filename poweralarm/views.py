@@ -1,11 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from models import Experiment
 from django.http import HttpResponse
 
 
 # creates alarm script for experiment
 def alarm(request, experiment):
-    exp = get_object_or_404(Experiment, name = experiment)
+    exp = get_object_or_404(Experiment, name=experiment)
 
     complete_command = ''
     commandline_sms = 'echo "Power failure alarm in the lab!" | gnokii --sendsms {}\n'
@@ -20,7 +20,7 @@ def alarm(request, experiment):
 
 
 def clear(request, experiment):
-    exp = get_object_or_404(Experiment, name = experiment)
+    exp = get_object_or_404(Experiment, name=experiment)
 
     complete_command = ''
     commandline_sms = 'echo "Power returned in the lab!" | gnokii --sendsms {}\n'
@@ -32,4 +32,3 @@ def clear(request, experiment):
             complete_command += commandline_email.format(user.email)
 
     return HttpResponse(complete_command)
-

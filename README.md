@@ -7,6 +7,9 @@ Requires django >= 1.8 (tested until 1.11.20)
 Changelog
 =========
 18.06.2020
+* LABINVENTORY/ADD/Felix: Temperature sensor with SMS notification
+
+18.06.2020
 * SURFTOF/ADD/Felix: Table overview.
 
 17.06.2020
