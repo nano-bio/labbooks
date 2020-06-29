@@ -55,7 +55,7 @@ class Measurement(models.Model):
     # comment
     comment = models.TextField(max_length=1500, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "ID {}, {} by {}".format(
             self.id,
             self.date_time.strftime("%Y-%m-%d %H:%M"),
