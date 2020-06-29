@@ -1,16 +1,37 @@
-django==1.11.29
-gunicorn
-periodictable
-suds
-numpy
-matplotlib
-MySQL-python
-scipy
-Pillow
-openpyxl
-python-pptx
-pyMTRX
-django-background-tasks
-requests
-h5py
-djangorestframework
+# Basic usage:
+#
+# package-name==1.2.*
+#
+# make a cron to update the minor versions:
+# pip install --upgrade -r requirements.txt
+#
+# regulary check for new major versions. verify firs that they work! Than change this file to
+# package-name==1.3.*
+
+Django==3.0.*
+gunicorn==20.0.*
+mysqlclient==1.4.*
+
+# for surftof
+djangorestframework==3.11.*
+scipy==1.4.*
+h5py==2.10.*
+
+# for cheminventory
+requests==2.23.*
+openpyxl==3.0.*
+
+# for snowball
+numpy==1.18.*
+
+
+# reevaluate these:
+# for STM
+# matplotlib
+# Pillow
+# python-pptx
+# pyMTRX
+# django-background-tasks
+
+# periodictable
+# suds

@@ -1,10 +1,18 @@
-from django.conf.urls import url, include
+from django.urls import path
 
 import cheminventory.views
 
 urlpatterns = [
-    url(r'^doorsign/(\d+)/$', cheminventory.views.print_doorsign),
-    url(r'^chemwaste/(\d+)/$', cheminventory.views.print_chemwaste),
-    url(r'^qrcode/(\d+)/$', cheminventory.views.print_gas_cylinder_qr),
-    url(r'^csv$', cheminventory.views.csv_export),
+    path('doorsign/<int:labid>/',
+         cheminventory.views.print_doorsign,
+         name="cheminventory-print-doorsign"),
+    path('chemwaste/<int:locid>/',
+         cheminventory.views.print_chemwaste,
+         name="cheminventory-print-chemwaste"),
+    path('qrcode/<int:gc_id>/',
+         cheminventory.views.print_gas_cylinder_qr,
+         name="cheminventory-print-gas-cylinder-qr"),
+    path('csv',
+         cheminventory.views.csv_export,
+         name="cheminventory-csv-export"),
 ]

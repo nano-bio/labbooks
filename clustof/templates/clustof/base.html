@@ -4,29 +4,29 @@
     <link rel="stylesheet" href="http://ideadb.uibk.ac.at/files/css/drawingboard.min.css">
     <title>CLUSTOF Labbook</title>
     {% include "jscss.html" %}
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/flot/jquery.flot.navigate.js"></script>
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/flot/jquery.flot.time.js"></script>
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/drawingboard.min.js"></script>
+    <script type="text/javascript" src="/staticfiles/js/flot/jquery.flot.navigate.js"></script>
+    <script type="text/javascript" src="/staticfiles/js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="/staticfiles/js/drawingboard.min.js"></script>
 </head>
 
 <body>
-    <div id="Header">CLUSTOF Labbook</div>
-    <div id="Menu">
-        {% block sidebar %}
+<div id="Header">CLUSTOF Labbook</div>
+<div id="Menu">
+    {% block sidebar %}
         <ul>
-            <li><a href="/clustof/">Home</a></li>
-            <li><a href="/admin/clustof/">Admin</a></li>
-            <li><a href="/clustof/view/">Measurements</a></li>
-            <li><a href="/clustof/newmeasurement/">New Measurement</a></li>
-            <li><a href="/clustof/insight/">Insights</a></li>
-            <li><a href="/clustof/journal/">Technical Journal</a></li>
-            <li><a href="/clustof/pumps/">Turbopumps</a></li>
+            <li><a href="{% url 'clustof-home' %}">Home</a></li>
+            <li><a href="{% url 'admin:app_list' 'clustof' %}">Admin</a></li>
+            <li><a href="{% url 'clustof-view-measurements' %}">Measurements</a></li>
+            <li><a href="{% url 'clustof-newmeasurement' %}">New Measurement</a></li>
+            <li><a href="{% url 'clustof-insight' %}">Insights</a></li>
+            <li><a href="{% url 'clustof-view-journals' %}">Technical Journal</a></li>
+            <li><a href="{% url 'clustof-view-pumps' %}">Turbopumps</a></li>
         </ul>
-        {% endblock %}
-    </div>
+    {% endblock %}
+</div>
 
-    <div id="Content">
-        {% block content %}{% endblock %}
-    </div>
+<div id="Content">
+    {% block content %}{% endblock %}
+</div>
 </body>
 </html>

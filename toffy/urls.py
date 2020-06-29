@@ -1,10 +1,16 @@
-from django.conf.urls import url
+from django.urls import path
 from django.views.generic import TemplateView
 import toffy.views
 
 urlpatterns = [
     # preview of data
-    url(r'^preview_file_list/$', toffy.views.preview_file_list),
-    url(r'^preview_data/(?P<pk>\d+)/$', toffy.views.preview_data),
-    url(r'^preview/$', TemplateView.as_view(template_name='previewData.html')),
+    path('preview_file_list/',
+         toffy.views.preview_file_list,
+         name="toffy-preview-file-list"),
+    path('preview_data/<int:pk>/',
+         toffy.views.preview_data,
+         name="toffy-preview-data"),
+    path('preview/',
+         TemplateView.as_view(template_name='toffy/previewData.html'),
+         name="toffy-preview-data"),
 ]
