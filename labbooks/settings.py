@@ -100,7 +100,6 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'i=d0pz8apxr+0!25lwozu)e$)q*^1k4x=494ga6xi-++67d_*&amp;'
 
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -174,8 +173,8 @@ INSTALLED_APPS = [
     # 'poweralarm',
     # 'stm',
     # 'labinventory',
-    # 'pulsetube',
-    # 'moses',
+    'pulsetube',
+    'moses',
     # 'background_task',  # this is for scheduled import of STM images
     # 'rest_framework'
 ]
