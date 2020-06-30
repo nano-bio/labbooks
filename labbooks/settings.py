@@ -168,7 +168,7 @@ INSTALLED_APPS = [
     # 'wippi',
     'cheminventory',
     # 'surftof',
-    # 'snowball',
+    'snowball',
     'toffy',
     # 'poweralarm',
     # 'stm',
