@@ -1,5 +1,4 @@
 import itertools
-from datetime import datetime, timedelta
 from glob import glob
 import numpy as np
 import h5py
@@ -11,15 +10,15 @@ from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 from scipy.optimize import curve_fit
 
+from labbooks.settings import SURFTOF_BIGSHARE_DATA_ROOT
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
+from surftof.helper import import_pressure, get_temp_from_file
 from surftof.models import IsegAssignments, PotentialSettings, Measurement, CountsPerMass, Gas, Surface, MeasurementType
 from django.core import serializers
 from surftof.serializers import CountsPerMassSerializer
 from requests import get
 from json import loads, dumps
 from random import randint
-
-root = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
 
 
 def export_iseg_profile(request, pk):
@@ -121,7 +120,7 @@ def preview_data(request):
         return HttpResponse('This is a post only view')
 
     # get y-axis data from h5 file
-    file = glob("{}{}/*h5".format(root, int(data_id_file_1)))[-1]
+    file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_1)))[-1]
     with h5py.File(file, 'r')as f:
         y_data1 = np.array(f['SPECdata']['AverageSpec'])
         y_data1 = reduce_data_by_mean(y_data1, binned_by, 1)
@@ -137,7 +136,7 @@ def preview_data(request):
             xlabel = "time bins"
 
     if data_id_file_2:
-        file = glob("{}{}/*h5".format(root, int(data_id_file_2)))[-1]
+        file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_2)))[-1]
         with h5py.File(file, 'r')as f:
             y_data2 = np.array(f['SPECdata']['AverageSpec'])
             y_data2 = reduce_data_by_mean(y_data2, binned_by, float(scale_data_file_2))
@@ -174,7 +173,7 @@ def preview_trace(request):
     mass_max = int(request.POST.get('massMax'))
     measurement_id = int(request.POST.get('measurementId'))
 
-    file = glob("{}{}/*h5".format(root, int(measurement_id)))[-1]
+    file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(measurement_id)))[-1]
     infile = h5py.File(file, 'r')
     data = infile[u'SPECdata/Intensities']
     trace_points = data.shape[0]
@@ -206,31 +205,6 @@ def preview_xkcd(request):
     })
 
 
-def import_pressure(id):
-    pressures = {}
-    try:
-        pressure_file = glob(root + str(id) + "/*ressure*")[0]
-        a = np.loadtxt(pressure_file, delimiter='\t',
-                       dtype=[('a', '|S8'), ('b', '<f4'), ('c', '<f4'),
-                              ('d', '<f4'), ('e', '<f4'), ('f', '<f4'),
-                              ('g', '<f4')], skiprows=1)
-        ionsource = []
-        surf = []
-        tof = []
-        for b in a:
-            ionsource.append(b[1])
-            surf.append(b[2])
-            tof.append(b[3])
-        pressures['is'] = np.median(ionsource)
-        pressures['surf'] = np.median(surf)
-        pressures['tof'] = np.median(tof)
-    except:
-        pressures['is'] = -1
-        pressures['surf'] = -1
-        pressures['tof'] = -1
-    return pressures
-
-
 def preview_get_file_info(request, measurement_id):
     response = []
     measurement = get_object_or_404(Measurement, pk=int(measurement_id))
@@ -244,31 +218,6 @@ def preview_get_file_info(request, measurement_id):
     response.append({'key': 'Pressure Surf', 'value': "{:.1e} mbar".format(pressures['surf'])})
     response.append({'key': 'Pressure Tof', 'value': "{:.1e} mbar".format(pressures['tof'])})
     return JsonResponse(response, safe=False)
-
-
-def get_temp_from_file(measurement_id):
-    try:
-        h5_file_name = glob("{}{}/*h5".format(root, int(measurement_id)))[-1]
-        with h5py.File(h5_file_name, 'r') as f:
-            file_start = datetime.strptime(dict(f.attrs.items())['FileCreatedTimeSTR_LOCAL'][0].decode(),
-                                           "%d/%m/%Y %Hh %Mm %Ss")
-            file_duration = int(
-                dict(f.attrs.items())['Single Spec Duration (ms)'][0] / 1000 * len(f['SPECdata']['Intensities']))
-            file_end = file_start + timedelta(seconds=file_duration)
-            filenames = ["{}_temperaturePT100.csv".format(file_start.strftime("%Y-%m-%d"))]
-            if file_end.date() != file_start.date():
-                filenames.append("{}_temperaturePT100.csv".format(file_end.strftime("%Y-%m-%d")))
-
-            temps = []
-            for filename in filenames:
-                with open(root + 'temperature/' + filename, 'r') as g:
-                    for line in g:
-                        line_time = datetime.strptime(line.strip().split(',')[0][:19], '%Y-%m-%dT%H:%M:%S')
-                        if file_start < line_time < file_end:
-                            temps.append(float(line.strip().split(',')[1]))
-            return "{:.1f} &#176;C".format(np.median(temps))
-    except:
-        return "-1 &#176;C"
 
 
 # for preview_data
@@ -312,9 +261,9 @@ def preview_file_list(request):
 
 
 # update the rating of a measurement
-def set_rating_of_measurement(request, id, rating):
+def set_rating_of_measurement(request, measurement_id, rating):
     if request.user.has_perm('surftof.add_measurement'):
-        obj = get_object_or_404(Measurement, pk=id)
+        obj = get_object_or_404(Measurement, pk=measurement_id)
         obj.rating = int(rating)
         obj.save()
         return redirect('/admin/surftof/measurement/')

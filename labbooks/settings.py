@@ -19,6 +19,8 @@ PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 # storage location of measurement files
 STM_STORAGE = '/var/storage/stm'
 
+SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
+
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
 )
@@ -162,16 +164,16 @@ INSTALLED_APPS = [
     'clustof',
     'wippi',
     'cheminventory',
-    # 'surftof',
+    'surftof',
     'snowball',
     'toffy',
     # 'poweralarm',
     'stm',
+    'background_task',  # this is for scheduled import of STM images
     # 'labinventory',
     'pulsetube',
     'moses',
-    # 'background_task',  # this is for scheduled import of STM images
-    # 'rest_framework'
+    'rest_framework'
 ]
 
 # A sample logging configuration. The only tangible logging
