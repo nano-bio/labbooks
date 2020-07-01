@@ -24,6 +24,8 @@ openpyxl==3.0.*
 # for snowball
 numpy==1.18.*
 
+# for wippi
+pytz==2020.1.*
 
 # reevaluate these:
 # for STM

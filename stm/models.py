@@ -1,27 +1,16 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-import os
-import re
 import datetime
-
-
-from pyMTRX import experiment
-
 from django.db import models
-from django.conf import settings
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
 from django.core.exceptions import ValidationError
 
-# Create your models here.
 
 class Operator(models.Model):
-    firstname = models.CharField(max_length = 50)
-    lastname = models.CharField(max_length = 50)
-    email = models.EmailField(max_length = 254)
+    firstname = models.CharField(max_length=50)
+    lastname = models.CharField(max_length=50)
+    email = models.EmailField(max_length=254)
 
     def __unicode__(self):
         return u'{} {}'.format(self.firstname, self.lastname)
+
 
 class StandardOperatingProcedure(models.Model):
     name = models.CharField(max_length=150)
@@ -31,15 +20,17 @@ class StandardOperatingProcedure(models.Model):
     def __unicode__(self):
         return u'{}'.format(self.name)
 
+
 class Sample(models.Model):
     material = models.CharField(max_length=50)
-    snowball_measurement = models.ForeignKey('snowball.measurement', blank=True, null=True, on_delete=models.SET_NULL)
+    snowball_measurement = models.ForeignKey('snowball.Measurement', blank=True, null=True, on_delete=models.SET_NULL)
     description = models.TextField(max_length=500, blank=True)
 
     def __unicode__(self):
         return u'{}'.format(self.material)
 
-class Log():
+
+class Log:
     def __init__(self):
         self.text = ''
 
@@ -58,11 +49,11 @@ class Measurement(models.Model):
     )
 
     operator = models.ForeignKey('Operator', on_delete=models.CASCADE, default=1)
-    time = models.DateTimeField(auto_now = False, auto_now_add = False, blank=True)
+    time = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True)
     experiment_type = models.CharField(max_length=3, default=STM, choices=EXPERIMENT_CHOICES)
     tip_type = models.CharField(max_length=10)
-    sample = models.ForeignKey('Sample')
     name = models.CharField(max_length=100, blank=True, db_index=True)
+    sample = models.ForeignKey('Sample', on_delete=models.PROTECT)
     notes = models.TextField(max_length=1000, blank=True)
 
     def clean(self):
@@ -96,7 +87,7 @@ class Image(models.Model):
         (4, '4'),
         (5, '5'),
     )
-    measurement = models.ForeignKey('Measurement')
+    measurement = models.ForeignKey('Measurement', on_delete=models.PROTECT)
     name = models.CharField(max_length=150, blank=True)
     type = models.CharField(max_length=2, choices=IMAGETYPES)
     preview_image = models.ImageField(upload_to='stm/preview_images/', blank=True, null=True)
@@ -167,16 +158,25 @@ class Image(models.Model):
     drbservice_lp_z_ext = models.FloatField(blank=True, null=True, verbose_name='DRBService Lp Z Ext')
     drbservice_lp_z_out = models.FloatField(blank=True, null=True, verbose_name='DRBService Lp Z Out')
     drbservice_vcal_in_select = models.FloatField(blank=True, null=True, verbose_name='DRBService VCal In Select')
-    gapvoltagecontrol_alternate_preamp_range = models.CharField(max_length = 100, blank=True, verbose_name='GapVoltageControl Alternate Preamp Range (Unit: --)')
-    gapvoltagecontrol_alternate_voltage = models.FloatField(blank=True, null=True, verbose_name='GapVoltageControl Alternate Voltage')
+    gapvoltagecontrol_alternate_preamp_range = models.CharField(
+        max_length=100, blank=True, verbose_name='GapVoltageControl Alternate Preamp Range (Unit: --)')
+    gapvoltagecontrol_alternate_voltage = models.FloatField(blank=True, null=True,
+                                                            verbose_name='GapVoltageControl Alternate Voltage')
     gapvoltagecontrol_const_voltage = models.NullBooleanField(verbose_name='GapVoltageControl Const Voltage')
-    gapvoltagecontrol_enable_alternate_preamp_range = models.NullBooleanField(verbose_name='GapVoltageControl Enable Alternate Preamp Range')
-    gapvoltagecontrol_enable_alternate_voltage = models.NullBooleanField(verbose_name='GapVoltageControl Enable Alternate Voltage')
-    gapvoltagecontrol_preamp_range = models.CharField(max_length = 100, blank=True, verbose_name='GapVoltageControl Preamp Range (Unit: --)')
-    gapvoltagecontrol_tip_cond_enable_feedback_loop = models.NullBooleanField(verbose_name='GapVoltageControl Tip Cond Enable Feedback Loop')
-    gapvoltagecontrol_tip_cond_pulse_preamp_range = models.CharField(max_length = 100, blank=True, verbose_name='GapVoltageControl Tip Cond Pulse Preamp Range (Unit: --)')
-    gapvoltagecontrol_tip_cond_pulse_time = models.FloatField(blank=True, null=True, verbose_name='GapVoltageControl Tip Cond Pulse Time')
-    gapvoltagecontrol_tip_cond_pulse_voltage = models.FloatField(blank=True, null=True, verbose_name='GapVoltageControl Tip Cond Pulse Voltage')
+    gapvoltagecontrol_enable_alternate_preamp_range = models.NullBooleanField(
+        verbose_name='GapVoltageControl Enable Alternate Preamp Range')
+    gapvoltagecontrol_enable_alternate_voltage = models.NullBooleanField(
+        verbose_name='GapVoltageControl Enable Alternate Voltage')
+    gapvoltagecontrol_preamp_range = models.CharField(
+        max_length=100, blank=True, verbose_name='GapVoltageControl Preamp Range (Unit: --)')
+    gapvoltagecontrol_tip_cond_enable_feedback_loop = models.NullBooleanField(
+        verbose_name='GapVoltageControl Tip Cond Enable Feedback Loop')
+    gapvoltagecontrol_tip_cond_pulse_preamp_range = models.CharField(
+        max_length=100, blank=True, verbose_name='GapVoltageControl Tip Cond Pulse Preamp Range (Unit: --)')
+    gapvoltagecontrol_tip_cond_pulse_time = models.FloatField(
+        blank=True, null=True, verbose_name='GapVoltageControl Tip Cond Pulse Time')
+    gapvoltagecontrol_tip_cond_pulse_voltage = models.FloatField(
+        blank=True, null=True, verbose_name='GapVoltageControl Tip Cond Pulse Voltage')
     gapvoltagecontrol_voltage = models.FloatField(blank=True, null=True, verbose_name='GapVoltageControl Voltage')
     i_auto_oversampling = models.NullBooleanField(verbose_name='I Auto Oversampling')
     i_enable = models.NullBooleanField(verbose_name='I Enable')
@@ -207,47 +207,82 @@ class Image(models.Model):
     i_z_oversampling_factor = models.FloatField(blank=True, null=True, verbose_name='I Z Oversampling Factor')
     regulator_adc_read_mode_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator ADC Read Mode 1')
     regulator_adc_read_mode_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator ADC Read Mode 2')
-    regulator_algorithm_characteristics_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Algorithm Characteristics 1')
-    regulator_algorithm_characteristics_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Algorithm Characteristics 2')
-    regulator_alternate_line_weighting = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Line Weighting')
-    regulator_alternate_loop_gain_1_d = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Loop Gain 1 D')
-    regulator_alternate_loop_gain_1_i = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Loop Gain 1 I')
-    regulator_alternate_loop_gain_1_k = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Loop Gain 1 K')
-    regulator_alternate_loop_gain_1_p = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Loop Gain 1 P')
-    regulator_alternate_loop_gain_2_d = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Loop Gain 2 D')
-    regulator_alternate_loop_gain_2_i = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Loop Gain 2 I')
-    regulator_alternate_loop_gain_2_k = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Loop Gain 2 K')
-    regulator_alternate_loop_gain_2_p = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Loop Gain 2 P')
-    regulator_alternate_setpoint_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Setpoint 1')
-    regulator_alternate_setpoint_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Alternate Setpoint 2')
-    regulator_auto_approach_mode_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Auto Approach Mode 1')
-    regulator_auto_approach_mode_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Auto Approach Mode 2')
-    regulator_auto_approach_post_ramp_delay = models.FloatField(blank=True, null=True, verbose_name='Regulator Auto Approach Post Ramp Delay')
-    regulator_auto_approach_pre_ramp_delay = models.FloatField(blank=True, null=True, verbose_name='Regulator Auto Approach Pre Ramp Delay')
-    regulator_auto_approach_ramp_speed_high_range = models.FloatField(blank=True, null=True, verbose_name='Regulator Auto Approach Ramp Speed High Range')
-    regulator_auto_approach_ramp_speed_low_range = models.FloatField(blank=True, null=True, verbose_name='Regulator Auto Approach Ramp Speed Low Range')
-    regulator_auto_approach_retraction_speed = models.FloatField(blank=True, null=True, verbose_name='Regulator Auto Approach Retraction Speed')
-    regulator_auto_approach_timeout = models.FloatField(blank=True, null=True, verbose_name='Regulator Auto Approach Timeout')
+    regulator_algorithm_characteristics_1 = models.FloatField(blank=True, null=True,
+                                                              verbose_name='Regulator Algorithm Characteristics 1')
+    regulator_algorithm_characteristics_2 = models.FloatField(blank=True, null=True,
+                                                              verbose_name='Regulator Algorithm Characteristics 2')
+    regulator_alternate_line_weighting = models.FloatField(blank=True, null=True,
+                                                           verbose_name='Regulator Alternate Line Weighting')
+    regulator_alternate_loop_gain_1_d = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Regulator Alternate Loop Gain 1 D')
+    regulator_alternate_loop_gain_1_i = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Regulator Alternate Loop Gain 1 I')
+    regulator_alternate_loop_gain_1_k = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Regulator Alternate Loop Gain 1 K')
+    regulator_alternate_loop_gain_1_p = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Regulator Alternate Loop Gain 1 P')
+    regulator_alternate_loop_gain_2_d = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Regulator Alternate Loop Gain 2 D')
+    regulator_alternate_loop_gain_2_i = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Regulator Alternate Loop Gain 2 I')
+    regulator_alternate_loop_gain_2_k = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Regulator Alternate Loop Gain 2 K')
+    regulator_alternate_loop_gain_2_p = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Regulator Alternate Loop Gain 2 P')
+    regulator_alternate_setpoint_1 = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Alternate Setpoint 1')
+    regulator_alternate_setpoint_2 = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Alternate Setpoint 2')
+    regulator_auto_approach_mode_1 = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Auto Approach Mode 1')
+    regulator_auto_approach_mode_2 = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Auto Approach Mode 2')
+    regulator_auto_approach_post_ramp_delay = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Auto Approach Post Ramp Delay')
+    regulator_auto_approach_pre_ramp_delay = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Auto Approach Pre Ramp Delay')
+    regulator_auto_approach_ramp_speed_high_range = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Auto Approach Ramp Speed High Range')
+    regulator_auto_approach_ramp_speed_low_range = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Auto Approach Ramp Speed Low Range')
+    regulator_auto_approach_retraction_speed = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Auto Approach Retraction Speed')
+    regulator_auto_approach_timeout = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Auto Approach Timeout')
     regulator_const_setpoint = models.NullBooleanField(verbose_name='Regulator Const Setpoint')
     regulator_delta_f_min_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Delta f Min 1')
     regulator_delta_f_min_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Delta f Min 2')
-    regulator_enable_alternate_line_weighting = models.NullBooleanField(verbose_name='Regulator Enable Alternate Line Weighting')
-    regulator_enable_alternate_loop_gain_1_d = models.NullBooleanField(verbose_name='Regulator Enable Alternate Loop Gain 1 D')
-    regulator_enable_alternate_loop_gain_1_i = models.NullBooleanField(verbose_name='Regulator Enable Alternate Loop Gain 1 I')
-    regulator_enable_alternate_loop_gain_1_k = models.NullBooleanField(verbose_name='Regulator Enable Alternate Loop Gain 1 K')
-    regulator_enable_alternate_loop_gain_1_p = models.NullBooleanField(verbose_name='Regulator Enable Alternate Loop Gain 1 P')
-    regulator_enable_alternate_loop_gain_2_d = models.NullBooleanField(verbose_name='Regulator Enable Alternate Loop Gain 2 D')
-    regulator_enable_alternate_loop_gain_2_i = models.NullBooleanField(verbose_name='Regulator Enable Alternate Loop Gain 2 I')
-    regulator_enable_alternate_loop_gain_2_k = models.NullBooleanField(verbose_name='Regulator Enable Alternate Loop Gain 2 K')
-    regulator_enable_alternate_loop_gain_2_p = models.NullBooleanField(verbose_name='Regulator Enable Alternate Loop Gain 2 P')
-    regulator_enable_alternate_setpoint_1 = models.NullBooleanField(verbose_name='Regulator Enable Alternate Setpoint 1')
-    regulator_enable_alternate_setpoint_2 = models.NullBooleanField(verbose_name='Regulator Enable Alternate Setpoint 2')
+    regulator_enable_alternate_line_weighting = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Line Weighting')
+    regulator_enable_alternate_loop_gain_1_d = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Loop Gain 1 D')
+    regulator_enable_alternate_loop_gain_1_i = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Loop Gain 1 I')
+    regulator_enable_alternate_loop_gain_1_k = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Loop Gain 1 K')
+    regulator_enable_alternate_loop_gain_1_p = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Loop Gain 1 P')
+    regulator_enable_alternate_loop_gain_2_d = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Loop Gain 2 D')
+    regulator_enable_alternate_loop_gain_2_i = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Loop Gain 2 I')
+    regulator_enable_alternate_loop_gain_2_k = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Loop Gain 2 K')
+    regulator_enable_alternate_loop_gain_2_p = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Loop Gain 2 P')
+    regulator_enable_alternate_setpoint_1 = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Setpoint 1')
+    regulator_enable_alternate_setpoint_2 = models.NullBooleanField(
+        verbose_name='Regulator Enable Alternate Setpoint 2')
     regulator_enable_z_offset_slew_rate = models.NullBooleanField(verbose_name='Regulator Enable Z Offset Slew Rate')
-    regulator_enable_z_offset_special_slew_rate = models.NullBooleanField(verbose_name='Regulator Enable Z Offset Special Slew Rate')
+    regulator_enable_z_offset_special_slew_rate = models.NullBooleanField(
+        verbose_name='Regulator Enable Z Offset Special Slew Rate')
     regulator_enable_z_ramp_gap_voltage = models.NullBooleanField(verbose_name='Regulator Enable Z Ramp Gap Voltage')
     regulator_enable_z_ramp_slew_rate = models.NullBooleanField(verbose_name='Regulator Enable Z Ramp Slew Rate')
-    regulator_feedback_loop_characteristic_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Feedback Loop Characteristic 1')
-    regulator_feedback_loop_characteristic_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Feedback Loop Characteristic 2')
+    regulator_feedback_loop_characteristic_1 = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Feedback Loop Characteristic 1')
+    regulator_feedback_loop_characteristic_2 = models.FloatField(
+        blank=True, null=True, verbose_name='Regulator Feedback Loop Characteristic 2')
     regulator_feedback_loop_enabled = models.NullBooleanField(verbose_name='Regulator Feedback Loop Enabled')
     regulator_line_weighting = models.FloatField(blank=True, null=True, verbose_name='Regulator Line Weighting')
     regulator_loop_gain_1_d = models.FloatField(blank=True, null=True, verbose_name='Regulator Loop Gain 1 D')
@@ -258,64 +293,107 @@ class Image(models.Model):
     regulator_loop_gain_2_i = models.FloatField(blank=True, null=True, verbose_name='Regulator Loop Gain 2 I')
     regulator_loop_gain_2_k = models.FloatField(blank=True, null=True, verbose_name='Regulator Loop Gain 2 K')
     regulator_loop_gain_2_p = models.FloatField(blank=True, null=True, verbose_name='Regulator Loop Gain 2 P')
-    regulator_preamp_range_1 = models.CharField(max_length = 100, blank=True, verbose_name='Regulator Preamp Range 1 (Unit: --)')
-    regulator_preamp_range_2 = models.CharField(max_length = 100, blank=True, verbose_name='Regulator Preamp Range 2 (Unit: --)')
+    regulator_preamp_range_1 = models.CharField(max_length=100, blank=True,
+                                                verbose_name='Regulator Preamp Range 1 (Unit: --)')
+    regulator_preamp_range_2 = models.CharField(max_length=100, blank=True,
+                                                verbose_name='Regulator Preamp Range 2 (Unit: --)')
     regulator_retraction_speed = models.FloatField(blank=True, null=True, verbose_name='Regulator Retraction Speed')
     regulator_run_frequency = models.FloatField(blank=True, null=True, verbose_name='Regulator Run Frequency')
     regulator_setpoint_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Setpoint 1')
     regulator_setpoint_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Setpoint 2')
-    regulator_setpoint_limit_absolute_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Setpoint Limit Absolute 1')
-    regulator_setpoint_limit_absolute_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Setpoint Limit Absolute 2')
+    regulator_setpoint_limit_absolute_1 = models.FloatField(blank=True, null=True,
+                                                            verbose_name='Regulator Setpoint Limit Absolute 1')
+    regulator_setpoint_limit_absolute_2 = models.FloatField(blank=True, null=True,
+                                                            verbose_name='Regulator Setpoint Limit Absolute 2')
     regulator_sign_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Sign 1')
     regulator_sign_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Sign 2')
-    regulator_special_line_weighting = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Line Weighting')
-    regulator_special_loop_gain_1_d = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Loop Gain 1 D')
-    regulator_special_loop_gain_1_i = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Loop Gain 1 I')
-    regulator_special_loop_gain_1_k = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Loop Gain 1 K')
-    regulator_special_loop_gain_1_p = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Loop Gain 1 P')
-    regulator_special_loop_gain_2_d = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Loop Gain 2 D')
-    regulator_special_loop_gain_2_i = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Loop Gain 2 I')
-    regulator_special_loop_gain_2_k = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Loop Gain 2 K')
-    regulator_special_loop_gain_2_p = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Loop Gain 2 P')
-    regulator_special_preamp_range_1 = models.CharField(max_length = 100, blank=True, verbose_name='Regulator Special Preamp Range 1 (Unit: --)')
-    regulator_special_preamp_range_2 = models.CharField(max_length = 100, blank=True, verbose_name='Regulator Special Preamp Range 2 (Unit: --)')
+    regulator_special_line_weighting = models.FloatField(blank=True, null=True,
+                                                         verbose_name='Regulator Special Line Weighting')
+    regulator_special_loop_gain_1_d = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Regulator Special Loop Gain 1 D')
+    regulator_special_loop_gain_1_i = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Regulator Special Loop Gain 1 I')
+    regulator_special_loop_gain_1_k = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Regulator Special Loop Gain 1 K')
+    regulator_special_loop_gain_1_p = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Regulator Special Loop Gain 1 P')
+    regulator_special_loop_gain_2_d = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Regulator Special Loop Gain 2 D')
+    regulator_special_loop_gain_2_i = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Regulator Special Loop Gain 2 I')
+    regulator_special_loop_gain_2_k = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Regulator Special Loop Gain 2 K')
+    regulator_special_loop_gain_2_p = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Regulator Special Loop Gain 2 P')
+    regulator_special_preamp_range_1 = models.CharField(max_length=100, blank=True,
+                                                        verbose_name='Regulator Special Preamp Range 1 (Unit: --)')
+    regulator_special_preamp_range_2 = models.CharField(max_length=100, blank=True,
+                                                        verbose_name='Regulator Special Preamp Range 2 (Unit: --)')
     regulator_special_setpoint_1 = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Setpoint 1')
     regulator_special_setpoint_2 = models.FloatField(blank=True, null=True, verbose_name='Regulator Special Setpoint 2')
     regulator_z_offset = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Offset')
     regulator_z_offset_delay = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Offset Delay')
     regulator_z_offset_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Offset Slew Rate')
     regulator_z_offset_special = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Offset Special')
-    regulator_z_offset_special_delay = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Offset Special Delay')
-    regulator_z_offset_special_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Offset Special Slew Rate')
+    regulator_z_offset_special_delay = models.FloatField(blank=True, null=True,
+                                                         verbose_name='Regulator Z Offset Special Delay')
+    regulator_z_offset_special_slew_rate = models.FloatField(blank=True, null=True,
+                                                             verbose_name='Regulator Z Offset Special Slew Rate')
     regulator_z_ramp = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Ramp')
     regulator_z_ramp_delay = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Ramp Delay')
     regulator_z_ramp_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Regulator Z Ramp Slew Rate')
-    spectroscopy_alternate_aux1_range = models.CharField(max_length = 100, blank=True, verbose_name='Spectroscopy Alternate Aux1 Range (Unit: --)')
-    spectroscopy_alternate_aux2_range = models.CharField(max_length = 100, blank=True, verbose_name='Spectroscopy Alternate Aux2 Range (Unit: --)')
-    spectroscopy_alternate_delay_t1_1 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Delay T1 1')
-    spectroscopy_alternate_delay_t1_2 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Delay T1 2')
-    spectroscopy_alternate_delay_t2_1 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Delay T2 1')
-    spectroscopy_alternate_delay_t2_2 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Delay T2 2')
-    spectroscopy_alternate_delay_t3_1 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Delay T3 1')
-    spectroscopy_alternate_delay_t3_2 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Delay T3 2')
-    spectroscopy_alternate_delay_t4_1 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Delay T4 1')
-    spectroscopy_alternate_delay_t4_2 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Delay T4 2')
-    spectroscopy_alternate_device_1_end = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Device 1 End')
-    spectroscopy_alternate_device_1_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Device 1 Slew Rate')
-    spectroscopy_alternate_device_1_start = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Device 1 Start')
-    spectroscopy_alternate_device_2_end = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Device 2 End')
-    spectroscopy_alternate_device_2_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Device 2 Slew Rate')
-    spectroscopy_alternate_device_2_start = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Device 2 Start')
-    spectroscopy_alternate_modulation_vext_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Alternate Modulation VExt T1T2')
-    spectroscopy_alternate_modulation_vext_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Alternate Modulation VExt T2T3')
-    spectroscopy_alternate_modulation_vmod_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Alternate Modulation VMod T1T2')
-    spectroscopy_alternate_modulation_vmod_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Alternate Modulation VMod T2T3')
-    spectroscopy_alternate_modulation_zext_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Alternate Modulation ZExt T1T2')
-    spectroscopy_alternate_modulation_zext_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Alternate Modulation ZExt T2T3')
-    spectroscopy_alternate_spectroscopy_mode = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Alternate Spectroscopy Mode')
-    spectroscopy_aux1_range = models.CharField(max_length = 100, blank=True, verbose_name='Spectroscopy Aux1 Range (Unit: --)')
-    spectroscopy_aux2_range = models.CharField(max_length = 100, blank=True, verbose_name='Spectroscopy Aux2 Range (Unit: --)')
-    spectroscopy_correction_strategy = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Correction Strategy')
+    spectroscopy_alternate_aux1_range = models.CharField(max_length=100, blank=True,
+                                                         verbose_name='Spectroscopy Alternate Aux1 Range (Unit: --)')
+    spectroscopy_alternate_aux2_range = models.CharField(max_length=100, blank=True,
+                                                         verbose_name='Spectroscopy Alternate Aux2 Range (Unit: --)')
+    spectroscopy_alternate_delay_t1_1 = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Alternate Delay T1 1')
+    spectroscopy_alternate_delay_t1_2 = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Alternate Delay T1 2')
+    spectroscopy_alternate_delay_t2_1 = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Alternate Delay T2 1')
+    spectroscopy_alternate_delay_t2_2 = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Alternate Delay T2 2')
+    spectroscopy_alternate_delay_t3_1 = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Alternate Delay T3 1')
+    spectroscopy_alternate_delay_t3_2 = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Alternate Delay T3 2')
+    spectroscopy_alternate_delay_t4_1 = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Alternate Delay T4 1')
+    spectroscopy_alternate_delay_t4_2 = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Alternate Delay T4 2')
+    spectroscopy_alternate_device_1_end = models.FloatField(blank=True, null=True,
+                                                            verbose_name='Spectroscopy Alternate Device 1 End')
+    spectroscopy_alternate_device_1_slew_rate = models.FloatField(
+        blank=True, null=True, verbose_name='Spectroscopy Alternate Device 1 Slew Rate')
+    spectroscopy_alternate_device_1_start = models.FloatField(blank=True, null=True,
+                                                              verbose_name='Spectroscopy Alternate Device 1 Start')
+    spectroscopy_alternate_device_2_end = models.FloatField(blank=True, null=True,
+                                                            verbose_name='Spectroscopy Alternate Device 2 End')
+    spectroscopy_alternate_device_2_slew_rate = models.FloatField(
+        blank=True, null=True, verbose_name='Spectroscopy Alternate Device 2 Slew Rate')
+    spectroscopy_alternate_device_2_start = models.FloatField(blank=True, null=True,
+                                                              verbose_name='Spectroscopy Alternate Device 2 Start')
+    spectroscopy_alternate_modulation_vext_t1t2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Alternate Modulation VExt T1T2')
+    spectroscopy_alternate_modulation_vext_t2t3 = models.NullBooleanField(
+        verbose_name='Spectroscopy Alternate Modulation VExt T2T3')
+    spectroscopy_alternate_modulation_vmod_t1t2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Alternate Modulation VMod T1T2')
+    spectroscopy_alternate_modulation_vmod_t2t3 = models.NullBooleanField(
+        verbose_name='Spectroscopy Alternate Modulation VMod T2T3')
+    spectroscopy_alternate_modulation_zext_t1t2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Alternate Modulation ZExt T1T2')
+    spectroscopy_alternate_modulation_zext_t2t3 = models.NullBooleanField(
+        verbose_name='Spectroscopy Alternate Modulation ZExt T2T3')
+    spectroscopy_alternate_spectroscopy_mode = models.FloatField(
+        blank=True, null=True, verbose_name='Spectroscopy Alternate Spectroscopy Mode')
+    spectroscopy_aux1_range = models.CharField(max_length=100, blank=True,
+                                               verbose_name='Spectroscopy Aux1 Range (Unit: --)')
+    spectroscopy_aux2_range = models.CharField(max_length=100, blank=True,
+                                               verbose_name='Spectroscopy Aux2 Range (Unit: --)')
+    spectroscopy_correction_strategy = models.FloatField(blank=True, null=True,
+                                                         verbose_name='Spectroscopy Correction Strategy')
     spectroscopy_delay_t1_1 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Delay T1 1')
     spectroscopy_delay_t1_2 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Delay T1 2')
     spectroscopy_delay_t2_1 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Delay T2 1')
@@ -326,91 +404,145 @@ class Image(models.Model):
     spectroscopy_delay_t4_2 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Delay T4 2')
     spectroscopy_device_1_end = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 1 End')
     spectroscopy_device_1_points = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 1 Points')
-    spectroscopy_device_1_ramp_step_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 1 Ramp Step Slew Rate')
-    spectroscopy_device_1_repetitions = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 1 Repetitions')
-    spectroscopy_device_1_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 1 Slew Rate')
+    spectroscopy_device_1_ramp_step_slew_rate = models.FloatField(
+        blank=True, null=True, verbose_name='Spectroscopy Device 1 Ramp Step Slew Rate')
+    spectroscopy_device_1_repetitions = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Device 1 Repetitions')
+    spectroscopy_device_1_slew_rate = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Spectroscopy Device 1 Slew Rate')
     spectroscopy_device_1_start = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 1 Start')
-    spectroscopy_device_2_change_negative = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Change Negative')
-    spectroscopy_device_2_change_positive = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Change Positive')
+    spectroscopy_device_2_change_negative = models.FloatField(blank=True, null=True,
+                                                              verbose_name='Spectroscopy Device 2 Change Negative')
+    spectroscopy_device_2_change_positive = models.FloatField(blank=True, null=True,
+                                                              verbose_name='Spectroscopy Device 2 Change Positive')
     spectroscopy_device_2_end = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 End')
     spectroscopy_device_2_offset = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Offset')
-    spectroscopy_device_2_offset_delay = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Offset Delay')
+    spectroscopy_device_2_offset_delay = models.FloatField(blank=True, null=True,
+                                                           verbose_name='Spectroscopy Device 2 Offset Delay')
     spectroscopy_device_2_points = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Points')
-    spectroscopy_device_2_ramp_step_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Ramp Step Slew Rate')
-    spectroscopy_device_2_repetitions = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Repetitions')
-    spectroscopy_device_2_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Slew Rate')
+    spectroscopy_device_2_ramp_step_slew_rate = models.FloatField(
+        blank=True, null=True, verbose_name='Spectroscopy Device 2 Ramp Step Slew Rate')
+    spectroscopy_device_2_repetitions = models.FloatField(blank=True, null=True,
+                                                          verbose_name='Spectroscopy Device 2 Repetitions')
+    spectroscopy_device_2_slew_rate = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Spectroscopy Device 2 Slew Rate')
     spectroscopy_device_2_start = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Device 2 Start')
     spectroscopy_disable_feedback_loop = models.NullBooleanField(verbose_name='Spectroscopy Disable Feedback Loop')
-    spectroscopy_enable_alternate_aux1_range = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Aux1 Range')
-    spectroscopy_enable_alternate_aux2_range = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Aux2 Range')
-    spectroscopy_enable_alternate_delay_t1_1 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Delay T1 1')
-    spectroscopy_enable_alternate_delay_t1_2 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Delay T1 2')
-    spectroscopy_enable_alternate_delay_t2_1 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Delay T2 1')
-    spectroscopy_enable_alternate_delay_t2_2 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Delay T2 2')
-    spectroscopy_enable_alternate_delay_t3_1 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Delay T3 1')
-    spectroscopy_enable_alternate_delay_t3_2 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Delay T3 2')
-    spectroscopy_enable_alternate_delay_t4_1 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Delay T4 1')
-    spectroscopy_enable_alternate_delay_t4_2 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Delay T4 2')
-    spectroscopy_enable_alternate_device_1_end = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Device 1 End')
-    spectroscopy_enable_alternate_device_1_slew_rate = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Device 1 Slew Rate')
-    spectroscopy_enable_alternate_device_1_start = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Device 1 Start')
-    spectroscopy_enable_alternate_device_2_end = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Device 2 End')
-    spectroscopy_enable_alternate_device_2_slew_rate = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Device 2 Slew Rate')
-    spectroscopy_enable_alternate_device_2_start = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Device 2 Start')
-    spectroscopy_enable_alternate_modulation_vext_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Modulation VExt T1T2')
-    spectroscopy_enable_alternate_modulation_vext_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Modulation VExt T2T3')
-    spectroscopy_enable_alternate_modulation_vmod_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Modulation VMod T1T2')
-    spectroscopy_enable_alternate_modulation_vmod_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Modulation VMod T2T3')
-    spectroscopy_enable_alternate_modulation_zext_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Modulation ZExt T1T2')
-    spectroscopy_enable_alternate_modulation_zext_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Modulation ZExt T2T3')
-    spectroscopy_enable_alternate_spectroscopy_mode = models.NullBooleanField(verbose_name='Spectroscopy Enable Alternate Spectroscopy Mode')
-    spectroscopy_enable_device_1_ramp_reversal = models.NullBooleanField(verbose_name='Spectroscopy Enable Device 1 Ramp Reversal')
-    spectroscopy_enable_device_1_ramp_step_slew_rate = models.NullBooleanField(verbose_name='Spectroscopy Enable Device 1 Ramp Step Slew Rate')
-    spectroscopy_enable_device_1_slew_rate = models.NullBooleanField(verbose_name='Spectroscopy Enable Device 1 Slew Rate')
-    spectroscopy_enable_device_2_ramp_reversal = models.NullBooleanField(verbose_name='Spectroscopy Enable Device 2 Ramp Reversal')
-    spectroscopy_enable_device_2_ramp_step_slew_rate = models.NullBooleanField(verbose_name='Spectroscopy Enable Device 2 Ramp Step Slew Rate')
-    spectroscopy_enable_device_2_slew_rate = models.NullBooleanField(verbose_name='Spectroscopy Enable Device 2 Slew Rate')
+    spectroscopy_enable_alternate_aux1_range = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Aux1 Range')
+    spectroscopy_enable_alternate_aux2_range = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Aux2 Range')
+    spectroscopy_enable_alternate_delay_t1_1 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Delay T1 1')
+    spectroscopy_enable_alternate_delay_t1_2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Delay T1 2')
+    spectroscopy_enable_alternate_delay_t2_1 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Delay T2 1')
+    spectroscopy_enable_alternate_delay_t2_2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Delay T2 2')
+    spectroscopy_enable_alternate_delay_t3_1 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Delay T3 1')
+    spectroscopy_enable_alternate_delay_t3_2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Delay T3 2')
+    spectroscopy_enable_alternate_delay_t4_1 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Delay T4 1')
+    spectroscopy_enable_alternate_delay_t4_2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Delay T4 2')
+    spectroscopy_enable_alternate_device_1_end = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Device 1 End')
+    spectroscopy_enable_alternate_device_1_slew_rate = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Device 1 Slew Rate')
+    spectroscopy_enable_alternate_device_1_start = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Device 1 Start')
+    spectroscopy_enable_alternate_device_2_end = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Device 2 End')
+    spectroscopy_enable_alternate_device_2_slew_rate = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Device 2 Slew Rate')
+    spectroscopy_enable_alternate_device_2_start = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Device 2 Start')
+    spectroscopy_enable_alternate_modulation_vext_t1t2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Modulation VExt T1T2')
+    spectroscopy_enable_alternate_modulation_vext_t2t3 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Modulation VExt T2T3')
+    spectroscopy_enable_alternate_modulation_vmod_t1t2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Modulation VMod T1T2')
+    spectroscopy_enable_alternate_modulation_vmod_t2t3 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Modulation VMod T2T3')
+    spectroscopy_enable_alternate_modulation_zext_t1t2 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Modulation ZExt T1T2')
+    spectroscopy_enable_alternate_modulation_zext_t2t3 = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Modulation ZExt T2T3')
+    spectroscopy_enable_alternate_spectroscopy_mode = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Alternate Spectroscopy Mode')
+    spectroscopy_enable_device_1_ramp_reversal = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Device 1 Ramp Reversal')
+    spectroscopy_enable_device_1_ramp_step_slew_rate = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Device 1 Ramp Step Slew Rate')
+    spectroscopy_enable_device_1_slew_rate = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Device 1 Slew Rate')
+    spectroscopy_enable_device_2_ramp_reversal = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Device 2 Ramp Reversal')
+    spectroscopy_enable_device_2_ramp_step_slew_rate = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Device 2 Ramp Step Slew Rate')
+    spectroscopy_enable_device_2_slew_rate = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Device 2 Slew Rate')
     spectroscopy_enable_gap_preset = models.NullBooleanField(verbose_name='Spectroscopy Enable Gap Preset')
-    spectroscopy_enable_gap_voltage_preset_slew_rate = models.NullBooleanField(verbose_name='Spectroscopy Enable Gap Voltage Preset Slew Rate')
+    spectroscopy_enable_gap_voltage_preset_slew_rate = models.NullBooleanField(
+        verbose_name='Spectroscopy Enable Gap Voltage Preset Slew Rate')
     spectroscopy_enable_mode_locks = models.NullBooleanField(verbose_name='Spectroscopy Enable Mode Locks')
     spectroscopy_enable_modulation = models.NullBooleanField(verbose_name='Spectroscopy Enable Modulation')
     spectroscopy_enable_status_signals = models.NullBooleanField(verbose_name='Spectroscopy Enable Status Signals')
-    spectroscopy_gap_preset_feedback_post_delay = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Gap Preset Feedback Post Delay')
-    spectroscopy_gap_preset_feedback_pre_delay = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Gap Preset Feedback Pre Delay')
+    spectroscopy_gap_preset_feedback_post_delay = models.FloatField(
+        blank=True, null=True, verbose_name='Spectroscopy Gap Preset Feedback Post Delay')
+    spectroscopy_gap_preset_feedback_pre_delay = models.FloatField(
+        blank=True, null=True, verbose_name='Spectroscopy Gap Preset Feedback Pre Delay')
     spectroscopy_gap_preset_mode = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Gap Preset Mode')
-    spectroscopy_gap_voltage_preset = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Gap Voltage Preset')
-    spectroscopy_gap_voltage_preset_range = models.CharField(max_length = 100, blank=True, verbose_name='Spectroscopy Gap Voltage Preset Range (Unit: --)')
-    spectroscopy_gap_voltage_preset_slew_rate = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Gap Voltage Preset Slew Rate')
-    spectroscopy_maximum_points_1 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Maximum Points 1')
-    spectroscopy_maximum_points_2 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Maximum Points 2')
+    spectroscopy_gap_voltage_preset = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Spectroscopy Gap Voltage Preset')
+    spectroscopy_gap_voltage_preset_range = models.CharField(
+        max_length=100, blank=True, verbose_name='Spectroscopy Gap Voltage Preset Range (Unit: --)')
+    spectroscopy_gap_voltage_preset_slew_rate = models.FloatField(
+        blank=True, null=True, verbose_name='Spectroscopy Gap Voltage Preset Slew Rate')
+    spectroscopy_maximum_points_1 = models.FloatField(blank=True, null=True,
+                                                      verbose_name='Spectroscopy Maximum Points 1')
+    spectroscopy_maximum_points_2 = models.FloatField(blank=True, null=True,
+                                                      verbose_name='Spectroscopy Maximum Points 2')
     spectroscopy_modulation_vext_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Modulation VExt T1T2')
     spectroscopy_modulation_vext_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Modulation VExt T2T3')
     spectroscopy_modulation_vmod_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Modulation VMod T1T2')
     spectroscopy_modulation_vmod_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Modulation VMod T2T3')
     spectroscopy_modulation_zext_t1t2 = models.NullBooleanField(verbose_name='Spectroscopy Modulation ZExt T1T2')
     spectroscopy_modulation_zext_t2t3 = models.NullBooleanField(verbose_name='Spectroscopy Modulation ZExt T2T3')
-    spectroscopy_pause_conduct_mode = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Pause Conduct Mode')
+    spectroscopy_pause_conduct_mode = models.FloatField(blank=True, null=True,
+                                                        verbose_name='Spectroscopy Pause Conduct Mode')
     spectroscopy_raster_time_1 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Raster Time 1')
     spectroscopy_raster_time_2 = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Raster Time 2')
     spectroscopy_reenable_feedback_loop = models.NullBooleanField(verbose_name='Spectroscopy Reenable Feedback Loop')
-    spectroscopy_spectroscopy_mode = models.FloatField(blank=True, null=True, verbose_name='Spectroscopy Spectroscopy Mode')
+    spectroscopy_spectroscopy_mode = models.FloatField(blank=True, null=True,
+                                                       verbose_name='Spectroscopy Spectroscopy Mode')
     stmscbservice_it_select = models.FloatField(blank=True, null=True, verbose_name='STMSCBService IT Select')
     stmscbservice_lp_it_image_aa = models.FloatField(blank=True, null=True, verbose_name='STMSCBService Lp IT Image AA')
-    stmscbservice_lp_it_regulator = models.FloatField(blank=True, null=True, verbose_name='STMSCBService Lp IT Regulator')
-    stmscbservice_lp_it_regulator_aa = models.FloatField(blank=True, null=True, verbose_name='STMSCBService Lp IT Regulator AA')
+    stmscbservice_lp_it_regulator = models.FloatField(blank=True, null=True,
+                                                      verbose_name='STMSCBService Lp IT Regulator')
+    stmscbservice_lp_it_regulator_aa = models.FloatField(blank=True, null=True,
+                                                         verbose_name='STMSCBService Lp IT Regulator AA')
     stmscbservice_lp_vgap_out_rg = models.FloatField(blank=True, null=True, verbose_name='STMSCBService Lp VGap Out Rg')
     stmscbservice_vcal_in_select = models.FloatField(blank=True, null=True, verbose_name='STMSCBService VCal In Select')
-    stmscbservice_vgap_int_ext_select = models.FloatField(blank=True, null=True, verbose_name='STMSCBService VGap Int Ext Select')
+    stmscbservice_vgap_int_ext_select = models.FloatField(blank=True, null=True,
+                                                          verbose_name='STMSCBService VGap Int Ext Select')
     stmscbservice_vgap_out_mod_select = models.NullBooleanField(verbose_name='STMSCBService VGap Out Mod Select')
-    stmscbservice_vgap_out_select = models.FloatField(blank=True, null=True, verbose_name='STMSCBService VGap Out Select')
+    stmscbservice_vgap_out_select = models.FloatField(blank=True, null=True,
+                                                      verbose_name='STMSCBService VGap Out Select')
     stmscbservice_vgap_select = models.NullBooleanField(verbose_name='STMSCBService VGap Select')
     uscbservice_adc1_in_select = models.FloatField(blank=True, null=True, verbose_name='USCBService ADC1 In Select')
     uscbservice_adc2_in_select = models.FloatField(blank=True, null=True, verbose_name='USCBService ADC2 In Select')
     uscbservice_adc3_in_select = models.FloatField(blank=True, null=True, verbose_name='USCBService ADC3 In Select')
     uscbservice_adc4_in_select = models.FloatField(blank=True, null=True, verbose_name='USCBService ADC4 In Select')
-    uscbservice_dac1_cal_in_select = models.FloatField(blank=True, null=True, verbose_name='USCBService DAC1 Cal In Select')
+    uscbservice_dac1_cal_in_select = models.FloatField(blank=True, null=True,
+                                                       verbose_name='USCBService DAC1 Cal In Select')
     uscbservice_dac1_out_select = models.FloatField(blank=True, null=True, verbose_name='USCBService DAC1 Out Select')
-    uscbservice_dac2_cal_in_select = models.FloatField(blank=True, null=True, verbose_name='USCBService DAC2 Cal In Select')
+    uscbservice_dac2_cal_in_select = models.FloatField(blank=True, null=True,
+                                                       verbose_name='USCBService DAC2 Cal In Select')
     uscbservice_dac2_out_select = models.FloatField(blank=True, null=True, verbose_name='USCBService DAC2 Out Select')
     uscbservice_lp_adc1_in_aa = models.FloatField(blank=True, null=True, verbose_name='USCBService Lp ADC1 In AA')
     uscbservice_lp_adc2_in_aa = models.FloatField(blank=True, null=True, verbose_name='USCBService Lp ADC2 In AA')
@@ -420,9 +552,12 @@ class Image(models.Model):
     uscbservice_lp_dac2_out_rg = models.FloatField(blank=True, null=True, verbose_name='USCBService Lp DAC2 Out Rg')
     xyscanner_angle = models.FloatField(blank=True, null=True, verbose_name='XYScanner Angle')
     xyscanner_auto_disable_scan = models.NullBooleanField(verbose_name='XYScanner Auto Disable Scan')
-    xyscanner_drift_compensation_ratio = models.FloatField(blank=True, null=True, verbose_name='XYScanner Drift Compensation Ratio')
-    xyscanner_drift_offset_elimination_rate = models.FloatField(blank=True, null=True, verbose_name='XYScanner Drift Offset Elimination Rate')
-    xyscanner_enable_automatic_drift_compensation = models.NullBooleanField(verbose_name='XYScanner Enable Automatic Drift Compensation')
+    xyscanner_drift_compensation_ratio = models.FloatField(blank=True, null=True,
+                                                           verbose_name='XYScanner Drift Compensation Ratio')
+    xyscanner_drift_offset_elimination_rate = models.FloatField(blank=True, null=True,
+                                                                verbose_name='XYScanner Drift Offset Elimination Rate')
+    xyscanner_enable_automatic_drift_compensation = models.NullBooleanField(
+        verbose_name='XYScanner Enable Automatic Drift Compensation')
     xyscanner_enable_drift_compensation = models.NullBooleanField(verbose_name='XYScanner Enable Drift Compensation')
     xyscanner_enable_scan = models.NullBooleanField(verbose_name='XYScanner Enable Scan')
     xyscanner_enable_subgrid = models.NullBooleanField(verbose_name='XYScanner Enable Subgrid')
@@ -432,12 +567,15 @@ class Image(models.Model):
     xyscanner_line_start_delay = models.FloatField(blank=True, null=True, verbose_name='XYScanner Line Start Delay')
     xyscanner_lines = models.FloatField(blank=True, null=True, verbose_name='XYScanner Lines')
     xyscanner_move_raster_time = models.FloatField(blank=True, null=True, verbose_name='XYScanner Move Raster Time')
-    xyscanner_move_raster_time_constrained = models.NullBooleanField(verbose_name='XYScanner Move Raster Time Constrained')
+    xyscanner_move_raster_time_constrained = models.NullBooleanField(
+        verbose_name='XYScanner Move Raster Time Constrained')
     xyscanner_points = models.FloatField(blank=True, null=True, verbose_name='XYScanner Points')
     xyscanner_points_lines_constrained = models.NullBooleanField(verbose_name='XYScanner Points Lines Constrained')
     xyscanner_raster_time = models.FloatField(blank=True, null=True, verbose_name='XYScanner Raster Time')
-    xyscanner_relocation_step_limit = models.FloatField(blank=True, null=True, verbose_name='XYScanner Relocation Step Limit')
-    xyscanner_relocation_time_limit = models.FloatField(blank=True, null=True, verbose_name='XYScanner Relocation Time Limit')
+    xyscanner_relocation_step_limit = models.FloatField(blank=True, null=True,
+                                                        verbose_name='XYScanner Relocation Step Limit')
+    xyscanner_relocation_time_limit = models.FloatField(blank=True, null=True,
+                                                        verbose_name='XYScanner Relocation Time Limit')
     xyscanner_scan_constraint = models.FloatField(blank=True, null=True, verbose_name='XYScanner Scan Constraint')
     xyscanner_speed_adaptation = models.FloatField(blank=True, null=True, verbose_name='XYScanner Speed Adaptation')
     xyscanner_subgrid_constrained = models.NullBooleanField(verbose_name='XYScanner Subgrid Constrained')
@@ -467,4 +605,3 @@ class Image(models.Model):
             return u'{} ({}-type for {})'.format(self.name, self.type, self.measurement)
         else:
             return u'{}-type for ({})'.format(self.type, self.measurement)
-

@@ -1,34 +1,30 @@
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.urls import path
 from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 from django.contrib.flatpages import views as flatpageviews
-
-from models import Measurement, Calibration, JournalEntry, Turbopump
-
+from vg.models import Measurement, Calibration, JournalEntry, Turbopump
 import vg.views
 
 urlpatterns = [
-    url(r'^$', flatpageviews.flatpage, {'url': '/vg/'}, name='vghome'),
-    url(r'^view/$', ListView.as_view(model = Measurement, template_name = 'vg/measurement_list.html', paginate_by = 100)),
-    url(r'^view/(\d+)/$', vg.views.showmeasurement),
-    url(r'^view/(\d+)/cal/(\d+)/$', vg.views.showcalibratedmeasurement),
-    url(r'^view/(\d+)/calexport/(\d+)/$', vg.views.exportcalibratedmeasurement),
-    url(r'^view/(\d+)/cal/$', ListView.as_view(model = Calibration, template_name = 'vg/choosecalibration_list.html')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^cal/$', ListView.as_view(model = Calibration, template_name = 'vg/calibration_list.html')),
-    url(r'^journal/$', ListView.as_view(model = JournalEntry, template_name = 'vg/journalentry_list.html')),
-    url(r'^export/(\d+)/', vg.views.exportmeasurement),
-    url(r'^insight/(?P<parameter1>\w+)/(?P<parameter2>\w+)/$', vg.views.plot_parameters),
-    url(r'^insight/$', lambda x: HttpResponseRedirect('ion_repeller/ion_energy/')),
-    url(r'^insight/(?P<parameter1>\w+)/$', vg.views.plot_parameters),
-    url(r'^view/(\d+)/fit/(\d+)/$', vg.views.fitmeasurement),
-    url(r'^view/(\d+)/cal/(\d+)/fit/(\d+)/$', vg.views.fitcalmeasurement),
-    url(r'^export_all_f_urls/$', vg.views.export_all_f_urls),
-    url(r'^export_all_sf6_urls/$', vg.views.export_all_sf6_urls),
-    url(r'^export_all_sf5_urls/$', vg.views.export_all_sf5_urls),
-    url(r'^export_all_f2_urls/$', vg.views.export_all_f2_urls),
-    url(r'^all_usable_es/$', vg.views.all_usable_es),
-    url(r'^pumps/$', ListView.as_view(model = Turbopump, template_name = 'vg/pump_list.html')),
-    url(r'^pumps/(?P<pumpnumber>\d+)$', vg.views.pump),
+    path('', flatpageviews.flatpage, {'url': '/vg/'}, name='vghome'),
+    path('view/', ListView.as_view(model=Measurement, template_name='vg/measurement_list.html', paginate_by=100)),
+    path('view/<int:id>/', vg.views.showmeasurement),
+    path('view/<int:m_id>/cal/<int:c_id>/', vg.views.showcalibratedmeasurement),
+    path('view/<int:m_id>/calexport/<int:c_id>/', vg.views.exportcalibratedmeasurement),
+    path('view/<int:id>/cal/', ListView.as_view(model=Calibration, template_name='vg/choosecalibration_list.html')),
+    path('cal/', ListView.as_view(model=Calibration, template_name='vg/calibration_list.html')),
+    path('journal/', ListView.as_view(model=JournalEntry, template_name='vg/journalentry_list.html')),
+    path('export/<int:id>/', vg.views.exportmeasurement),
+    path('insight/<parameter1>/<parameter2>/', vg.views.plot_parameters),
+    path('insight/', lambda x: HttpResponseRedirect('ion_repeller/ion_energy/')),
+    path('insight/<parameter1>/', vg.views.plot_parameters),
+    path('view/<int:m_id>/fit/<int:n_peaks>/', vg.views.fitmeasurement),
+    path('view/<int:m_id>/cal/<int:c_id>/fit/<int:n_peaks>/', vg.views.fitcalmeasurement),
+    path('export_all_f_urls/', vg.views.export_all_f_urls),
+    path('export_all_sf6_urls/', vg.views.export_all_sf6_urls),
+    path('export_all_sf5_urls/', vg.views.export_all_sf5_urls),
+    path('export_all_f2_urls/', vg.views.export_all_f2_urls),
+    path('all_usable_es/', vg.views.all_usable_es),
+    path('pumps/', ListView.as_view(model=Turbopump, template_name='vg/pump_list.html')),
+    path('pumps/<int:pumpnumber>', vg.views.pump),
 ]

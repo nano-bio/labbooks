@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.contrib import admin
 from stm.models import Sample, Measurement, Image, Operator, StandardOperatingProcedure
 from stm.tasks import read_images_async

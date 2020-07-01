@@ -146,11 +146,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-STATIC_URL = '/static/'
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -163,15 +158,15 @@ INSTALLED_APPS = [
 
     'django.contrib.flatpages',
 
-    # 'vg',
+    'vg',
     'clustof',
-    # 'wippi',
+    'wippi',
     'cheminventory',
     # 'surftof',
     'snowball',
     'toffy',
     # 'poweralarm',
-    # 'stm',
+    'stm',
     # 'labinventory',
     'pulsetube',
     'moses',
