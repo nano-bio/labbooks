@@ -2,23 +2,18 @@ import pytz
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 from django.utils import http
-from django.utils.html import format_html
 
-from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, IsegAssignments, \
-    CountsPerMass
+from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, CountsPerMass
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
-    def iseg_export(self, obj):
-        return format_html('<a href="/surftof/iseg-export/{}/">Export ISEG</a>'.format(obj.id))
-
     def proper_time(self, obj):
         mtime = obj.time.astimezone(pytz.timezone('Europe/Vienna'))
         return mtime.strftime('%d.%m.%Y, %H:%M')
 
     proper_time.short_description = 'Time and date'
 
-    list_display = ('proper_time', 'id', 'get_short_description', 'get_impact_energy', 'iseg_export')
+    list_display = ('proper_time', 'id', 'get_short_description', 'get_impact_energy')
     list_filter = ()
     search_fields = ('comment', 'short_description', 'id',)
     readonly_fields = ('id',)
@@ -159,4 +154,3 @@ admin.site.register(CountsPerMass, CountsPerMassAdmin)
 admin.site.register(MeasurementType)
 admin.site.register(Gas)
 admin.site.register(Surface)
-admin.site.register(IsegAssignments)
