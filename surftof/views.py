@@ -2,7 +2,7 @@ import itertools
 from glob import glob
 import numpy as np
 import h5py
-from django.db.models import FloatField, Count
+from django.db.models import Count
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
@@ -13,11 +13,11 @@ from scipy.optimize import curve_fit
 from labbooks.settings import SURFTOF_BIGSHARE_DATA_ROOT
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
 from surftof.helper import import_pressure, get_temp_from_file
-from surftof.models import IsegAssignments, PotentialSettings, Measurement, CountsPerMass, Gas, Surface, MeasurementType
+from surftof.models import PotentialSettings, Measurement, CountsPerMass
 from django.core import serializers
 from surftof.serializers import CountsPerMassSerializer
 from requests import get
-from json import loads, dumps
+from json import loads
 from random import randint
 
 

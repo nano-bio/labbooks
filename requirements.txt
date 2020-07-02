@@ -20,6 +20,7 @@ h5py==2.10.*
 # for cheminventory
 requests==2.23.*
 openpyxl==3.0.*
+periodictable==1.5.*
 fitlib==0.0.* # pip install git+https://github.com/nano-bio/fitlib.git@package
 
 # for snowball

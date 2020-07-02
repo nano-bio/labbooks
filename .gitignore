@@ -14,3 +14,4 @@ lib64/
 lib64
 nginx*
 pip-selfcheck.json
+db.sqlite3

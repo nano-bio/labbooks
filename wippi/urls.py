@@ -13,7 +13,6 @@ urlpatterns = [
     path('view/<int:m_id>/cal/<int:c_id>/', wippi.views.showcalibratedmeasurement),
     path('view/<int:m_id>/calexport/<int:c_id>/', wippi.views.exportcalibratedmeasurement),
     path('view/<int:id>/cal/', ListView.as_view(model=Calibration, template_name='wippi/choosecalibration_list.html')),
-    path('admin/', admin.site.urls),
     path('cal/', ListView.as_view(model=Calibration, template_name='wippi/calibration_list.html')),
     path('journal/', ListView.as_view(model=JournalEntry, template_name='wippi/journalentry_list.html')),
     path('export/<int:id>/', wippi.views.exportmeasurement),
