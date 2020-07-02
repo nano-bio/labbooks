@@ -20,19 +20,19 @@ h5py==2.10.*
 # for cheminventory
 requests==2.23.*
 openpyxl==3.0.*
+fitlib==0.0.* # pip install git+https://github.com/nano-bio/fitlib.git@package
 
 # for snowball
-numpy==1.18.*
+numpy==1.19.*
 
 # for wippi
 pytz==2020.1.*
 
-# reevaluate these:
 # for STM
-# matplotlib
+matplotlib==3.2.*
+python-pptx==0.6.*
+pyMTRX==1.9.* # pip install git+https://github.com/nano-bio/pyMTRX.git
 # Pillow
-# python-pptx
-# pyMTRX
 # django-background-tasks
 
 # periodictable

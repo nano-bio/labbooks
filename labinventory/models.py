@@ -2,7 +2,7 @@ from django.db import models
 
 from cheminventory.models import Person, UsageLocation
 
-MODUS = (
+MODE = (
     ('PIR', 'Pirani'),
     ('FULL', 'Full Range'),
     ('COLD', 'Cold Cathode'),
@@ -13,10 +13,10 @@ MODUS = (
 class GaugeType(models.Model):
     company = models.CharField(max_length=30)
     type = models.CharField(max_length=50)
-    modus = models.CharField(max_length=4, choices=MODUS)
+    mode = models.CharField(max_length=4, choices=MODE)
 
-    def __unicode__(self):
-        return u'%s (%s, %s)' % (self.get_modus_display(), self.company, self.type)
+    def __str__(self):
+        return "{} ({}, {})".format(self.get_mode_display(), self.company, self.type)
 
 
 class PressureGauge(models.Model):
@@ -24,8 +24,8 @@ class PressureGauge(models.Model):
     gauge = models.ForeignKey(GaugeType, on_delete=models.CASCADE)
     usage_location = models.ForeignKey(UsageLocation, on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return u'%s' % (self.number)
+    def __str__(self):
+        return "{}".format(self.number)
 
 
 class PressureGaugeUsageRecord(models.Model):
@@ -35,11 +35,25 @@ class PressureGaugeUsageRecord(models.Model):
     usage_location = models.ForeignKey(UsageLocation, on_delete=models.CASCADE)
     comment = models.CharField(max_length=100, blank=True)
 
-    def __unicode__(self):
-        return u'Gauge %s used at %s on %s' % (self.gauge.number, self.usage_location, self.date)
+    def __str__(self):
+        return "Gauge {} used at {} on {}".format(self.gauge.number, self.usage_location, self.date)
 
 
 class Temperature(models.Model):
     date_time = models.DateTimeField(auto_now=True)
-    temp_sensor_1 = models.FloatField(blank=True, null=True, verbose_name='Teperature Prevacuum Room')
-    temp_sensor_2 = models.FloatField(blank=True, null=True, verbose_name='Teperature Big Lab Room')
+    temp_sensor_1 = models.FloatField(blank=True, null=True, verbose_name='Temperature Prevacuum Room')
+    temp_sensor_2 = models.FloatField(blank=True, null=True, verbose_name='Temperature Big Lab Room')
+
+
+ALARM_TYPES = (
+    ('poweralarm', 'Power alarm'),
+    ('tempalarm', 'Temperature alarm'),
+)
+
+
+class Alarm(models.Model):
+    persons = models.ManyToManyField('cheminventory.Person')
+    type = models.CharField(max_length=10, choices=ALARM_TYPES)
+
+    def __str__(self):
+        return self.type

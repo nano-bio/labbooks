@@ -85,7 +85,7 @@ STATIC_URL = '/staticfiles/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    '/var/www/files/',
+    # '/var/www/files/',
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -105,8 +105,7 @@ SECRET_KEY = 'i=d0pz8apxr+0!25lwozu)e$)q*^1k4x=494ga6xi-++67d_*&amp;'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -167,10 +166,9 @@ INSTALLED_APPS = [
     'surftof',
     'snowball',
     'toffy',
-    # 'poweralarm',
     'stm',
     'background_task',  # this is for scheduled import of STM images
-    # 'labinventory',
+    'labinventory',
     'pulsetube',
     'moses',
     'rest_framework'
