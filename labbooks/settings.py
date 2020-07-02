@@ -19,7 +19,10 @@ PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 # storage location of measurement files
 STM_STORAGE = '/var/storage/stm'
 
-SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
+if os.name == 'nt':  # windows developement system
+    SURFTOF_BIGSHARE_DATA_ROOT = "Z:/Experiments/SurfTOF/Measurements/rawDATA/"
+else:  # linux production server
+    SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
 
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
@@ -40,15 +43,12 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['138.232.74.41', 'ideadb.uibk.ac.at', 'localhost']
-
-TIME_ZONE = 'Europe/Vienna'
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
-LANGUAGE_CODE = 'en-us'
+ALLOWED_HOSTS = ['138.232.74.41', 'ideadb.uibk.ac.at']
 
 SITE_ID = 1
+
+TIME_ZONE = 'Europe/Vienna'
+LANGUAGE_CODE = 'en-us'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -61,34 +61,14 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'mediaroot/')
-
-# login url
 LOGIN_URL = '/admin/login/'
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediaroot/')
 MEDIA_URL = '/files/'
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/staticfiles/'
-
-# Additional locations of static files
 STATICFILES_DIRS = (
-    # '/var/www/files/',
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_DIR, "static"),
 )
 
 # List of finder classes that know how to find static files in
@@ -96,7 +76,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -126,6 +105,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
 ROOT_URLCONF = 'labbooks.urls'

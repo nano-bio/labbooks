@@ -19,5 +19,4 @@ urlpatterns = [
     path('cheminventory/', include(cheminventory.urls)),
     path('labinventory/', include(labinventory.urls)),
     path('toffy/', include(toffy.urls)),
-    path('', include('django.contrib.flatpages.urls')),
 ]

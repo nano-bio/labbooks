@@ -12,5 +12,5 @@ urlpatterns = [
          name="toffy-preview-data"),
     path('preview/',
          TemplateView.as_view(template_name='toffy/previewData.html'),
-         name="toffy-preview-data"),
+         name="toffy-preview"),
 ]
