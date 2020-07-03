@@ -1,10 +1,8 @@
 import os
-
 from django.contrib import admin
 from django.http import HttpResponse
 from openpyxl import load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
-
 from labinventory.models import PressureGaugeUsageRecord, PressureGauge, GaugeType, Alarm
 
 
@@ -47,19 +45,11 @@ class PressureGaugeAdmin(admin.ModelAdmin):
         return response
 
 
-class PressureGaugeRecordAdmin(admin.ModelAdmin):
-    # search_fields = ('usage_location__name', 'user__name', 'date', 'gas_cylinder__cylinder_number', 'gas_cylinder__chemical__name')
-    # list_display = ('gas_cylinder', 'usage_location', 'user', 'date')
-    # list_filter = ('usage_location', 'user', 'date', 'gas_cylinder')
-
-    save_on_top = True
-
-
 class AlarmAdmin(admin.ModelAdmin):
     list_display = ('type',)
 
 
 admin.site.register(PressureGauge, PressureGaugeAdmin)
 admin.site.register(GaugeType)
-admin.site.register(PressureGaugeUsageRecord, PressureGaugeRecordAdmin)
+admin.site.register(PressureGaugeUsageRecord)
 admin.site.register(Alarm, AlarmAdmin)

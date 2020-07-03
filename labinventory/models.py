@@ -1,13 +1,29 @@
 from django.db import models
 
-from cheminventory.models import Person, UsageLocation
-
 MODE = (
     ('PIR', 'Pirani'),
     ('FULL', 'Full Range'),
     ('COLD', 'Cold Cathode'),
     ('UNKN', 'Unknown')
 )
+
+
+class Person(models.Model):
+    name = models.CharField(max_length=200)
+    mobile = models.CharField(max_length=15, blank=True)
+    email = models.EmailField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class UsageLocation(models.Model):
+    name = models.CharField(max_length=100)
+    room_number = models.CharField(max_length=6, blank=True)
+    comment = models.TextField(blank=True, max_length=500)
+
+    def __str__(self):
+        return self.name
 
 
 class GaugeType(models.Model):
@@ -52,7 +68,7 @@ ALARM_TYPES = (
 
 
 class Alarm(models.Model):
-    persons = models.ManyToManyField('cheminventory.Person')
+    persons = models.ManyToManyField(Person)
     type = models.CharField(max_length=10, choices=ALARM_TYPES)
 
     def __str__(self):
