@@ -74,3 +74,19 @@ Bottelnecks:
 
 
 https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+
+cd /var/opt/
+python3 -m venv venv-django3
+source venv-django3/bin/activate
+pip install --upgrade pip wheel setuptools
+pip install --no-cache-dir --upgrade mysqlclient
+pip install git+https://github.com/nano-bio/fitlib.git@package
+pip install git+https://github.com/nano-bio/pyMTRX.git
+
+cd labbooks-dj3 # uffbasse
+python manage.py migrate --fake labinventory zero
+python manage.py migrate --fake poweralarm zero
+
+mysql -u labbooks_copy -plabbooks_copy < dropLabinventoryPoweralarm.sql # uffbasse x 2
+python manage.py migrate
+python manage.py runserver

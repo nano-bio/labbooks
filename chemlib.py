@@ -4,8 +4,8 @@
 import periodictable
 import re
 
-#list of nominal mass of most abundant isotopes
-#taken from http://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl
+# list of nominal mass of most abundant isotopes
+# taken from http://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl
 atommasses = {
     'H': 1,
     'D': 2,
@@ -102,12 +102,14 @@ atommasses = {
     'U': 238,
 }
 
+
 def chemicalformula2exactmass(chemicalformula):
     """ calculate exact mass from chemical formula with periodictable """
     chemformula = periodictable.formula(chemicalformula)
     return chemformula.mass
 
-def chemicalformula2nominalmass(chemicalformula, atommasses = atommasses):
+
+def chemicalformula2nominalmass(chemicalformula, atommasses=atommasses):
     """ calculate nominal mass from chemical formula using the dictionary atommasses """
     symbolcache = ''
     indexcache = ''
@@ -151,7 +153,8 @@ def chemicalformula2nominalmass(chemicalformula, atommasses = atommasses):
 
     return mass
 
-def checkatoms(chemicalformula, atommasses = atommasses):
+
+def checkatoms(chemicalformula, atommasses=atommasses):
     """ Checks each atom in a chemical formula for validity (e.g. listing in atommasses) """
     match = re.findall('([A-Z]{1}[a-z]{0,2})', str(chemicalformula))
     for atom in match:

@@ -10,7 +10,7 @@
 
 Django==3.0.*
 gunicorn==20.0.*
-mysqlclient==1.4.*
+mysqlclient==2.0.* # install this with --no-cache-dir --upgrade
 
 # for surftof
 djangorestframework==3.11.*
@@ -21,7 +21,7 @@ h5py==2.10.*
 requests==2.23.*
 openpyxl==3.0.*
 periodictable==1.5.*
-fitlib==0.0.* # pip install git+https://github.com/nano-bio/fitlib.git@package
+# fitlib==0.0.* # pip install git+https://github.com/nano-bio/fitlib.git@package
 
 # for snowball
 numpy==1.19.*
@@ -32,9 +32,6 @@ pytz==2020.1.*
 # for STM
 matplotlib==3.2.*
 python-pptx==0.6.*
-pyMTRX==1.9.* # pip install git+https://github.com/nano-bio/pyMTRX.git
+# pyMTRX==1.9.* # pip install git+https://github.com/nano-bio/pyMTRX.git # this is the python3 fork
+django-background-tasks==1.2.*
 # Pillow
-# django-background-tasks
-
-# periodictable
-# suds

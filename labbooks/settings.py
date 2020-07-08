@@ -33,9 +33,9 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'labbooks',
-        'USER': 'labbooks',
-        'PASSWORD': 'labbooks',
+        'NAME': 'labbooks_copy',
+        'USER': 'labbooks_copy',
+        'PASSWORD': 'labbooks_copy',
         'HOST': '',
         'PORT': '',
     }
