@@ -19,10 +19,7 @@ PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 # storage location of measurement files
 STM_STORAGE = '/var/storage/stm'
 
-if os.name == 'nt':  # windows developement system
-    SURFTOF_BIGSHARE_DATA_ROOT = "Z:/Experiments/SurfTOF/Measurements/rawDATA/"
-else:  # linux production server
-    SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
+SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
 
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
@@ -33,9 +30,9 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'labbooks_copy',
-        'USER': 'labbooks_copy',
-        'PASSWORD': 'labbooks_copy',
+        'NAME': 'labbooks',
+        'USER': 'labbooks',
+        'PASSWORD': 'labbooks',
         'HOST': '',
         'PORT': '',
     }
