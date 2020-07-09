@@ -1,3 +1,4 @@
+import csv
 import itertools
 from glob import glob
 import numpy as np
@@ -12,6 +13,7 @@ from scipy.optimize import curve_fit
 
 from labbooks.settings import SURFTOF_BIGSHARE_DATA_ROOT
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
+from surftof.forms import CreateCsvFileForm
 from surftof.helper import import_pressure, get_temp_from_file
 from surftof.models import PotentialSettings, Measurement, CountsPerMass
 from django.core import serializers
@@ -383,3 +385,48 @@ def flat_field_list(model_admin):
             else:
                 field_list.append(field)
     return field_list
+
+
+def cpm_export_csv(request):
+    if request.method == 'POST':
+        form = CreateCsvFileForm(request.POST)
+        if form.is_valid():
+            measurement_id_list_str = form.cleaned_data['id_list']
+            measurement_ids = []
+            for a in measurement_id_list_str.split(','):
+                if '-' in a:
+                    rang = range(int(a.split('-')[0].strip()), int(a.split('-')[1].strip()) + 1)
+                    measurement_ids += rang
+                elif a:
+                    measurement_ids.append(int(a.strip()))
+            measurements = Measurement.objects.filter(pk__in=measurement_ids)
+
+            mass_list_str = form.cleaned_data['mass_list']
+            mass_list = []
+            for a in mass_list_str.split(','):
+                if a:
+                    mass_list.append(float(a.strip()))
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="cpm-ids-{}-masses-{}.csv"'.format(
+                ",".join(["{}".format(a.id) for a in measurements]), ",".join(["{}".format(a) for a in mass_list]))
+            writer = csv.writer(response)
+
+            header_row = ['MeasurementId', 'ImpactEnergy']
+            for mass in mass_list:
+                header_row += ['{:.1f}'.format(mass), '{:.1f}err'.format(mass)]
+            writer.writerow(header_row)
+
+            for measurement in measurements:
+                row = [measurement.id, measurement.get_impact_energy_surface()]
+                for mass in mass_list:
+                    cpm_obj = CountsPerMass.objects.filter(measurement=measurement).filter(mass=mass)
+                    if cpm_obj:
+                        row += [cpm_obj[0].counts, cpm_obj[0].counts_err]
+                    else:
+                        row += [None, None]
+                writer.writerow(row)
+
+            return response
+    else:
+        return render(request, 'surftof/counts_per_mass_export.html', {'form': CreateCsvFileForm()})

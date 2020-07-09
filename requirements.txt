@@ -16,6 +16,7 @@ mysqlclient==2.0.* # install this with --no-cache-dir --upgrade
 djangorestframework==3.11.*
 scipy==1.4.*
 h5py==2.10.*
+django-crispy-forms==1.9.*
 
 # for cheminventory
 requests==2.23.*

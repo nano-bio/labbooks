@@ -60,4 +60,7 @@ urlpatterns = [
     path('cpm/plot-data/',
          views.cpm_data,
          name="surftof-cpm-plot-data"),
+    path('cpm/export-csv/',
+         views.cpm_export_csv,
+         name="surftof-cpm-export-csv")
 ]
