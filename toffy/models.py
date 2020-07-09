@@ -6,7 +6,7 @@ class Operator(models.Model):
     lastname = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s' % (self.firstname, self.lastname)
 
 
@@ -58,7 +58,7 @@ class Measurement(models.Model):
     def get_short_description(self):
         return "{}...".format(self.short_description[:30])
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s, %s' % (self.time, self.operator)
 
     class Meta:

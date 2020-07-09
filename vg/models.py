@@ -23,7 +23,7 @@ class Operator(models.Model):
     lastname = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s' % (self.firstname, self.lastname)
 
 
@@ -66,7 +66,7 @@ class Measurement(models.Model):
     z_focus_2 = models.FloatField(verbose_name='Z-Focus 2')
     comments = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         time = self.time.strftime('%d %m %Y, %H:%M')
         return u'%s: %s, %s' % (self.id, self.substance, time)
 
@@ -106,7 +106,7 @@ class Calibration(models.Model):
     comments = models.TextField(blank=True)
     calibration_plot = models.FileField(upload_to='vg/calibrations/', blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.p2 == 0.0:
             quadratic = 'No'
         else:
@@ -123,7 +123,7 @@ class JournalEntry(models.Model):
     comment = models.TextField()
     attachment = models.FileField(upload_to='vg/techjournal/', blank=True, default='')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s, %s, %s: %s' % (self.id, self.time, self.operator, self.comment[:50])
 
     class Meta:
@@ -137,7 +137,7 @@ class Turbopump(models.Model):
     purchase_date = models.DateField(auto_now_add=False, auto_now=False, blank=True, null=True)
     service_date = models.DateField(auto_now_add=False, auto_now=False, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -149,5 +149,5 @@ class TurbopumpStatus(models.Model):
     class Meta:
         verbose_name_plural = "Turbopump Status"
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s at %s: %s' % (self.pump.name, self.date, self.current)

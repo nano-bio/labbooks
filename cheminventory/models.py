@@ -44,7 +44,7 @@ class StorageLocation(models.Model):
     environmentally_damaging_allowed = models.BooleanField(default=False)
     h2o_reactivity_allowed = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.name)
 
     def clean(self):
@@ -64,7 +64,7 @@ class Person(models.Model):
     mobile = models.CharField(max_length=15, blank=True)
     email = models.EmailField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.name)
 
 
@@ -203,7 +203,7 @@ class ChemicalInstance(models.Model):
     class Meta:
         order_with_respect_to = 'chemical'
 
-    def __unicode__(self):
+    def __str__(self):
         if self.chemical.state_of_matter == 'GAS':
             return u'%s Gas (Cylinder No. %s)' % (self.chemical.name, self.cylinder_number)
         if self.chemical.chemical_formula is not u'':
@@ -318,7 +318,7 @@ class GasCylinder(models.Model):
 
     current_usage_location.admin_order_field = 'UsageRecord__usage_location'
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s Gas (Cylinder No. %s, %s bar)' % (self.chemical.name, self.cylinder_number, self.pressure)
 
     def cas(self):

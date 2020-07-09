@@ -51,7 +51,7 @@ class JournalEntry(models.Model):
     attachment = models.FileField(upload_to='snowball/techjournal/', blank=True, default='')
     written_notes = models.ImageField(blank=True, upload_to='snowball/techjournal/notes/')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s, %s, %s: %s' % (self.id, self.time, self.operator, self.comment[:50])
 
     def generate_filename(self):
@@ -80,5 +80,5 @@ class TurbopumpStatus(models.Model):
     class Meta:
         verbose_name_plural = "Turbopump Status"
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s at %s: %s' % (self.pump.name, self.date, self.current)

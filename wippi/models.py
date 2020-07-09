@@ -20,7 +20,7 @@ class Operator(models.Model):
     lastname = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s' % (self.firstname, self.lastname)
 
 
@@ -100,7 +100,7 @@ class Measurement(models.Model):
     qmh = models.CharField(max_length=5, blank=True, verbose_name='QMH')
     comments = models.TextField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         time = self.time.strftime('%d %m %Y, %H:%M')
         return u'%s: %s, %s' % (self.id, self.substance, time)
 
@@ -128,7 +128,7 @@ class Calibration(models.Model):
     comments = models.TextField(blank=True)
     calibration_plot = models.FileField(upload_to='wippi/calibrations/', blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s, %s' % (self.id, self.time)
 
     class Meta:
@@ -141,7 +141,7 @@ class JournalEntry(models.Model):
     comment = models.TextField()
     attachment = models.FileField(upload_to='wippi/techjournal/', blank=True, default='')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s, %s, %s: %s' % (self.id, self.time, self.operator, self.comment[:50])
 
     class Meta:

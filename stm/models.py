@@ -8,7 +8,7 @@ class Operator(models.Model):
     lastname = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{} {}'.format(self.firstname, self.lastname)
 
 
@@ -17,7 +17,7 @@ class StandardOperatingProcedure(models.Model):
     description = models.TextField(max_length=5000)
     manual = models.FileField(upload_to='stm/sop/', max_length=100, verbose_name='Manual', blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{}'.format(self.name)
 
 
@@ -26,7 +26,7 @@ class Sample(models.Model):
     snowball_measurement = models.ForeignKey('snowball.Measurement', blank=True, null=True, on_delete=models.SET_NULL)
     description = models.TextField(max_length=500, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{}'.format(self.material)
 
 
@@ -66,7 +66,7 @@ class Measurement(models.Model):
             except ValueError:
                 raise ValidationError('Could not parse the name of the model as a date. Please provide a date!')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{}: {}'.format(self.id, self.sample)
 
 
@@ -600,7 +600,7 @@ class Image(models.Model):
     z_t_initial_delay = models.FloatField(blank=True, null=True, verbose_name='Z t Initial Delay')
     z_t_oversampling_factor = models.FloatField(blank=True, null=True, verbose_name='Z t Oversampling Factor')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.name is not None:
             return u'{} ({}-type for {})'.format(self.name, self.type, self.measurement)
         else:

@@ -66,7 +66,7 @@ class ChemicalInstanceAdmin(admin.ModelAdmin):
         return form
 
     search_fields = ('chemical__name', 'chemical__chemical_formula', 'chemical__cas', 'chemical__inchi')
-    list_display = ('__unicode__', 'cas', 'state_of_matter', 'irritant', 'toxic', 'explosive', 'oxidizing', 'flammable',
+    list_display = ('__str__', 'cas', 'state_of_matter', 'irritant', 'toxic', 'explosive', 'oxidizing', 'flammable',
                     'health_hazard', 'corrosive', 'environmentally_damaging')
     list_filter = (
         InstanceStorageLocationListFilter, 'chemical__state_of_matter', 'chemical__irritant', 'chemical__toxic',
@@ -122,7 +122,7 @@ class GasCylinderUsageRecordInline(admin.TabularInline):
 class GasCylinderAdmin(admin.ModelAdmin):
     search_fields = ('chemical__name', 'chemical__chemical_formula', 'chemical__cas', 'chemical__inchi')
     list_display = (
-        '__unicode__', 'chemical__name', 'pressure', 'company', 'quantity', 'delivery_date', 'current_usage_location')
+        '__str__', 'chemical__name', 'pressure', 'company', 'quantity', 'delivery_date', 'current_usage_location')
     list_filter = ('group', 'quantity', 'company', 'delivery_date')
     save_on_top = True
     raw_id_fields = ('chemical',)
