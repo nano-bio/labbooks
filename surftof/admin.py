@@ -1,8 +1,7 @@
+from urllib.parse import quote
 import pytz
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
-from django.utils import http
-
 from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, CountsPerMass
 
 
@@ -74,12 +73,12 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
             # this variable will hold all the values and is the address to the new setting form
             redirect_address = u'add/?'
             # we don't want these to be adopted
-            forbidden_items = ['time', ]
+            forbidden_items = ['time', '_state']
             # walk through all fields of the model
             for item in s.__dict__:
                 if item not in forbidden_items:
                     if s.__dict__[item] is not None:
-                        redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
+                        redirect_address += quote(item) + '=' + quote(s.__dict__[item]) + '&'
 
             # redirect to newly created address
             return HttpResponseRedirect(redirect_address)
@@ -124,16 +123,16 @@ class MeasurementsAdmin(admin.ModelAdmin):
             # this variable will hold all the values and is the address to the new setting form
             redirect_address = u'add/?'
             # we don't want these to be adopted
-            forbidden_items = ['time', 'data_file_tof', 'data_file_surface']
+            forbidden_items = ['time', '_state']
             # walk through all fields of the model
             for item in s.__dict__:
                 if item not in forbidden_items:
                     if s.__dict__[item] is not None:
                         # ForeignKey fields have to be named without "_id", so the last 3 chars are truncated
-                        if "id" in http.urlquote(item) and len(http.urlquote(item)) > 2:
-                            redirect_address += http.urlquote(item)[:-3] + '=' + http.urlquote(s.__dict__[item]) + '&'
+                        if "id" in quote(item) and len(quote(item)) > 2:
+                            redirect_address += quote(item)[:-3] + '=' + quote(str(s.__dict__[item])) + '&'
                         else:
-                            redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
+                            redirect_address += quote(item) + '=' + quote(str(s.__dict__[item])) + '&'
 
             # redirect to newly created address
             return HttpResponseRedirect(redirect_address)

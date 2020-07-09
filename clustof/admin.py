@@ -1,11 +1,11 @@
+from urllib.parse import quote
 from django.contrib import admin, messages
 from clustof.models import Comment, Measurement, Operator, CurrentSetting, JournalEntry, Turbopump, TurbopumpStatus, \
     VacuumStatus
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.template.loader import get_template
-from django.template import Context, Template
-from django.utils import http
+from django.template import Context
 import datetime
 import re
 import pytz
@@ -135,12 +135,12 @@ class MeasurementAdmin(admin.ModelAdmin):
             # this variable will hold all the values and is the address to the new measurement form
             redirect_address = u'add/?'
             # we don't want these to be adopted
-            forbidden_items = ['_state', 'time', 'data_filename', 'rating']
+            forbidden_items = ['_state', 'time', 'data_filename', 'rating', '_state']
             # walk through all fields of the model
             for item in s.__dict__:
                 if item not in forbidden_items:
                     if s.__dict__[item] is not None:
-                        redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
+                        redirect_address += quote(item) + '=' + quote(s.__dict__[item]) + '&'
 
             # redirect to newly created address
             return HttpResponseRedirect(redirect_address)

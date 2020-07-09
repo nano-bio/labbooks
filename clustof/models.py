@@ -3,6 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 import re, time, datetime
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from cheminventory import models as cheminventory_models
 from operator import attrgetter
 
@@ -27,7 +28,7 @@ class Operator(models.Model):
     lastname = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s' % (self.firstname, self.lastname)
 
 
@@ -126,23 +127,18 @@ class Measurement(models.Model):
     # this provides a link to the eval file in the admin interface
     def eval_file(self):
         if self.evaluation_file:
-            return "<a href='%s'>Eval. file</a>" % (self.evaluation_file.url)
+            return mark_safe("<a href='{}'>Eval. file</a>".format(self.evaluation_file.url))
         else:
             return ''
 
-    eval_file.allow_tags = True
-
     # same for the actual data file
-
     def data_file(self):
-        return "<a href='%s'>Data file</a>" % ('/clustof/export/' + str(self.id))
+        return mark_safe("<a href='/clustof/export/{}'>Data file</a>".format(self.id))
 
-    data_file.allow_tags = True
-
-    def __unicode__(self):
+    def __str__(self):
         return u'%s, %s: %s ...' % (self.time, self.operator, self.substance[0:80])
 
-    def elec_energy(self):
+    def elec_energy(self) -> str:
         if self.real_electron_energy is not None:
             ee = self.real_electron_energy
         elif self.electron_energy_set is not None:
@@ -153,9 +149,9 @@ class Measurement(models.Model):
         # a little bit dirty. this means, either it cannot be computed
         # or somebody set it to 1234 (for ES) because it cannot be computed
         if ee > 1000:
-            ee = '-'
+            return '-'
 
-        return ee
+        return "{:.1f}".format(ee)
 
     def chems(self):
         chems = [self.chem_pu1_oven, self.chem_pu1_gas, self.chem_pu2_oven, self.chem_pu2_gas, self.is_inlet_gas]
@@ -192,7 +188,7 @@ class Comment(models.Model):
     time = models.DateTimeField(auto_now=False, auto_now_add=False)
     text = models.TextField(max_length=3000)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s, on %s' % (self.operator, self.time)
 
 
@@ -204,7 +200,7 @@ class JournalEntry(models.Model):
     attachment = models.FileField(upload_to='clustof/techjournal/', blank=True, default='')
     written_notes = models.ImageField(blank=True, upload_to='clustof/techjournal/notes/')
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s, %s, %s: %s' % (self.id, self.time, self.operator, self.comment[:50])
 
     def generate_filename(self):
@@ -270,7 +266,7 @@ class Turbopump(models.Model):
     purchase_date = models.DateField(auto_now_add=False, auto_now=False, blank=True, null=True)
     service_date = models.DateField(auto_now_add=False, auto_now=False, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -282,7 +278,7 @@ class TurbopumpStatus(models.Model):
     class Meta:
         verbose_name_plural = "Turbopump Status"
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s at %s: %s' % (self.pump.name, self.date, self.current)
 
 
@@ -299,5 +295,5 @@ class VacuumStatus(models.Model):
     class Meta:
         verbose_name_plural = "Vacuum Status"
 
-    def __unicode__(self):
+    def __str__(self):
         return u'Pressures at %s' % (datetime.datetime.fromtimestamp(self.time).strftime('%c'))
