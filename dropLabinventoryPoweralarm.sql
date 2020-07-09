@@ -1,4 +1,4 @@
-USE labbooks_copy;
+USE labbooks;
 SHOW TABLES;
 
 DROP TABLE IF EXISTS labinventory_labperson;

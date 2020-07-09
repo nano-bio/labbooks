@@ -84,9 +84,20 @@ pip install git+https://github.com/nano-bio/fitlib.git@package
 pip install git+https://github.com/nano-bio/pyMTRX.git
 
 cd labbooks-dj3 # uffbasse
+pip install -r requirements.txt
 python manage.py migrate --fake labinventory zero
 python manage.py migrate --fake poweralarm zero
 
-mysql -u labbooks_copy -plabbooks_copy < dropLabinventoryPoweralarm.sql # uffbasse x 2
+mysql -u labbooks -plabbooks < dropLabinventoryPoweralarm.sql # uffbasse x 2
 python manage.py migrate
 python manage.py runserver
+
+
+mysql -u root -p
+
+CREATE USER 'labbooks_copy'@'localhost' IDENTIFIED BY 'labbooks_copy';
+
+drop database labbooks_copy;
+create database labbooks_copy;
+GRANT ALL PRIVILEGES ON labbooks_copy.* TO 'labbooks_copy'@'localhost';
+FLUSH PRIVILEGES;

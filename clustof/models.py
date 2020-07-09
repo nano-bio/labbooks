@@ -136,7 +136,7 @@ class Measurement(models.Model):
         return mark_safe("<a href='/clustof/export/{}'>Data file</a>".format(self.id))
 
     def __str__(self):
-        return u'%s, %s: %s ...' % (self.time, self.operator, self.substance[0:80])
+        return '{}, {}: {} ...'.format(self.time, self.operator, self.substance[0:80])
 
     def elec_energy(self) -> str:
         if self.real_electron_energy is not None:
