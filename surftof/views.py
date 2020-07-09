@@ -399,8 +399,9 @@ def cpm_export_csv(request):
                     measurement_ids += rang
                 elif a:
                     measurement_ids.append(int(a.strip()))
-            measurements = Measurement.objects.filter(pk__in=measurement_ids)
-
+            measurements = list(dict.fromkeys(
+                [a.measurement for a in CountsPerMass.objects.filter(measurement__in=measurement_ids).order_by(
+                    'measurement_id')]))
             mass_list_str = form.cleaned_data['mass_list']
             mass_list = []
             for a in mass_list_str.split(','):
@@ -409,7 +410,7 @@ def cpm_export_csv(request):
 
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="cpm-ids-{}-masses-{}.csv"'.format(
-                ",".join(["{}".format(a.id) for a in measurements]), ",".join(["{}".format(a) for a in mass_list]))
+                measurement_id_list_str, mass_list_str)
             writer = csv.writer(response)
 
             header_row = ['MeasurementId', 'ImpactEnergy']
