@@ -12,8 +12,15 @@
                 <a class="nav-link" href="{% url "surftof-preview" %}">Preview</a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{% url "surftof-cpm" %}">CPM Plot</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    CPM
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'surftof-cpm' %}">Plot</a>
+                    <a class="dropdown-item" href="{% url 'surftof-cpm-export-csv' %}"> Export CSV</a>
+                </div>
             </li>
 
             <li class="nav-item dropdown">

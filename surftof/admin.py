@@ -1,24 +1,18 @@
+from urllib.parse import quote
 import pytz
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
-from django.utils import http
-from django.utils.html import format_html
-
-from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, IsegAssignments, \
-    CountsPerMass
+from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, CountsPerMass
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
-    def iseg_export(self, obj):
-        return format_html('<a href="/surftof/iseg-export/{}/">Export ISEG</a>'.format(obj.id))
-
     def proper_time(self, obj):
         mtime = obj.time.astimezone(pytz.timezone('Europe/Vienna'))
         return mtime.strftime('%d.%m.%Y, %H:%M')
 
     proper_time.short_description = 'Time and date'
 
-    list_display = ('proper_time', 'id', 'get_short_description', 'get_impact_energy', 'iseg_export')
+    list_display = ('proper_time', 'id', 'get_short_description', 'get_impact_energy')
     list_filter = ()
     search_fields = ('comment', 'short_description', 'id',)
     readonly_fields = ('id',)
@@ -79,12 +73,12 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
             # this variable will hold all the values and is the address to the new setting form
             redirect_address = u'add/?'
             # we don't want these to be adopted
-            forbidden_items = ['time', ]
+            forbidden_items = ['time', '_state']
             # walk through all fields of the model
             for item in s.__dict__:
                 if item not in forbidden_items:
                     if s.__dict__[item] is not None:
-                        redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
+                        redirect_address += quote(item) + '=' + quote(s.__dict__[item]) + '&'
 
             # redirect to newly created address
             return HttpResponseRedirect(redirect_address)
@@ -129,16 +123,16 @@ class MeasurementsAdmin(admin.ModelAdmin):
             # this variable will hold all the values and is the address to the new setting form
             redirect_address = u'add/?'
             # we don't want these to be adopted
-            forbidden_items = ['time', 'data_file_tof', 'data_file_surface']
+            forbidden_items = ['time', '_state']
             # walk through all fields of the model
             for item in s.__dict__:
                 if item not in forbidden_items:
                     if s.__dict__[item] is not None:
                         # ForeignKey fields have to be named without "_id", so the last 3 chars are truncated
-                        if "id" in http.urlquote(item) and len(http.urlquote(item)) > 2:
-                            redirect_address += http.urlquote(item)[:-3] + '=' + http.urlquote(s.__dict__[item]) + '&'
+                        if "id" in quote(item) and len(quote(item)) > 2:
+                            redirect_address += quote(item)[:-3] + '=' + quote(str(s.__dict__[item])) + '&'
                         else:
-                            redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
+                            redirect_address += quote(item) + '=' + quote(str(s.__dict__[item])) + '&'
 
             # redirect to newly created address
             return HttpResponseRedirect(redirect_address)
@@ -159,4 +153,3 @@ admin.site.register(CountsPerMass, CountsPerMassAdmin)
 admin.site.register(MeasurementType)
 admin.site.register(Gas)
 admin.site.register(Surface)
-admin.site.register(IsegAssignments)

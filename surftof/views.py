@@ -1,9 +1,9 @@
+import csv
 import itertools
-from datetime import datetime, timedelta
 from glob import glob
 import numpy as np
 import h5py
-from django.db.models import FloatField, Count
+from django.db.models import Count
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
@@ -11,69 +11,16 @@ from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 from scipy.optimize import curve_fit
 
+from labbooks.settings import SURFTOF_BIGSHARE_DATA_ROOT
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
-from surftof.models import IsegAssignments, PotentialSettings, Measurement, CountsPerMass, Gas, Surface, MeasurementType
+from surftof.forms import CreateCsvFileForm
+from surftof.helper import import_pressure, get_temp_from_file
+from surftof.models import PotentialSettings, Measurement, CountsPerMass
 from django.core import serializers
 from surftof.serializers import CountsPerMassSerializer
 from requests import get
-from json import loads, dumps
+from json import loads
 from random import randint
-
-root = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
-
-
-def export_iseg_profile(request, pk):
-    channel_voltages = {
-        '00': 0,
-        '01': 0,
-        '02': 0,
-        '03': 0,
-        '04': 0,
-        '05': 0,
-        '06': 0,
-        '07': 0,
-
-        '10': 0,
-        '11': 0,
-        '12': 0,
-        '13': 0,
-        '14': 0,
-        '15': 0,
-        '16': 0,
-        '17': 0,
-        '18': 0,
-        '19': 0,
-        '110': 0,
-        '111': 0,
-
-        '20': 0,
-        '21': 0,
-        '22': 0,
-        '23': 0,
-        '24': 0,
-        '25': 0,
-        '26': 0,
-        '27': 0,
-        '28': 0,
-        '29': 0,
-        '210': 0,
-        '211': 0
-    }
-
-    potential_setting = PotentialSettings.objects.get(pk=int(pk))
-    iseq_assignment = IsegAssignments.objects.first()
-
-    for key, value in iseq_assignment.__dict__.items():
-        if "_ch" in key and len(value) > 0:
-            for field in PotentialSettings._meta.get_fields():
-                if type(field) == FloatField and field.verbose_name.lower() == value.lower() and type(
-                        getattr(potential_setting, field.name)) == float:
-                    channel_voltages["{}{}".format(int(key[1:2]) - 1, int(key[5:]))] = getattr(potential_setting,
-                                                                                               field.name)
-
-    response = HttpResponse(dumps(channel_voltages), content_type='application/json')
-    response['Content-Disposition'] = 'attachment; filename=iseg-voltages.txt'
-    return response
 
 
 def json_export(request, table, pk):
@@ -121,7 +68,7 @@ def preview_data(request):
         return HttpResponse('This is a post only view')
 
     # get y-axis data from h5 file
-    file = glob("{}{}/*h5".format(root, int(data_id_file_1)))[-1]
+    file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_1)))[-1]
     with h5py.File(file, 'r')as f:
         y_data1 = np.array(f['SPECdata']['AverageSpec'])
         y_data1 = reduce_data_by_mean(y_data1, binned_by, 1)
@@ -137,7 +84,7 @@ def preview_data(request):
             xlabel = "time bins"
 
     if data_id_file_2:
-        file = glob("{}{}/*h5".format(root, int(data_id_file_2)))[-1]
+        file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_2)))[-1]
         with h5py.File(file, 'r')as f:
             y_data2 = np.array(f['SPECdata']['AverageSpec'])
             y_data2 = reduce_data_by_mean(y_data2, binned_by, float(scale_data_file_2))
@@ -174,7 +121,7 @@ def preview_trace(request):
     mass_max = int(request.POST.get('massMax'))
     measurement_id = int(request.POST.get('measurementId'))
 
-    file = glob("{}{}/*h5".format(root, int(measurement_id)))[-1]
+    file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(measurement_id)))[-1]
     infile = h5py.File(file, 'r')
     data = infile[u'SPECdata/Intensities']
     trace_points = data.shape[0]
@@ -206,31 +153,6 @@ def preview_xkcd(request):
     })
 
 
-def import_pressure(id):
-    pressures = {}
-    try:
-        pressure_file = glob(root + str(id) + "/*ressure*")[0]
-        a = np.loadtxt(pressure_file, delimiter='\t',
-                       dtype=[('a', '|S8'), ('b', '<f4'), ('c', '<f4'),
-                              ('d', '<f4'), ('e', '<f4'), ('f', '<f4'),
-                              ('g', '<f4')], skiprows=1)
-        ionsource = []
-        surf = []
-        tof = []
-        for b in a:
-            ionsource.append(b[1])
-            surf.append(b[2])
-            tof.append(b[3])
-        pressures['is'] = np.median(ionsource)
-        pressures['surf'] = np.median(surf)
-        pressures['tof'] = np.median(tof)
-    except:
-        pressures['is'] = -1
-        pressures['surf'] = -1
-        pressures['tof'] = -1
-    return pressures
-
-
 def preview_get_file_info(request, measurement_id):
     response = []
     measurement = get_object_or_404(Measurement, pk=int(measurement_id))
@@ -244,31 +166,6 @@ def preview_get_file_info(request, measurement_id):
     response.append({'key': 'Pressure Surf', 'value': "{:.1e} mbar".format(pressures['surf'])})
     response.append({'key': 'Pressure Tof', 'value': "{:.1e} mbar".format(pressures['tof'])})
     return JsonResponse(response, safe=False)
-
-
-def get_temp_from_file(measurement_id):
-    try:
-        h5_file_name = glob("{}{}/*h5".format(root, int(measurement_id)))[-1]
-        with h5py.File(h5_file_name, 'r') as f:
-            file_start = datetime.strptime(dict(f.attrs.items())['FileCreatedTimeSTR_LOCAL'][0].decode(),
-                                           "%d/%m/%Y %Hh %Mm %Ss")
-            file_duration = int(
-                dict(f.attrs.items())['Single Spec Duration (ms)'][0] / 1000 * len(f['SPECdata']['Intensities']))
-            file_end = file_start + timedelta(seconds=file_duration)
-            filenames = ["{}_temperaturePT100.csv".format(file_start.strftime("%Y-%m-%d"))]
-            if file_end.date() != file_start.date():
-                filenames.append("{}_temperaturePT100.csv".format(file_end.strftime("%Y-%m-%d")))
-
-            temps = []
-            for filename in filenames:
-                with open(root + 'temperature/' + filename, 'r') as g:
-                    for line in g:
-                        line_time = datetime.strptime(line.strip().split(',')[0][:19], '%Y-%m-%dT%H:%M:%S')
-                        if file_start < line_time < file_end:
-                            temps.append(float(line.strip().split(',')[1]))
-            return "{:.1f} &#176;C".format(np.median(temps))
-    except:
-        return "-1 &#176;C"
 
 
 # for preview_data
@@ -312,9 +209,9 @@ def preview_file_list(request):
 
 
 # update the rating of a measurement
-def set_rating_of_measurement(request, id, rating):
+def set_rating_of_measurement(request, measurement_id, rating):
     if request.user.has_perm('surftof.add_measurement'):
-        obj = get_object_or_404(Measurement, pk=id)
+        obj = get_object_or_404(Measurement, pk=measurement_id)
         obj.rating = int(rating)
         obj.save()
         return redirect('/admin/surftof/measurement/')
@@ -488,3 +385,49 @@ def flat_field_list(model_admin):
             else:
                 field_list.append(field)
     return field_list
+
+
+def cpm_export_csv(request):
+    if request.method == 'POST':
+        form = CreateCsvFileForm(request.POST)
+        if form.is_valid():
+            measurement_id_list_str = form.cleaned_data['id_list']
+            measurement_ids = []
+            for a in measurement_id_list_str.split(','):
+                if '-' in a:
+                    rang = range(int(a.split('-')[0].strip()), int(a.split('-')[1].strip()) + 1)
+                    measurement_ids += rang
+                elif a:
+                    measurement_ids.append(int(a.strip()))
+            measurements = list(dict.fromkeys(
+                [a.measurement for a in CountsPerMass.objects.filter(measurement__in=measurement_ids).order_by(
+                    'measurement_id')]))
+            mass_list_str = form.cleaned_data['mass_list']
+            mass_list = []
+            for a in mass_list_str.split(','):
+                if a:
+                    mass_list.append(float(a.strip()))
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="cpm-ids-{}-masses-{}.csv"'.format(
+                measurement_id_list_str, mass_list_str)
+            writer = csv.writer(response)
+
+            header_row = ['MeasurementId', 'ImpactEnergy']
+            for mass in mass_list:
+                header_row += ['{:.1f}'.format(mass), '{:.1f}err'.format(mass)]
+            writer.writerow(header_row)
+
+            for measurement in measurements:
+                row = [measurement.id, measurement.get_impact_energy_surface()]
+                for mass in mass_list:
+                    cpm_obj = CountsPerMass.objects.filter(measurement=measurement).filter(mass=mass)
+                    if cpm_obj:
+                        row += [cpm_obj[0].counts, cpm_obj[0].counts_err]
+                    else:
+                        row += [None, None]
+                writer.writerow(row)
+
+            return response
+    else:
+        return render(request, 'surftof/counts_per_mass_export.html', {'form': CreateCsvFileForm()})

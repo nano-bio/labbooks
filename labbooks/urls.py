@@ -1,5 +1,5 @@
-from django.conf.urls import include, url
-
+from django.contrib import admin
+from django.urls import path, include
 import labinventory.urls
 import vg.urls
 import clustof.urls
@@ -7,32 +7,16 @@ import surftof.urls
 import wippi.urls
 import cheminventory.urls
 import snowball.urls
-import poweralarm.urls
 import toffy.urls
-from django.contrib.flatpages import views as flatpageviews
-
-# Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
 
 urlpatterns = [
-    # Examples:
-    # url(r'^$', 'labbooks.views.home', name='home'),
-    #url(r'^labbooks/vg/', include('labbooks.vg.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^vg/', include(vg.urls)),
-    url(r'^wippi/', include(wippi.urls)),
-    url(r'^clustof/', include(clustof.urls)),
-    url(r'^surftof/', include(surftof.urls)),
-    url(r'^snowball/', include(snowball.urls)),
-    url(r'^cheminventory/', include(cheminventory.urls)),
-    url(r'^poweralarm/', include(poweralarm.urls)),
-    url(r'^labinventory/', include(labinventory.urls)),
-    url(r'^toffy/', include(toffy.urls)),
-    url(r'^$', flatpageviews.flatpage, {'url': '/'}, name='home'),
+    path('admin/', admin.site.urls),
+    path('vg/', include(vg.urls)),
+    path('wippi/', include(wippi.urls)),
+    path('clustof/', include(clustof.urls)),
+    path('surftof/', include(surftof.urls)),
+    path('snowball/', include(snowball.urls)),
+    path('cheminventory/', include(cheminventory.urls)),
+    path('labinventory/', include(labinventory.urls)),
+    path('toffy/', include(toffy.urls)),
 ]

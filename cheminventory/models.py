@@ -4,10 +4,9 @@ sys.path.append('/var/opt')
 
 from django.db import models
 from django.core.exceptions import ValidationError
-import re
 import fitlib.chemlib
-import validations
-from inchivalidation import inchi2chemicalformula
+import cheminventory.validations as validations
+from cheminventory.inchivalidation import inchi2chemicalformula as inchi2chemicalformula
 
 SOM = (
     ('FLUID', 'Fluid'),
@@ -45,7 +44,7 @@ class StorageLocation(models.Model):
     environmentally_damaging_allowed = models.BooleanField(default=False)
     h2o_reactivity_allowed = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.name)
 
     def clean(self):
@@ -65,7 +64,7 @@ class Person(models.Model):
     mobile = models.CharField(max_length=15, blank=True)
     email = models.EmailField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.name)
 
 
@@ -75,16 +74,16 @@ class UsageLocation(models.Model):
     responsible_persons = models.ManyToManyField(Person)
     experiment = models.TextField(max_length=1000, blank=True)
 
-    def __unicode__(self):
-        return u'%s' % (self.name)
+    def __str__(self):
+        return self.name
 
 
 class GHS_H(models.Model):
     number = models.CharField(max_length=12)
     text = models.CharField(max_length=400)
 
-    def __unicode__(self):
-        return u'%s' % (self.number)
+    def __str__(self):
+        return "{}".format(self.number)
 
     class Meta:
         verbose_name_plural = 'GHS H'
@@ -96,8 +95,8 @@ class GHS_P(models.Model):
     number = models.CharField(max_length=12)
     text = models.CharField(max_length=400)
 
-    def __unicode__(self):
-        return u'%s' % (self.number)
+    def __str__(self):
+        return "{}".format(self.number)
 
     class Meta:
         verbose_name_plural = 'GHS P'
@@ -141,11 +140,11 @@ class Chemical(models.Model):
              'health_hazard', 'corrosive', 'environmentally_damaging', 'h2o_reactivity'))
         ordering = ['name']
 
-    def __unicode__(self):
-        if self.chemical_formula is not u'':
-            return u'%s (%s)' % (self.name, self.chemical_formula)
+    def __str__(self):
+        if self.chemical_formula:
+            return "{} ({})".format(self.name, self.chemical_formula)
         else:
-            return u'%s' % (self.name)
+            return self.name
 
     def clean(self):
         if self.cas != u'':
@@ -185,7 +184,7 @@ class Chemical(models.Model):
 
 
 class ChemicalInstance(models.Model):
-    chemical = models.ForeignKey(Chemical, related_name='chemical_instance')
+    chemical = models.ForeignKey(Chemical, related_name='chemical_instance', on_delete=models.PROTECT)
     company = models.CharField(max_length=100, blank=True)
     item_number = models.CharField(max_length=100, blank=True)
     quantity = models.CharField(max_length=100, blank=True)
@@ -193,8 +192,8 @@ class ChemicalInstance(models.Model):
     group = models.CharField(max_length=7, null=True, choices=GROUPS, default='DENIFL')
     last_used = models.DateField(blank=True, null=True)
     last_user = models.CharField(max_length=100, blank=True, null=True)
-    storage_location = models.ForeignKey(StorageLocation)
-    usage_location = models.ForeignKey(UsageLocation, blank=True, null=True)
+    storage_location = models.ForeignKey(StorageLocation, on_delete=models.PROTECT)
+    usage_location = models.ForeignKey(UsageLocation, blank=True, null=True, on_delete=models.PROTECT)
 
     cylinder_number = models.IntegerField(blank=True, null=True, unique=True,
                                           verbose_name='Number of gas cylinder in wiki')
@@ -204,7 +203,7 @@ class ChemicalInstance(models.Model):
     class Meta:
         order_with_respect_to = 'chemical'
 
-    def __unicode__(self):
+    def __str__(self):
         if self.chemical.state_of_matter == 'GAS':
             return u'%s Gas (Cylinder No. %s)' % (self.chemical.name, self.cylinder_number)
         if self.chemical.chemical_formula is not u'':
@@ -302,14 +301,14 @@ class ChemicalInstance(models.Model):
 
 class GasCylinder(models.Model):
     cylinder_number = models.IntegerField(unique=True, verbose_name='Number of gas cylinder')
-    chemical = models.ForeignKey(Chemical, related_name='gas_cylinder')
+    chemical = models.ForeignKey(Chemical, related_name='gas_cylinder', on_delete=models.PROTECT)
     pressure = models.FloatField(default=200)
     quality = models.FloatField(default=5.0)
     company = models.CharField(max_length=100, blank=True)
     quantity = models.CharField(max_length=100, blank=True)
     delivery_date = models.DateField(blank=True, null=True)
     group = models.CharField(max_length=7, null=True, choices=GROUPS, default='SCHEIER')
-    storage_location = models.ForeignKey(StorageLocation)
+    storage_location = models.ForeignKey(StorageLocation, on_delete=models.PROTECT)
     comments = models.TextField(max_length=1000, blank=True)
 
     def current_usage_location(self):
@@ -319,7 +318,7 @@ class GasCylinder(models.Model):
 
     current_usage_location.admin_order_field = 'UsageRecord__usage_location'
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s Gas (Cylinder No. %s, %s bar)' % (self.chemical.name, self.cylinder_number, self.pressure)
 
     def cas(self):
@@ -345,12 +344,12 @@ class GasCylinder(models.Model):
 
 
 class GasCylinderUsageRecord(models.Model):
-    gas_cylinder = models.ForeignKey(GasCylinder)
+    gas_cylinder = models.ForeignKey(GasCylinder, on_delete=models.PROTECT)
     date = models.DateField()
-    user = models.ForeignKey(Person)
-    usage_location = models.ForeignKey(UsageLocation)
+    user = models.ForeignKey(Person, on_delete=models.PROTECT)
+    usage_location = models.ForeignKey(UsageLocation, on_delete=models.PROTECT)
     comment = models.CharField(max_length=100, blank=True)
 
-    def __unicode__(self):
-        return u'Cylinder %s (%s) used at %s on %s' % (
+    def __str__(self):
+        return "Cylinder {} ({}) used at {} on {}".format(
             self.gas_cylinder.id, self.gas_cylinder.chemical.name, self.usage_location, self.date)

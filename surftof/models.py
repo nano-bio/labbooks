@@ -210,48 +210,6 @@ class Measurement(models.Model):
     get_rating_stars.short_description = "RATING"
 
 
-class IsegAssignments(models.Model):
-    m1_ch00 = models.CharField(max_length=100, blank=True,
-                               help_text="Use the exact names like in the potential settings")
-    m1_ch01 = models.CharField(max_length=100, blank=True)
-    m1_ch02 = models.CharField(max_length=100, blank=True)
-    m1_ch03 = models.CharField(max_length=100, blank=True)
-    m1_ch04 = models.CharField(max_length=100, blank=True)
-    m1_ch05 = models.CharField(max_length=100, blank=True)
-    m1_ch06 = models.CharField(max_length=100, blank=True)
-    m1_ch07 = models.CharField(max_length=100, blank=True)
-    m2_ch00 = models.CharField(max_length=100, blank=True)
-    m2_ch01 = models.CharField(max_length=100, blank=True)
-    m2_ch02 = models.CharField(max_length=100, blank=True)
-    m2_ch03 = models.CharField(max_length=100, blank=True)
-    m2_ch04 = models.CharField(max_length=100, blank=True)
-    m2_ch05 = models.CharField(max_length=100, blank=True)
-    m2_ch06 = models.CharField(max_length=100, blank=True)
-    m2_ch07 = models.CharField(max_length=100, blank=True)
-    m2_ch08 = models.CharField(max_length=100, blank=True)
-    m2_ch09 = models.CharField(max_length=100, blank=True)
-    m2_ch10 = models.CharField(max_length=100, blank=True)
-    m2_ch11 = models.CharField(max_length=100, blank=True)
-    m3_ch00 = models.CharField(max_length=100, blank=True)
-    m3_ch01 = models.CharField(max_length=100, blank=True)
-    m3_ch02 = models.CharField(max_length=100, blank=True)
-    m3_ch03 = models.CharField(max_length=100, blank=True)
-    m3_ch04 = models.CharField(max_length=100, blank=True)
-    m3_ch05 = models.CharField(max_length=100, blank=True)
-    m3_ch06 = models.CharField(max_length=100, blank=True)
-    m3_ch07 = models.CharField(max_length=100, blank=True)
-    m3_ch08 = models.CharField(max_length=100, blank=True)
-    m3_ch09 = models.CharField(max_length=100, blank=True)
-    m3_ch10 = models.CharField(max_length=100, blank=True)
-    m3_ch11 = models.CharField(max_length=100, blank=True)
-
-    def __str__(self):
-        return "Default settings"
-
-    class Meta:
-        verbose_name_plural = "ISEG assignments"
-
-
 class CountsPerMass(models.Model):
     measurement = models.ForeignKey(Measurement, on_delete=models.CASCADE)
     last_edit = models.DateTimeField(auto_now=True)

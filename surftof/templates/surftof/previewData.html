@@ -327,7 +327,7 @@
                     massMin.val(),
                     massMax.val()
                 );
-                $.post("/surftof/preview-trace/", {
+                $.post("{% url 'surftof-preview-trace' %}", {
                     massMin: minMaxBin.minIndex,
                     massMax: minMaxBin.maxIndex,
                     measurementId: dataIdFile1,
@@ -338,6 +338,13 @@
                         'xlabel': 'time [s]'
                     });
                     g.resetZoom();
+                }).fail(function () {
+                    $.toast({
+                        heading: 'Error',
+                        text: 'Something went wrong',
+                        showHideTransition: 'fade',
+                        icon: 'warning'
+                    })
                 });
             }
         });

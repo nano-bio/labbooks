@@ -3,8 +3,8 @@
 from django.core.exceptions import ValidationError
 import re
 
-#list of nominal mass of most abundant isotopes
-#taken from http://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl
+# list of nominal mass of most abundant isotopes
+# taken from http://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl
 atommasses = {
     'H': 1,
     'D': 2,
@@ -101,8 +101,9 @@ atommasses = {
     'U': 238,
 }
 
-#we define the regex object for chemical formulas
+# we define the regex object for chemical formulas
 rechem = re.compile('^([A-Z]{1}[a-z]{0,2}[0-9]{0,3})+$')
+
 
 def checkatoms(chemical_formula):
     """ Checks each atom in a chemical formula for validity (e.g. listing in atommasses) """
@@ -116,20 +117,22 @@ def checkatoms(chemical_formula):
 
     return result
 
-#define validations for CAS and chemical formulas
+
+# define validations for CAS and chemical formulas
 
 def validate_CAS(cas):
-    sum=0
+    sum = 0
     cas_arr = cas.split('-')
     if len(cas_arr) < 3:
         raise ValidationError(u'%s is not a valid CAS-number!' % cas)
-    length = len(cas_arr[0])+2
+    length = len(cas_arr[0]) + 2
     for x in cas_arr[0]:
-        sum = sum + length*int(x)
+        sum = sum + length * int(x)
         length = length - 1
     sum = sum + 2 * int(cas_arr[1][0]) + int(cas_arr[1][1])
     if sum % 10 != int(cas_arr[2]):
         raise ValidationError(u'%s is not a valid CAS-number!' % cas)
+
 
 def validate_chemical_formula(chemical_formula):
     """ checks chemical formulae for plausibility """
@@ -147,10 +150,10 @@ def validate_chemical_formula(chemical_formula):
                 new = []
                 factor = int(dotsplit[0][0])
                 for char in tbm:
-                     if char.isdigit():
-                         new.append(str(int(char)*factor))
-                     else:
-                         new.append(char)
+                    if char.isdigit():
+                        new.append(str(int(char) * factor))
+                    else:
+                        new.append(char)
                 newsumformula = ''.join(new)
                 dotsplit[0] = newsumformula
                 corr_formula = ''.join(dotsplit)
@@ -165,6 +168,7 @@ def validate_chemical_formula(chemical_formula):
     result = checkatoms(chemical_formula)
     if result != 0:
         raise ValidationError(u'%s is not an atom' % result)
+
 
 def validate_name(name):
     m = rechem.match(name)

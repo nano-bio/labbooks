@@ -1,12 +1,34 @@
 from datetime import timedelta
 from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
-from poweralarm.models import Experiment
+from django.shortcuts import get_object_or_404
+from labinventory.models import Temperature, Alarm
 
-from labinventory.models import Temperature
+
+# creates alarm script for experiment
+def command_line_creator(commandline_sms, commandline_email):
+    complete_command = ''
+    exp = get_object_or_404(Alarm, name='poweralarm')
+    for user in exp.persons.all():
+        if user.mobile is not None:
+            complete_command += commandline_sms.format(user.mobile.replace(' ', '').replace('/', ''))
+        if user.email:
+            complete_command += commandline_email.format(user.email)
+    return complete_command
+
+
+def power_alarm(request):
+    commandline_sms = 'echo "Power failure alarm in the lab!" | gnokii --sendsms {}\n'
+    commandline_email = 'echo "Power failure alarm in the lab!" | mail -s LabAlert {}\n'
+    return HttpResponse(command_line_creator(commandline_sms, commandline_email))
+
+
+def power_clear(request):
+    commandline_sms = 'echo "Power returned in the lab!" | gnokii --sendsms {}\n'
+    commandline_email = 'echo "Power returned in the lab!" | mail -s LabAlert {}\n'
+    return HttpResponse(command_line_creator(commandline_sms, commandline_email))
 
 
 @csrf_exempt
@@ -65,7 +87,7 @@ def temperature_is_critical(request):
                            "temperature/' | mail -s LabAlert {}"
 
         commands = []
-        exp = get_object_or_404(Experiment, name="TEMPALERT")
+        exp = get_object_or_404(Alarm, type="tempalarm")
         for user in exp.persons.all():
             if user.mobile is not None:
                 commands.append(

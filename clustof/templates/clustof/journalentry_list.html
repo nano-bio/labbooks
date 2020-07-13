@@ -2,21 +2,21 @@
 
 {% block content %}
     <h2>Most recent Journal Entries</h2>
-    <div class="general"><a href="/clustof/journal/new">Add new entry</a></div><br />
+    <div class="general"><a href="/clustof/journal/new">Add new entry</a></div><br/>
     <table>
         <tr>
-            <td><strong>ID</strong</td>
-            <td><strong>Date and time</strong</td>
-            <td><strong>Operator</strong</td>
-            <td><strong>Comments</strong</td>
+            <td><strong>ID</strong></td>
+            <td><strong>Date and time</strong></td>
+            <td><strong>Operator</strong></td>
+            <td><strong>Comments</strong></td>
         </tr>
         {% for j in object_list %}
-        <tr>
-            <td><p><a href="/admin/clustof/journalentry/{{ j.id }}">{{ j.id }}</a></p></td>
-            <td><p><a href="/admin/clustof/journalentry/{{ j.id }}">{{ j.time }}</a></p></td>
-            <td><p>{{ j.operator }}</p></td>
-            <td><p>{{ j.comment|truncatewords:10 }}</p></td>
-        </tr>
+            <tr>
+                <td><p><a href="/admin/clustof/journalentry/{{ j.id }}">{{ j.id }}</a></p></td>
+                <td><p><a href="/admin/clustof/journalentry/{{ j.id }}">{{ j.time }}</a></p></td>
+                <td><p>{{ j.operator }}</p></td>
+                <td><p>{{ j.comment|truncatewords:10 }}</p></td>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>>
 {% endblock %}

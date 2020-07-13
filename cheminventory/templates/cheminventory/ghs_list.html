@@ -1,81 +1,83 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
     <title>Chemicals with GHS statement: {% for ghsitem in ghs %}{{ ghsitem.number }}{% endfor %}</title>
     <style>
-    	p {
-    		padding: 0px;
-    		margin:0px;
-    		font-family: Arial, Helvetica, sans-serif;}
+        p {
+            padding: 0;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-	    #subtitle{
-	    	font-weight:bold;
-	    	color: white;
-	    	padding:0px 0px 0px 0px;
-		    background-color: black;
-		    border: 1px solid black;
-	    }
+        #subtitle {
+            font-weight: bold;
+            color: white;
+            padding: 0;
+            background-color: black;
+            border: 1px solid black;
+        }
 
-		table{
-				    background-color: white;
-				    width: 1000px;
-				    border-collapse: collapse;
-      	}
+        table {
+            background-color: white;
+            width: 1000px;
+            border-collapse: collapse;
+        }
 
-	    #inhalt{
-			    	color: black;
-			    	padding:0px 0px 0px 0px;
-				    background-color: white;
-				    border: 1px solid black;
-	    }
-		table, td, th {
-		    border: 1px solid black;
-		}
+        #inhalt {
+            color: black;
+            padding: 0;
+            background-color: white;
+            border: 1px solid black;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
 
     </style>
 </head>
 
 
 <body>
-    <table>
-      <tr>
-          <td colspan=3>
-      		  <center>
-      		  <br>
-				  <p style="font-size:40px"> Chemicals with GHS statement: {% for ghsitem in ghs %}{{ ghsitem.number }},{% endfor %}</p>
-				  <p style="font-size:20px"> Institut f&uuml;r Ionen- und Angewandte Physik</p>
-				  <p style="font-size:20px"> Universit&auml;t Innsbruck</p>
-				  <br>
-  			  </center>
-    	  </td>
-      </tr>
+<table>
+    <tr>
+        <td colspan=3>
+            <center>
+                <br>
+                <p style="font-size:40px"> Chemicals with GHS statement:
+                    {% for ghsitem in ghs %}{{ ghsitem.number }},{% endfor %}</p>
+                <p style="font-size:20px"> Institut f&uuml;r Ionen- und Angewandte Physik</p>
+                <p style="font-size:20px"> Universit&auml;t Innsbruck</p>
+                <br>
+            </center>
+        </td>
+    </tr>
 
-	  <tr id="subtitle">
-	  	<td>
-	  	  Lfd. Nr.
-		</td>
-		<td>
-		  Menge
-		</td>
-		<td>
-		  Inhalt
-		</td>
-	  </tr>
-          {% for chem in chems %}
-	  <tr id="inhalt">
-	  	  	<td>
-	  	  	  {{ chem.id }}
-	  		</td>
-	  		<td>
-	  		  {{ chem.chemical }}
-	  		</td>
-	  		<td>
-	  		  {{ chem.comments }}
-	  		</td>
-	  </tr>
-          {% endfor %}
+    <tr id="subtitle">
+        <td>
+            Lfd. Nr.
+        </td>
+        <td>
+            Menge
+        </td>
+        <td>
+            Inhalt
+        </td>
+    </tr>
+    {% for chem in chems %}
+        <tr id="inhalt">
+            <td>
+                {{ chem.id }}
+            </td>
+            <td>
+                {{ chem.chemical }}
+            </td>
+            <td>
+                {{ chem.comments }}
+            </td>
+        </tr>
+    {% endfor %}
 
 </table>
 </body>

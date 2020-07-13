@@ -1,14 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="/staticfiles/css/style.css"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
     <title>Labbook</title>
-    <!--[if lte IE 8]>
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/flot/excanvas.min.js"></script>
-    <![endif]-->
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/flot/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/flot/jquery.flot.js"></script>
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/flot/jquery.flot.crosshair.js"></script>
+    <script type="text/javascript" src="{% static 'js/flot/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/flot/jquery.flot.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/flot/jquery.flot.crosshair.js' %}"></script>
 </head>
 
 <body>
@@ -16,16 +14,16 @@
 <div id="Menu">
     {% block sidebar %}
         <ul>
-            <li><a href="clustof/">CLUSTOF</a></li>
+            <li><a href="{% url 'clustof-home' %}">CLUSTOF</a></li>
             <li><a href="{% url 'surftof-base-template' %}">SURFTOF</a></li>
-            <li><a href="vg/">VG</a></li>
-            <li><a href="wippi/">WIPPI</a></li>
-            <li><a href="snowball/">SNOWBALL</a></li>
-            <li><a href="admin/toffy/measurement/">TOFFY: Admin</a></li>
-            <li><a href="toffy/preview/">TOFFY: Preview</a></li>
-            <li><a href="admin/cheminventory">CHEMICAL INVENTORY</a></li>
-            <li><a href="admin/pulsetube">PULSE TUBE</a></li>
-            <li><a href="{% url "lab-temp" %}">Temperature</a></li>
+            <li><a href="{% url 'vghome' %}vg/">VG</a></li>
+            <li><a href="{% url 'wippihome' %}wippi/">WIPPI</a></li>
+            <li><a href="{% url 'snowball-home' %}snowball/">SNOWBALL</a></li>
+            <li><a href="{% url 'admin:toffy_measurement_changelist' %}">TOFFY: Admin</a></li>
+            <li><a href="{% url 'toffy-preview' %}">TOFFY: Preview</a></li>
+            <li><a href="{% url 'admin:app_list' 'cheminventory' %}">CHEMICAL INVENTORY</a></li>
+            <li><a href="{% url 'admin:app_list' 'pulsetube' %}">PULSE TUBE</a></li>
+            <li><a href="{% url "labinventory-temp" %}">Temperature</a></li>
             <li><a href="{% url "admin:index" %}">Admin</a></li>
         </ul>
     {% endblock %}
