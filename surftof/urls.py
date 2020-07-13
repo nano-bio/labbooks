@@ -50,7 +50,7 @@ urlpatterns = [
          name="surftof-set-measurement-rating"),
 
     # counts per mass
-    path('api', include(rest_router.urls)),
+    path('api/', include(rest_router.urls)),
     path('cpm/id-list/',
          views.cpm_filter_ids,
          name="surftof-cpm-id-list"),
