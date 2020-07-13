@@ -62,5 +62,13 @@ urlpatterns = [
          name="surftof-cpm-plot-data"),
     path('cpm/export-csv/',
          views.cpm_export_csv,
-         name="surftof-cpm-export-csv")
+         name="surftof-cpm-export-csv"),
+
+    # surface temperature
+    path('surface-temperature/',
+         views.surface_temperature,
+         name="surftof-surface-temperature"),
+    path('surface-temperature-data/<date>/',
+         views.surface_temperature_data,
+         name="surftof-surface-temperature-data"),
 ]

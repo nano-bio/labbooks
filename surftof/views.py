@@ -1,17 +1,21 @@
 import csv
 import itertools
+from datetime import datetime
 from glob import glob
+from os.path import basename
+
 import numpy as np
 import h5py
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.generic import ListView
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 from scipy.optimize import curve_fit
 
-from labbooks.settings import SURFTOF_BIGSHARE_DATA_ROOT
+from django.conf import settings
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
 from surftof.forms import CreateCsvFileForm
 from surftof.helper import import_pressure, get_temp_from_file
@@ -68,7 +72,7 @@ def preview_data(request):
         return HttpResponse('This is a post only view')
 
     # get y-axis data from h5 file
-    file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_1)))[-1]
+    file = glob("{}{}/*h5".format(settings.SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_1)))[-1]
     with h5py.File(file, 'r')as f:
         y_data1 = np.array(f['SPECdata']['AverageSpec'])
         y_data1 = reduce_data_by_mean(y_data1, binned_by, 1)
@@ -84,7 +88,7 @@ def preview_data(request):
             xlabel = "time bins"
 
     if data_id_file_2:
-        file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_2)))[-1]
+        file = glob("{}{}/*h5".format(settings.SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_2)))[-1]
         with h5py.File(file, 'r')as f:
             y_data2 = np.array(f['SPECdata']['AverageSpec'])
             y_data2 = reduce_data_by_mean(y_data2, binned_by, float(scale_data_file_2))
@@ -121,7 +125,7 @@ def preview_trace(request):
     mass_max = int(request.POST.get('massMax'))
     measurement_id = int(request.POST.get('measurementId'))
 
-    file = glob("{}{}/*h5".format(SURFTOF_BIGSHARE_DATA_ROOT, int(measurement_id)))[-1]
+    file = glob("{}{}/*h5".format(settings.SURFTOF_BIGSHARE_DATA_ROOT, int(measurement_id)))[-1]
     infile = h5py.File(file, 'r')
     data = infile[u'SPECdata/Intensities']
     trace_points = data.shape[0]
@@ -431,3 +435,20 @@ def cpm_export_csv(request):
             return response
     else:
         return render(request, 'surftof/counts_per_mass_export.html', {'form': CreateCsvFileForm()})
+
+
+def surface_temperature(request):
+    f = "{}temperature/*.csv".format(settings.SURFTOF_BIGSHARE_DATA_ROOT)
+    file_names = glob(f)
+    file_names.sort(reverse=True)
+    file_names = [basename(f)[:10] for f in file_names]
+    newest_date=reverse(surface_temperature_data, args=[file_names[0]])
+    return render(request, 'surftof/surfaceTemperature.html', {'files': file_names, 'newest_date':newest_date})
+
+
+def surface_temperature_data(request, date):
+    date = datetime.strptime(date, '%Y-%m-%d')
+    with open("{}temperature/{}_temperaturePT100.csv".format(
+            settings.SURFTOF_BIGSHARE_DATA_ROOT, date.strftime('%Y-%m-%d'))) as f:
+        file_data = f.read()
+    return HttpResponse(file_data)
