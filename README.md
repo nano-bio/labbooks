@@ -2,10 +2,16 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF, STM, TOFFY, SNOWBALL).
-Requires django >= 1.8 (tested until 1.11.20)
+Requires django >= 3.0 (tested until 3.0.8)
 
 Changelog
 =========
+13.07.2020
+* ALL/UPDATE/Felix: from Python 2 to Python 3.
+* ALL/UPDATE/Felix: Django 1.11 to 3.0
+* ALL/UPDATE/Felix: squashed all old migrations (all ForeignKey on_delete were missing)
+* ALL/UPDATE/Felix: merged poweralarm and labinventory
+
 18.06.2020
 * LABINVENTORY/ADD/Felix: Temperature sensor with SMS notification
 
