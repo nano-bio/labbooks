@@ -7,6 +7,9 @@ Requires django >= 3.0 (tested until 3.0.8)
 Changelog
 =========
 13.07.2020
+* TOFFY/MODIFY/Felix: Add ISEG settings file 
+
+13.07.2020
 * ALL/UPDATE/Felix: from Python 2 to Python 3.
 * ALL/UPDATE/Felix: Django 1.11 to 3.0
 * ALL/UPDATE/Felix: squashed all old migrations (all ForeignKey on_delete were missing)

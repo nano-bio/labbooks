@@ -35,6 +35,7 @@ class MeasurementAdmin(admin.ModelAdmin):
                 'short_description',
                 ('data_file', 'integration_start', 'integration_stop'),
                 'tof_settings_file',
+                'iseg_settings_file',
                 'comment'
             )
         }),

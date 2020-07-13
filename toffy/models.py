@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.safestring import mark_safe
 
 
 class Operator(models.Model):
@@ -19,6 +20,7 @@ class Measurement(models.Model):
     data_file = models.FileField(upload_to='toffy/dataFiles/', blank=True,
                                  help_text="Export massspecs and upload plain text files only.")
     tof_settings_file = models.FileField(upload_to='toffy/settingsFiles/', blank=True, verbose_name="TOF settings file")
+    iseg_settings_file = models.FileField(upload_to='toffy/isegFiles/', blank=True)
     comment = models.TextField(max_length=5000, blank=True)
 
     he_pressure = models.FloatField(verbose_name="He pressure [bar]", default=20, blank=True, null=True)
@@ -51,9 +53,7 @@ class Measurement(models.Model):
 
     # this provides a link to the data file in the admin interface
     def get_data_file(self):
-        return "<a href='%s' download>Data file</a>" % ('/files/' + str(self.data_file))
-
-    get_data_file.allow_tags = True
+        return mark_safe("<a href='%s' download>Data file</a>" % ('/files/' + str(self.data_file)))
 
     def get_short_description(self):
         return "{}...".format(self.short_description[:30])
