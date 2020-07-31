@@ -91,7 +91,8 @@ class MeasurementsAdmin(admin.ModelAdmin):
         'id', 'get_date', 'get_short_description', 'projectile', 'get_surface', 'get_impact_energy_surface',
         'get_surface_temperature', 'gas_surf', 'get_rating_stars')
     list_filter = ('measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'short_description')
-    search_fields = ('comment', 'projectile', 'surface_material__name', 'gas_is__name', 'gas_surf__name', 'id',)
+    search_fields = ('comment', 'projectile', 'surface_material__name', 'gas_is__name', 'gas_surf__name', 'id',
+                     'short_description')
     readonly_fields = ('id',)
     actions = ['create_new_measurement_based_on_existing_one', ]
     save_on_top = True

@@ -423,13 +423,15 @@ def cpm_export_csv(request):
             writer.writerow(header_row)
 
             for measurement in measurements:
-                row = [measurement.id, measurement.get_impact_energy_surface()]
+                row = [measurement.id, measurement.get_impact_energy_surface_value()]
                 for mass in mass_list:
                     cpm_obj = CountsPerMass.objects.filter(measurement=measurement).filter(mass=mass)
                     if cpm_obj:
                         row += [cpm_obj[0].counts, cpm_obj[0].counts_err]
                     else:
                         row += [None, None]
+                if cpm_obj:
+                    row.append(cpm_obj[0].surface_current)
                 writer.writerow(row)
 
             return response
@@ -442,8 +444,8 @@ def surface_temperature(request):
     file_names = glob(f)
     file_names.sort(reverse=True)
     file_names = [basename(f)[:10] for f in file_names]
-    newest_date=reverse(surface_temperature_data, args=[file_names[0]])
-    return render(request, 'surftof/surfaceTemperature.html', {'files': file_names, 'newest_date':newest_date})
+    newest_date = reverse(surface_temperature_data, args=[file_names[0]])
+    return render(request, 'surftof/surfaceTemperature.html', {'files': file_names, 'newest_date': newest_date})
 
 
 def surface_temperature_data(request, date):

@@ -75,6 +75,10 @@ class PotentialSettings(models.Model):
         else:
             return "-"
 
+    def get_impact_energy_value(self):
+        if self.source_ion_spacer is not None and self.surface is not None:
+            return self.source_ion_spacer - self.surface
+
     get_short_description.short_description = "SHORT DESCRIPTION"
     get_impact_energy.short_description = "IMPACT E"
 
@@ -187,6 +191,10 @@ class Measurement(models.Model):
             return self.potential_settings.get_impact_energy()
         else:
             return "-"
+
+    def get_impact_energy_surface_value(self):
+        if self.potential_settings:
+            return self.potential_settings.get_impact_energy_value()
 
     def get_rating_stars(self):
         html_string = ""
