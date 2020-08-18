@@ -10,7 +10,7 @@ from labinventory.models import Temperature, Alarm
 # creates alarm script for experiment
 def command_line_creator(commandline_sms, commandline_email):
     complete_command = ''
-    exp = get_object_or_404(Alarm, name='poweralarm')
+    exp = get_object_or_404(Alarm, type='poweralarm')
     for user in exp.persons.all():
         if user.mobile is not None:
             complete_command += commandline_sms.format(user.mobile.replace(' ', '').replace('/', ''))
