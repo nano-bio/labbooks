@@ -229,3 +229,21 @@
     </div>
 
 {% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-deparam@0.5.3/jquery-deparam.min.js"></script>
+    <script>
+        $(function () {
+            let inputs = deparam(Cookies.get('surftofCpmInputs'));
+            $.each(inputs, function (key, value) {
+                $("#id_" + key).val(value);
+            });
+
+            $('input').change(function () {
+                inputs[$(this).attr('name')] = $(this).val()
+                Cookies.set('surftofCpmInputs', $.param(inputs));
+            })
+        })
+    </script>
+{% endblock %}
