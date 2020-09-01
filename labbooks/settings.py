@@ -20,6 +20,7 @@ PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 STM_STORAGE = '/var/storage/stm'
 
 SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
+SURFTOF_EXPORT_CPM_DIR = "/tmp/labbooks-surftof-cpm-export/"
 
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),

@@ -2,7 +2,7 @@ from urllib.parse import quote
 import pytz
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
-from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, CountsPerMass
+from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
@@ -141,16 +141,8 @@ class MeasurementsAdmin(admin.ModelAdmin):
             messages.error(request, 'You can only base a new potential setting on ONE existing setting, stupid.')
 
 
-class CountsPerMassAdmin(admin.ModelAdmin):
-    list_display = ['measurement', 'mass', 'counts', 'counts_err', 'surface_impact_energy']
-    list_filter = ['measurement', 'mass', 'surface_impact_energy']
-    search_fields = ['measurement__id', 'mass']
-    save_on_top = True
-
-
 admin.site.register(PotentialSettings, PotentialSettingsAdmin)
 admin.site.register(Measurement, MeasurementsAdmin)
-admin.site.register(CountsPerMass, CountsPerMassAdmin)
 admin.site.register(MeasurementType)
 admin.site.register(Gas)
 admin.site.register(Surface)

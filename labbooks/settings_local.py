@@ -24,3 +24,4 @@ DATABASES = {
 }
 
 SURFTOF_BIGSHARE_DATA_ROOT = "Z:/Experiments/SurfTOF/Measurements/rawDATA/"
+SURFTOF_EXPORT_CPM_DIR = "surftof/cpm-export/"

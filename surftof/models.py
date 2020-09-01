@@ -216,24 +216,3 @@ class Measurement(models.Model):
     get_surface_temperature.short_description = "TEMPERATURE"
     get_impact_energy_surface.short_description = "IMPACT E"
     get_rating_stars.short_description = "RATING"
-
-
-class CountsPerMass(models.Model):
-    measurement = models.ForeignKey(Measurement, on_delete=models.CASCADE)
-    last_edit = models.DateTimeField(auto_now=True)
-    mass = models.FloatField(help_text='Use only the integer masses here, except "half masses" (28.5m/z)')
-    counts = models.FloatField(verbose_name='Normalized Counts')
-    counts_err = models.FloatField()
-    surface_impact_energy = models.FloatField(blank=True, null=True)
-    surface_temperature = models.FloatField(blank=True, null=True)
-    surface_current = models.FloatField(blank=True, null=True)
-    pressure_is = models.FloatField(blank=True, null=True)
-    pressure_surf = models.FloatField(blank=True, null=True)
-    pressure_tof = models.FloatField(blank=True, null=True)
-    molecule = models.CharField(blank=True, max_length=100, verbose_name='Molecular formula',
-                                help_text='E.g. Be2D3. Only use this field, if you are sure,'
-                                          ' that the counts are not a combination of different molecules!')
-    comment = models.TextField(blank=True, max_length=500)
-
-    def __str__(self):
-        return "ID {} Mass {}".format(self.measurement_id, self.mass)

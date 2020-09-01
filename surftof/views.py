@@ -1,27 +1,22 @@
-import csv
 import itertools
 from datetime import datetime
 from glob import glob
 from os.path import basename
-
 import numpy as np
 import h5py
-from django.db.models import Count
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, Http404, FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
-from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 from scipy.optimize import curve_fit
-
 from django.conf import settings
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
-from surftof.forms import CreateCsvFileForm
+from surftof.countsPerMass import CountsPerMassCreator
+from surftof.forms import CountsPerMassForm
 from surftof.helper import import_pressure, get_temp_from_file
-from surftof.models import PotentialSettings, Measurement, CountsPerMass
+from surftof.models import PotentialSettings, Measurement
 from django.core import serializers
-from surftof.serializers import CountsPerMassSerializer
 from requests import get
 from json import loads
 from random import randint
@@ -226,137 +221,6 @@ class SurfTofPermission(BasePermission):
         return request.user.has_perm('surftof.add_measurement')
 
 
-class CountsPerMassViewSet(viewsets.ModelViewSet):
-    permission_classes = [SurfTofPermission]
-    queryset = CountsPerMass.objects.all()
-    serializer_class = CountsPerMassSerializer
-
-
-def cpm_filter_ids(request):
-    if request.method == 'POST':
-        # get POST data
-        # get energy
-        filter_energy = request.POST.get('filterEnergy', True)
-        filter_energy_lower = request.POST.get('filterEnergyLower', -1e20)
-        filter_energy_upper = request.POST.get('filterEnergyUpper', 1e20)
-
-        # get temperature
-        filter_temp = request.POST.get('filterTemp', True)
-        filter_temp_lower = request.POST.get('filterTempLower', 0)
-        filter_temp_upper = request.POST.get('filterTempUpper', 1e20)
-
-        # build query
-        ids = CountsPerMass.objects.all()
-        if filter_energy:
-            ids.filter(surface_impact_energy__gte=filter_energy_lower)
-            ids.filter(surface_impact_energy__lte=filter_energy_upper)
-        if filter_temp:
-            ids.filter(surface_temperature__gte=filter_temp_lower)
-            ids.filter(surface_temperature__lte=filter_temp_upper)
-
-        measurement_ids = list(dict.fromkeys(  # removes duplicates
-            list(ids.values_list('measurement__id', flat=True))))
-        measurement_ids.sort(reverse=True)
-        masses = list(dict.fromkeys(  # removes duplicates
-            list(ids.order_by('mass').values_list('mass', flat=True))))
-
-        return JsonResponse({'measurements': measurement_ids, 'masses': masses}, safe=False)
-
-
-def cpm_data(request):
-    if request.method == 'POST':
-
-        # parse request
-        measurement_ids = [int(x) for x in request.POST.getlist('ids[]')]
-        masses = [int(x) for x in request.POST.getlist('masses[]')]
-        x_axis = request.POST.get('x')
-        diff_plots = request.POST.get('diffPlots')
-
-        if x_axis == 'mass':
-            x_label = 'm/z'
-            order_by = 'mass'
-
-        elif x_axis == 'energy':
-            x_label = 'Energy [eV]'
-            order_by = 'surface_impact_energy'
-
-        elif x_axis == 'temperature':
-            x_label = 'Temperature'
-            order_by = 'surface_temperature'
-
-        else:
-            return Http404()
-
-        # get objects
-        data = CountsPerMass.objects.all()
-
-        # filter measurements
-        data = data.filter(measurement_id__in=measurement_ids)
-
-        # filter masses
-        data = data.filter(mass__in=masses)
-
-        # order by x axis
-        data = data.order_by(order_by)
-
-        response = {
-            'data': [],
-            'xLabel': x_label
-        }
-        if diff_plots == 'single':
-            response['labels'] = [x_label, 'counts']
-            for i in data:
-                if i.__getattribute__(order_by):
-                    response['data'].append([
-                        i.__getattribute__(order_by), [
-                            i.counts - i.counts_err,
-                            i.counts,
-                            i.counts + i.counts_err]
-                    ])
-        else:
-            # group by x axis
-            groups = list(dict.fromkeys(
-                data.values(diff_plots).annotate(dcount=Count(diff_plots)).values_list(diff_plots, flat=True)))
-            groups = [i for i in groups if i]
-            groups.sort()
-            response['log'] = groups
-
-            data_dict = {}
-            response['labels'] = [x_label, ]
-
-            for filter in groups:
-                kwargs = {'{0}'.format(diff_plots): filter}
-
-                filtered = data.filter(**kwargs)
-                for i in filtered:
-                    if i.__getattribute__(order_by) is None:
-                        continue
-                    elif i.__getattribute__(order_by) in data_dict:
-                        data_dict[i.__getattribute__(order_by)][filter] = [
-                            i.counts - i.counts_err,
-                            i.counts,
-                            i.counts + i.counts_err]
-                    else:
-                        data_dict[i.__getattribute__(order_by)] = {
-                            filter: [
-                                i.counts - i.counts_err,
-                                i.counts,
-                                i.counts + i.counts_err]}
-                response['labels'].append(str(filter))
-            data_list = []
-            for k, v in data_dict.items():
-                e = [k]
-                for i in groups:
-                    if i in v:
-                        e.append(v[i])
-                    else:
-                        e.append(None)
-                data_list.append(e)
-            response['data'] = data_list
-
-        return JsonResponse(response, safe=False)
-
-
 class TableViewer(ListView):
     paginate_by = 50
     template_name = "surftof/table_list.html"
@@ -391,54 +255,6 @@ def flat_field_list(model_admin):
     return field_list
 
 
-def cpm_export_csv(request):
-    if request.method == 'POST':
-        form = CreateCsvFileForm(request.POST)
-        if form.is_valid():
-            measurement_id_list_str = form.cleaned_data['id_list']
-            measurement_ids = []
-            for a in measurement_id_list_str.split(','):
-                if '-' in a:
-                    rang = range(int(a.split('-')[0].strip()), int(a.split('-')[1].strip()) + 1)
-                    measurement_ids += rang
-                elif a:
-                    measurement_ids.append(int(a.strip()))
-            measurements = list(dict.fromkeys(
-                [a.measurement for a in CountsPerMass.objects.filter(measurement__in=measurement_ids).order_by(
-                    'measurement_id')]))
-            mass_list_str = form.cleaned_data['mass_list']
-            mass_list = []
-            for a in mass_list_str.split(','):
-                if a:
-                    mass_list.append(float(a.strip()))
-
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="cpm-ids-{}-masses-{}.csv"'.format(
-                measurement_id_list_str, mass_list_str)
-            writer = csv.writer(response)
-
-            header_row = ['MeasurementId', 'ImpactEnergy']
-            for mass in mass_list:
-                header_row += ['{:.1f}'.format(mass), '{:.1f}err'.format(mass)]
-            writer.writerow(header_row)
-
-            for measurement in measurements:
-                row = [measurement.id, measurement.get_impact_energy_surface_value()]
-                for mass in mass_list:
-                    cpm_obj = CountsPerMass.objects.filter(measurement=measurement).filter(mass=mass)
-                    if cpm_obj:
-                        row += [cpm_obj[0].counts, cpm_obj[0].counts_err]
-                    else:
-                        row += [None, None]
-                if cpm_obj:
-                    row.append(cpm_obj[0].surface_current)
-                writer.writerow(row)
-
-            return response
-    else:
-        return render(request, 'surftof/counts_per_mass_export.html', {'form': CreateCsvFileForm()})
-
-
 def surface_temperature(request):
     f = "{}temperature/*.csv".format(settings.SURFTOF_BIGSHARE_DATA_ROOT)
     file_names = glob(f)
@@ -454,3 +270,18 @@ def surface_temperature_data(request, date):
             settings.SURFTOF_BIGSHARE_DATA_ROOT, date.strftime('%Y-%m-%d'))) as f:
         file_data = f.read()
     return HttpResponse(file_data)
+
+
+def counts_per_mass(request):
+    if request.method == "GET":
+        return render(request, 'surftof/counts-per-mass.html', {'form': CountsPerMassForm()})
+
+    if request.method == 'POST':
+        form = CountsPerMassForm(request.POST)
+        if form.is_valid():
+            c = CountsPerMassCreator(form.cleaned_data)
+            c.run()
+            zip_file_name = c.create_zip()
+            return FileResponse(open(zip_file_name, 'rb'))
+        else:
+            return render(request, 'surftof/counts-per-mass.html', {'form': form})
