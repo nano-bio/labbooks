@@ -6,6 +6,9 @@ Requires django >= 3.0 (tested until 3.0.8)
 
 Changelog
 =========
+01.09.2020
+* SURFTOF/MODIFY/Felix: counts-per-mass: moved from local to server
+
 13.07.2020
 * TOFFY/MODIFY/Felix: Add ISEG settings file 
 
