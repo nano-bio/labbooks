@@ -144,6 +144,7 @@ INSTALLED_APPS = [
     'surftof',
     'snowball',
     'toffy',
+    'toffy2',
     'stm',
     'background_task',  # this is for scheduled import of STM images
     'labinventory',

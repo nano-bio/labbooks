@@ -8,6 +8,7 @@ import wippi.urls
 import cheminventory.urls
 import snowball.urls
 import toffy.urls
+import toffy2.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,4 +20,5 @@ urlpatterns = [
     path('cheminventory/', include(cheminventory.urls)),
     path('labinventory/', include(labinventory.urls)),
     path('toffy/', include(toffy.urls)),
+    path('toffy2/', include(toffy2.urls)),
 ]
