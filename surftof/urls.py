@@ -6,7 +6,7 @@ import surftof.views as views
 urlpatterns = [
     # preview data
     path('',
-         TemplateView.as_view(template_name='surftof/previewData.html'),
+         views.preview,
          name="surftof-preview"),
     path('preview/file_list/',
          views.preview_file_list,

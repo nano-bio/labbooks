@@ -38,6 +38,11 @@ def json_export(request, table, pk):
     return HttpResponse(serialized_obj, content_type='application/json')
 
 
+def preview(request):
+    return render(request, 'surftof/previewData.html', {
+        'measurements': preview_list_of_measurements(10)})
+
+
 # for preview_data
 def masses_from_file(h5py_file, length_y_data, binned_by):
     def quadratic_fit_function(x, a, t0):
@@ -179,32 +184,33 @@ def reduce_data_by_mean(data, binning, scale):
     return reduced_date
 
 
+def preview_list_of_measurements(limit=None):
+    response = []
+    objects = Measurement.objects.order_by('-id')[:limit]
+    for measurement in objects:
+        name = f"ID {measurement.id}: {measurement.short_description}"
+        if measurement.get_impact_energy_surface() != "-":
+            name += f", {measurement.get_impact_energy_surface()}"
+        if measurement.surface_temperature is not None:
+            name += f", {measurement.surface_temperature} C"
+        name += "<br>"
+        if measurement.projectile is not None:
+            name += f"{measurement.projectile}"
+        if measurement.surface_material is not None:
+            name += f" on {measurement.surface_material}"
+        if measurement.gas_surf is not None:
+            name += f" with {measurement.gas_surf}"
+
+        response.append({
+            'id': measurement.id,
+            'name': name
+        })
+    return response
+
+
 # for preview data
 def preview_file_list(request):
-    # get all measurements from DB
-    objects = Measurement.objects.order_by('-time')
-
-    response = []
-    for key, group in itertools.groupby(objects, key=lambda x: x.time.date()):
-        tmp = {'date': key, 'times': []}
-        for val in group:
-            tmp['times'].append({
-                'time': val.time.strftime('%H:%M'),
-                'id': val.id,
-                'name': "ID {}, {} eV, {} C<br> {} on {} with {}".format(val.id, val.impact_energy_surface,
-                                                                         val.surface_temperature, val.projectile,
-                                                                         val.surface_material, val.gas_surf)
-            })
-        response.append(tmp)
-    response = []
-    for obj in objects:
-        response.append({
-            'id': obj.id,
-            'name': "ID {}, {}, {} C<br> {} on {} with {}".format(obj.id, obj.get_impact_energy_surface(),
-                                                                  obj.surface_temperature, obj.projectile,
-                                                                  obj.surface_material, obj.gas_surf)
-        })
-    return JsonResponse(response, safe=False)
+    return JsonResponse(preview_list_of_measurements(), safe=False)
 
 
 # update the rating of a measurement

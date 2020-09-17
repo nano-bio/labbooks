@@ -231,7 +231,27 @@
                         </button>
                     </div>
                     <div class="card-body ids-body">
-                        <div id="tree1"></div>
+                        <div id="tree1">
+                            <ul class="list-group">
+                                {% for measurement in measurements %}
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">{{ measurement.name|safe }}</div>
+                                            <div class="col f1f2button">
+                                                <div class="btn-group btn-block" role="group">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            onclick="setFileId('Y1', {{ measurement.id }})">Y1
+                                                    </button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                            onclick="setFileId('Y2', {{ measurement.id }})">Y2
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
