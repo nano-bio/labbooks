@@ -29,33 +29,40 @@
 
             <button id="reset" type="button" class="btn btn-outline-danger float-right mr-4">Reset columns</button>
 
-            <nav class="float-left">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" data-page="1" href="?page=1">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" data-page="{{ page_obj.previous_page_number }}"
-                               href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                        </li>
-                    {% endif %}
-                    <li class="page-item active">
-                        <a class="page-link" data-page="{{ page_obj.number }}"
-                           href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
-                    </li>
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" data-page="{{ page_obj.next_page_number }}"
-                               href="?page={{ page_obj.next_page_number }}">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" data-page="{{ page_obj.paginator.num_pages }}"
-                               href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
+            {% if page_obj.has_other_pages %}
+                <nav class="float-left">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" data-page="{{ page_obj.previous_page_number }}"
+                                   href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                            </li>
+                        {% else %}
+                            <li class="page-link disabled"><span>&laquo;</span></li>
+                        {% endif %}
+                        {% for i in page_obj.paginator.page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="page-item active">
+                                    <a class="page-link" data-page="{{ page_obj.number }}"
+                                       href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" data-page="{{ i }}" href="?page={{ i }}">{{ i }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" data-page="{{ page_obj.next_page_number }}"
+                                   href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                            </li>
+                        {% else %}
+                            <li class="page-link disabled"><span>&raquo;</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
 
         </div>
 
@@ -95,6 +102,42 @@
                 </tr>
             {% endfor %}
         </table>
+
+        {% if page_obj.has_other_pages %}
+            <nav class="float-left">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_obj.previous_page_number }}"
+                               href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="page-link disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <li class="page-item active">
+                                <a class="page-link" data-page="{{ page_obj.number }}"
+                                   href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" data-page="{{ i }}" href="?page={{ i }}">{{ i }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_obj.next_page_number }}"
+                               href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="page-link disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
     </div>
 {% endblock %}
 
