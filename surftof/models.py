@@ -151,6 +151,8 @@ class Measurement(models.Model):
     # Chemical relevance
     gas_is = models.ForeignKey(Gas, on_delete=models.PROTECT, related_name="gas_is", blank=True, null=True)
     gas_surf = models.ForeignKey(Gas, on_delete=models.PROTECT, related_name="gas_surf", blank=True, null=True)
+    gas_setpoint_is = models.FloatField(blank=True, null=True)
+    gas_setpoint_surf = models.FloatField(blank=True, null=True)
     projectile = models.CharField(max_length=50, blank=True, null=True)
     surface_material = models.ForeignKey(Surface, blank=True, null=True, on_delete=models.PROTECT)
     surface_temperature = models.FloatField(blank=True, null=True)
@@ -161,7 +163,15 @@ class Measurement(models.Model):
     # Impact energies
     impact_energy_surface = models.FloatField(blank=True, null=True)
     electron_impact_energy_source = models.FloatField(blank=True, null=True)
+    electron_impact_energy_source_current = models.FloatField(blank=True, null=True)
     electron_impact_energy_tof = models.FloatField(blank=True, null=True)
+    electron_impact_energy_tof_current = models.FloatField(blank=True, null=True)
+
+    # Filaments
+    filament_is_voltage = models.FloatField(blank=True, null=True)
+    filament_is_current = models.FloatField(blank=True, null=True)
+    filament_tof_voltage = models.FloatField(blank=True, null=True)
+    filament_tof_current = models.FloatField(blank=True, null=True)
 
     # Pressures
     pressure_ion_source_chamber = models.FloatField(blank=True, null=True)

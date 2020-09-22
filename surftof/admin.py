@@ -108,12 +108,19 @@ class MeasurementsAdmin(admin.ModelAdmin):
                 'rating')}),
         ('Chemical relevance', {
             'fields': (
-                ('gas_is', 'gas_surf'), 'projectile',
+                ('gas_is', 'gas_surf'),
+                ('gas_setpoint_is', 'gas_setpoint_surf'),
+                'projectile',
                 ('surface_material', 'surface_temperature'), 'tof_ions',
                 ('quadrupole_mass', 'quadrupole_resolution'))}),
         ('Impact energies', {
             'fields': (
-                ('electron_impact_energy_source', 'electron_impact_energy_tof'))}),
+                ('electron_impact_energy_source', 'electron_impact_energy_source_current'),
+                ('electron_impact_energy_tof', 'electron_impact_energy_tof_current'))}),
+        ('Filaments', {
+            'fields': (
+                ('filament_is_voltage', 'filament_is_current'),
+                ('filament_tof_voltage', 'filament_tof_current'))}),
         ('Comment', {'fields': ('comment',)})
     )
 
