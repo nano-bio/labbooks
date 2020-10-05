@@ -9,8 +9,8 @@ import numpy as np
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from matplotlib.figure import Figure
-from scipy.optimize import curve_fit
 from surftof.models import Measurement
+from surftof.views import masses_from_file
 
 
 class CountsPerMassCreator:
@@ -149,20 +149,9 @@ def counts_per_mass_worker(
 
 
 def import_mass_spectrum(filename):
-    def quadratic_fit_function(x, a, t0):
-        return a * (x + t0) ** 2
-
     with h5py.File(filename, 'r')as f:
         y_data = np.array(f['SPECdata']['AverageSpec'])
-        x_data = np.array(f['CALdata']['Mapping'])
-        masses = []
-        times = []
-        for row in x_data:
-            if row[0] != 0 and row[1] != 0:
-                masses.append(row[0])
-                times.append(row[1])
-        popt, pcov = curve_fit(quadratic_fit_function, times, masses, p0=(1e-8, 10000))
-        x_data = quadratic_fit_function(np.array(np.arange(len(y_data))), *popt)
+        x_data = masses_from_file(f, len(y_data), 1)
 
         # from h5 file get file duration for error calculation on counts
         file_duration = int(

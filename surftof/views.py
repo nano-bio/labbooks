@@ -60,6 +60,8 @@ def masses_from_file(h5py_file, length_y_data, binned_by):
 
 
 def preview_data(request):
+    MASS_SPEC_TIME_BIN_MAX = 60000
+
     if request.method == 'POST':
         time_bin_or_mass = request.POST.get('timeBinOrMass')
         data_id_file_1 = request.POST.get('dataIdFile1')
@@ -74,13 +76,13 @@ def preview_data(request):
     # get y-axis data from h5 file
     file = glob("{}{}/*h5".format(settings.SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_1)))[-1]
     with h5py.File(file, 'r')as f:
-        y_data1 = np.array(f['SPECdata']['AverageSpec'])
+        y_data1 = np.array(f['SPECdata']['AverageSpec'])[:MASS_SPEC_TIME_BIN_MAX]
         y_data1 = reduce_data_by_mean(y_data1, binned_by, 1)
 
         # x-axis
         if time_bin_or_mass == 'mass':
             xlabel = "m/z"
-            x_data = masses_from_file(f, len(y_data1), binned_by)
+            x_data = masses_from_file(f, len(y_data1), binned_by)[:MASS_SPEC_TIME_BIN_MAX]
             # x_data = reduce_data_by_mean(x_data, binned_by, 1)
 
         else:
@@ -90,7 +92,7 @@ def preview_data(request):
     if data_id_file_2:
         file = glob("{}{}/*h5".format(settings.SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_2)))[-1]
         with h5py.File(file, 'r')as f:
-            y_data2 = np.array(f['SPECdata']['AverageSpec'])
+            y_data2 = np.array(f['SPECdata']['AverageSpec'])[:MASS_SPEC_TIME_BIN_MAX]
             y_data2 = reduce_data_by_mean(y_data2, binned_by, float(scale_data_file_2))
 
     # create json string from y-axis data

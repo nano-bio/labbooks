@@ -162,16 +162,16 @@ class Measurement(models.Model):
 
     # Impact energies
     impact_energy_surface = models.FloatField(blank=True, null=True)
-    electron_impact_energy_source = models.FloatField(blank=True, null=True)
-    electron_impact_energy_source_current = models.FloatField(blank=True, null=True)
-    electron_impact_energy_tof = models.FloatField(blank=True, null=True)
-    electron_impact_energy_tof_current = models.FloatField(blank=True, null=True)
+    electron_impact_energy_source = models.FloatField(blank=True, null=True, verbose_name="EI IS [eV]")
+    electron_impact_energy_source_current = models.FloatField(blank=True, null=True, verbose_name="EI IS [mA]")
+    electron_impact_energy_tof = models.FloatField(blank=True, null=True, verbose_name="EI TOF [eV]")
+    electron_impact_energy_tof_current = models.FloatField(blank=True, null=True, verbose_name="EI TOF [mA]")
 
     # Filaments
-    filament_is_voltage = models.FloatField(blank=True, null=True)
-    filament_is_current = models.FloatField(blank=True, null=True)
-    filament_tof_voltage = models.FloatField(blank=True, null=True)
-    filament_tof_current = models.FloatField(blank=True, null=True)
+    filament_is_voltage = models.FloatField(blank=True, null=True, verbose_name="IS [V]")
+    filament_is_current = models.FloatField(blank=True, null=True, verbose_name="IS [A]")
+    filament_tof_voltage = models.FloatField(blank=True, null=True, verbose_name="TOF [V]")
+    filament_tof_current = models.FloatField(blank=True, null=True, verbose_name="TOF [A]")
 
     # Pressures
     pressure_ion_source_chamber = models.FloatField(blank=True, null=True)

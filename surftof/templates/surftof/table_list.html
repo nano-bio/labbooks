@@ -27,8 +27,6 @@
                 Show configuration
             </button>
 
-            <button id="reset" type="button" class="btn btn-outline-danger float-right mr-4">Reset columns</button>
-
             {% if page_obj.has_other_pages %}
                 <nav class="float-left">
                     <ul class="pagination">
@@ -73,7 +71,7 @@
                 {% for field_name in fields %}
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" id="checkbox-{{ field_name }}" checked
-                               data-key="{{ field_name }}">
+                               data-key="{{ field_name }}" name="{{ field_name }}">
                         <label class="form-check-label"
                                for="checkbox-{{ field_name }}">{% get_verbose_field_name object_list.0 field_name %}</label>
                     </div>
@@ -142,54 +140,25 @@
 {% endblock %}
 
 {% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-deparam@0.5.3/jquery-deparam.min.js"></script>
     <script>
-        function parseParams(str) {
-            return str.split('&').reduce(function (params, param) {
-                let paramSplit = param.split('=').map(function (value) {
-                    return decodeURIComponent(value.replace(/\+/g, ' '));
-                });
-                params[paramSplit[0]] = (paramSplit[1] === 't');
-                return params;
-            }, {});
-        }
-
         $(function () {
-            let searchString = window.location.search;
-            if (searchString !== "") {
-                let columnConfig = parseParams(searchString.slice(1));
-                $.each(columnConfig, function (key, value) {
-                    $('#checkbox-' + key).prop('checked', value);
-                    if (!value) {
-                        $('.' + key).hide();
-                    }
-                })
-            }
-        });
-        const toggleColumnsCheckbox = $('.toggle-columns :checkbox');
-        toggleColumnsCheckbox.change(function () {
-            // hide column
-            $('.' + $(this).data('key')).toggle(this.checked);
-
-            // update url
-            history.pushState({}, '', "?" + paramCulumns());
-        });
-
-        function paramCulumns() {
-            let colums = {};
-            toggleColumnsCheckbox.each(function () {
-                colums[$(this).data('key')] = ($(this).is(":checked") ? 't' : 'f')
+            let inputs = deparam(Cookies.get('surftofTableInputs'));
+            $.each(inputs, function (key, value) {
+                console.log(key, value);
+                $("#checkbox-" + key).prop('checked', value === 'true');
+                $('.' + key).toggle(value === 'true');
             });
-            return $.param(colums);
-        }
 
-        $('#reset').click(function () {
-            window.location = window.location.pathname;
+            $('input').change(function () {
+                inputs[$(this).attr('name')] = $(this).is(":checked")
+                Cookies.set('surftofTableInputs', $.param(inputs));
+            })
         });
 
-        $('.pagination a').click(function (e) {
-            e.preventDefault();
-            window.location = "?" + paramCulumns() + "&page=" + $(this).data('page')
+        $('.toggle-columns :checkbox').change(function () {
+            $('.' + $(this).data('key')).toggle(this.checked);
         });
-
     </script>
 {% endblock %}
