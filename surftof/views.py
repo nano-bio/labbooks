@@ -1,4 +1,3 @@
-import itertools
 from datetime import datetime
 from glob import glob
 from os.path import basename
@@ -9,12 +8,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
 from rest_framework.permissions import BasePermission
-from scipy.optimize import curve_fit
 from django.conf import settings
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
 from surftof.countsPerMass import CountsPerMassCreator
 from surftof.forms import CountsPerMassForm
-from surftof.helper import import_pressure, get_temp_from_file
+from surftof.helper import import_pressure, get_temp_from_file, masses_from_file
 from surftof.models import PotentialSettings, Measurement
 from django.core import serializers
 from requests import get
@@ -41,22 +39,6 @@ def json_export(request, table, pk):
 def preview(request):
     return render(request, 'surftof/previewData.html', {
         'measurements': preview_list_of_measurements(10)})
-
-
-# for preview_data
-def masses_from_file(h5py_file, length_y_data, binned_by):
-    def quadratic_fit_function(x, a, t0):
-        return a * (x + t0) ** 2
-
-    x_data = np.array(h5py_file['CALdata']['Mapping'])
-    masses = []
-    times = []
-    for row in x_data:
-        if row[0] != 0 and row[1] != 0:
-            masses.append(row[0])
-            times.append(row[1])
-    popt, pcov = curve_fit(quadratic_fit_function, times, masses, p0=(1e-8, 10000))
-    return quadratic_fit_function(np.array(np.arange(length_y_data) * binned_by), *popt)
 
 
 def preview_data(request):
@@ -139,8 +121,8 @@ def preview_trace(request):
     for b in range(trace_points):
         integrated_intervals[b] = np.sum(data[b, mass_min:mass_max])
 
-    integrated_intervals *= norm_factor
-    times = np.arange(trace_points) * norm_factor + norm_factor / 2
+    integrated_intervals /= norm_factor
+    times = np.round(np.arange(trace_points) * norm_factor + norm_factor / 2, 1)
 
     return JsonResponse({'data': np.column_stack((times, integrated_intervals)).tolist()}, safe=False)
 

@@ -10,7 +10,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from matplotlib.figure import Figure
 from surftof.models import Measurement
-from surftof.views import masses_from_file
+from surftof.helper import masses_from_file
 
 
 class CountsPerMassCreator:
@@ -84,7 +84,9 @@ class CountsPerMassCreator:
 
     def create_zip(self):
         csv_lines = []
-        for file in glob(f"{self.destination_folder}CPM*.csv"):
+        files = glob(f"{self.destination_folder}CPM*.csv")
+        files.sort()
+        for file in files:
             with open(file, "r") as f:
                 csv_lines.append(f.readline())
             remove(file)
