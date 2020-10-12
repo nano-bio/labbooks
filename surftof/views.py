@@ -121,7 +121,6 @@ def preview_trace(request):
     for b in range(trace_points):
         integrated_intervals[b] = np.sum(data[b, mass_min:mass_max])
 
-    integrated_intervals /= norm_factor
     times = np.round(np.arange(trace_points) * norm_factor + norm_factor / 2, 1)
 
     return JsonResponse({'data': np.column_stack((times, integrated_intervals)).tolist()}, safe=False)
