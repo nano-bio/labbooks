@@ -6,6 +6,9 @@ Requires django >= 3.0 (tested until 3.0.8)
 
 Changelog
 =========
+29.10.2020
+* TOFFY/MODIFY/Felix: Add vertical / horizontal deflector potential 
+
 17.09.2020
 * TOFFY2/NEW/Felix: New labbook for Toffy 2
 

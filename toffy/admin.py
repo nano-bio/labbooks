@@ -17,6 +17,8 @@ class MeasurementAdmin(admin.ModelAdmin):
         'proper_time', 'id', 'operator', 'get_short_description', 'get_data_file', 'nozzle_temperature',
         'electron_energy', 'electron_current', 'bender_float_voltage', 'oven_power', 'oven_temperature',
         'evaporation_pressure', 'collision_pressure', 'collision_energy')
+    list_display = [field.name for field in Measurement._meta.get_fields()]
+    list_display_all = True
     list_filter = ('operator',)
     search_fields = ('comment', 'data_file', 'short_description', 'id',)
     readonly_fields = ('id',)
@@ -49,6 +51,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         ('Ion source', {
             'fields': (
                 'ion_block_potential',
+                ('ion_source_deflector_vertical', 'ion_source_deflector_horizontal'),
                 'electron_energy',
                 'electron_current'
             )

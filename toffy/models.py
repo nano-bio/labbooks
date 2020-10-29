@@ -27,6 +27,8 @@ class Measurement(models.Model):
     nozzle_temperature = models.FloatField(verbose_name="Nozzle temperature [K]", blank=True, null=True)
 
     ion_block_potential = models.FloatField(verbose_name="Ion block potential [V]", blank=True, null=True)
+    ion_source_deflector_vertical = models.FloatField(verbose_name="Deflector vertical [V]", blank=True, null=True)
+    ion_source_deflector_horizontal = models.FloatField(verbose_name="Deflector horizontal [V]", blank=True, null=True)
     electron_energy = models.FloatField(verbose_name="Electron energy [eV]", blank=True, null=True)
     electron_current = models.FloatField(verbose_name="Electron current [uA]", blank=True, null=True)
 
