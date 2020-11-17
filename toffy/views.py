@@ -32,3 +32,16 @@ def preview_file_list(request):
                     'downloadUrl': "{}".format(val.data_file.url)})
         response.append(tmp)
     return JsonResponse(response, safe=False)
+
+
+def preview_measurement_info(request, measurement_id):
+    obj = get_object_or_404(Measurement, pk=measurement_id)
+    data = {
+        'measurementId': obj.id,
+        'fields': {
+            "Short Description": obj.short_description,
+            "Comment": obj.comment,
+            "Evaporation gas pressure [mbar]": obj.evaporation_pressure,
+        }
+    }
+    return JsonResponse(data, safe=False)

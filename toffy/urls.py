@@ -13,4 +13,7 @@ urlpatterns = [
     path('preview/',
          TemplateView.as_view(template_name='toffy/previewData.html'),
          name="toffy-preview"),
+    path('preview_measurement_info/<int:measurement_id>/',
+         toffy.views.preview_measurement_info,
+         name="toffy-preview-measurement-info"),
 ]

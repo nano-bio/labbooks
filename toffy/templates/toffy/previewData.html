@@ -55,6 +55,11 @@
         #button-lin-plot {
             float: right;
         }
+
+        .table td.fit {
+            white-space: nowrap;
+            width: 1%;
+        }
     </style>
 </head>
 <body translate="no">
@@ -63,9 +68,13 @@
         <div class="col-lg-8 col-xl-9">
             <!-- Graph -->
             <div id="graphdiv"></div>
-            <div id="idtext"></div>
-            <button type="button" class="btn btn-secondary" id="button-lin-plot">Lin / Log
-            </button>
+            <div class="clearfix">
+                <button type="button" class="btn btn-secondary" id="button-lin-plot">Lin / Log</button>
+            </div>
+            <div id="measurement-info">
+                <h3></h3>
+                <table class="table" id="measurement-info-table"></table>
+            </div>
         </div>
         <div class="col-lg-4 col-xl-3">
             <div class="card">
@@ -121,7 +130,6 @@
 
     function plotId(id) {
         $.getJSON("/toffy/preview_data/" + id + "/").done(function (data) {
-            console.log(data.data[0]);
             g.updateOptions({'file': data.data});
         });
     }
@@ -130,8 +138,25 @@
         if (path.includes("opj")) {
             window.alert('This is a "OPJ" file. Not able to open it by this preview!');
         } else {
-            $('#idtext').text("ID: " + dataid);
             g.updateOptions({'file': path});
+            $.getJSON("{% url 'toffy-preview-measurement-info' 999999 %}".replace("999999", dataid)).done(function (data) {
+                $('#measurement-info h3').html(
+                    "<a href='/admin/toffy/measurement/" +
+                    data.measurementId +
+                    "/change/' target='_blank'>ID " +
+                    data.measurementId + "</a>")
+                let table = ""
+                $.each(data.fields, function (key, value) {
+                    table += ('<tr>');
+                    table += ('<td class="fit">' + key + '</td>');
+                    if (value)
+                        table += ('<td>' + value + '</td>');
+                    else
+                        table += ('<td></td>');
+                    table += ('</tr>');
+                });
+                $('#measurement-info-table').html(table);
+            });
         }
     }
 
