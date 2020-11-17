@@ -17,3 +17,4 @@ nginx*
 pip-selfcheck.json
 db.sqlite3
 surftof/cpm-export/
+/.cache/
