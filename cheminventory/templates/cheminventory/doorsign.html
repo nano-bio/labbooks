@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 
 <html>
@@ -112,7 +113,7 @@
         <tr>
             <td colspan=2 align="center"><p>
                 {% for chemwarning in chemwarnings %}
-                    <img src="http://ideadb.uibk.ac.at/static/files/images/{{ chemwarning }}.svg" height="200px">
+                    <img src="{% static "chemwarnings" %}{{ chemwarning }}.svg" height="200px" alt="{{ chemwarning }}">
                 {% endfor %}
 
             </p></td>

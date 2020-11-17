@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">Labbooks</a>
+        <a href="/vg/">VG</a>
+        <a href="/clustof/">CLUSTOF</a>
+        <a href="{% url 'surftof-preview' %}">SURFTOF</a>
+        <a href="/wippi/">WIPPI</a>
+        <a href="/snowball/">SNOWBALL</a>
+    </h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

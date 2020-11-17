@@ -2,7 +2,8 @@
 *.pot
 *.pyc
 local_settings.py
-mediaroot/*
+/mediaroot/
+/static/
 .matplotlib/
 chemspider_token.txt
 database*

@@ -1,4 +1,5 @@
 {% extends "surftof/base.html" %}
+{% load static %}
 
 {% block title %}- Preview Data{% endblock %}
 
@@ -199,7 +200,7 @@
                                        placeholder="Mass max">
                             </div>
                             <div class="col-auto">
-                                <img alt="pointer" id="setTracesMinMax" src="/staticfiles/surftof/pointer.png">
+                                <img alt="pointer" id="setTracesMinMax" src="{% static "pointer.png" %}">
                             </div>
                         </div>
 

@@ -1,13 +1,17 @@
 labbooks
 ========
 
-The repo holds our labbook software (currently used by VG, CLUSTOF, WIPPI, SURFTOF, STM, TOFFY, SNOWBALL).
-Requires django >= 3.0 (tested until 3.0.8)
+The repo holds our labbook software (currently used by CLUSTOF, SURFTOF, TOFFY, TOFFY2).
+Requires django >= 3.0 (tested until 3.1.3)
 
 Changelog
 =========
+17.11.2020
+* TOFFY/MODIFY/Felix: Add infos to preview
+* ALL/MODIFY/Felix: restructure static files
+
 29.10.2020
-* TOFFY/MODIFY/Felix: Add vertical / horizontal deflector potential 
+* TOFFY/MODIFY/Felix: Add vertical / horizontal deflector potential
 
 17.09.2020
 * TOFFY2/NEW/Felix: New labbook for Toffy 2
