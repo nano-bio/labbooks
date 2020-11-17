@@ -29,10 +29,3 @@ numpy==1.19.*
 
 # for wippi
 pytz==2020.1.*
-
-# for STM
-matplotlib==3.2.*
-python-pptx==0.6.*
-# pyMTRX==1.9.* # pip install git+https://github.com/nano-bio/pyMTRX.git # this is the python3 fork
-django-background-tasks==1.2.*
-# Pillow

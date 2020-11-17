@@ -9,6 +9,7 @@ Changelog
 17.11.2020
 * TOFFY/MODIFY/Felix: Add infos to preview
 * ALL/MODIFY/Felix: restructure static files
+* STM/DELETE/Felix: Delete whole STM app
 
 29.10.2020
 * TOFFY/MODIFY/Felix: Add vertical / horizontal deflector potential

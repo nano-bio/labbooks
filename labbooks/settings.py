@@ -17,9 +17,6 @@ SNOWBALLIP = '138.232.74.207'
 # snowball, josis computer
 PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 
-# storage location of measurement files
-STM_STORAGE = '/var/storage/stm'
-
 SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
 SURFTOF_EXPORT_CPM_DIR = "/tmp/labbooks-surftof-cpm-export/"
 
@@ -135,8 +132,6 @@ INSTALLED_APPS = [
     'snowball',
     'toffy',
     'toffy2',
-    'stm',
-    'background_task',  # this is for scheduled import of STM images
     'labinventory',
     'pulsetube',
     'moses',
