@@ -41,7 +41,7 @@ def preview_measurement_info(request, measurement_id):
         'fields': {
             "Short Description": obj.short_description,
             "Comment": obj.comment,
-            "Evaporation gas pressure [mbar]": obj.evaporation_pressure,
+            "Evaporation gas pressure [mbar]": f"{obj.evaporation_pressure:.2e}",
         }
     }
     return JsonResponse(data, safe=False)
