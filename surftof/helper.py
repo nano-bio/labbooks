@@ -32,7 +32,7 @@ def import_pressure(measurement_id):
     return pressures
 
 
-def get_temp_from_file(measurement_id):
+def get_temp_from_file(measurement_id, return_type="str"):
     from django.conf import settings
 
     try:
@@ -54,6 +54,8 @@ def get_temp_from_file(measurement_id):
                         line_time = datetime.strptime(line.strip().split(',')[0][:19], '%Y-%m-%dT%H:%M:%S')
                         if file_start < line_time < file_end:
                             temps.append(float(line.strip().split(',')[1]))
+            if return_type == 'float':
+                return np.median(temps)
             return_value = "{:.1f} &#176;C".format(np.median(temps))
             if "nan" in return_value:
                 return "-1 &#176;C"

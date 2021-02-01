@@ -17,8 +17,6 @@ class MeasurementAdmin(admin.ModelAdmin):
         'proper_time', 'id', 'operator', 'get_short_description', 'get_data_file', 'nozzle_temperature',
         'electron_energy', 'electron_current', 'bender_float_voltage', 'oven_power', 'oven_temperature',
         'evaporation_pressure', 'collision_pressure', 'collision_energy')
-    list_display = [field.name for field in Measurement._meta.get_fields()]
-    list_display_all = True
     list_filter = ('operator',)
     search_fields = ('comment', 'data_file', 'short_description', 'id',)
     readonly_fields = ('id',)
