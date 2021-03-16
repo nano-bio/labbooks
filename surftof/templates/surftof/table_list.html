@@ -146,7 +146,6 @@
         $(function () {
             let inputs = deparam(Cookies.get('surftofTableInputs'));
             $.each(inputs, function (key, value) {
-                console.log(key, value);
                 $("#checkbox-" + key).prop('checked', value === 'true');
                 $('.' + key).toggle(value === 'true');
             });
