@@ -45,11 +45,6 @@ urlpatterns = [
          login_required(views.set_rating_of_measurement),
          name="surftof-set-measurement-rating"),
 
-    # counts per mass
-    path('counts-per-mass/',
-         views.counts_per_mass,
-         name="surftof-counts-per-mass"),
-
     # surface temperature
     path('surface-temperature/',
          views.surface_temperature,

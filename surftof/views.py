@@ -15,6 +15,7 @@ from surftof.countsPerMass import CountsPerMassCreator
 from surftof.forms import CountsPerMassForm
 from surftof.helper import import_pressure, get_temp_from_file, masses_from_file, \
     get_measurements_and_journal_entries_per_month
+from surftof.helper import import_pressure, get_temp_from_file, masses_from_file
 from surftof.models import PotentialSettings, Measurement
 from django.core import serializers
 from requests import get
@@ -261,21 +262,6 @@ def surface_temperature_data(request, date):
             settings.SURFTOF_BIGSHARE_DATA_ROOT, date.strftime('%Y-%m-%d'))) as f:
         file_data = f.read()
     return HttpResponse(file_data)
-
-
-def counts_per_mass(request):
-    if request.method == "GET":
-        return render(request, 'surftof/counts-per-mass.html', {'form': CountsPerMassForm()})
-
-    if request.method == 'POST':
-        form = CountsPerMassForm(request.POST)
-        if form.is_valid():
-            c = CountsPerMassCreator(form.cleaned_data)
-            c.run()
-            zip_file_name = c.create_zip()
-            return FileResponse(open(zip_file_name, 'rb'))
-        else:
-            return render(request, 'surftof/counts-per-mass.html', {'form': form})
 
 
 def overview(request):
