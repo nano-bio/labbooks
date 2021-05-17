@@ -1,9 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
-from django.views.generic import TemplateView
+
 import surftof.views as views
 
 urlpatterns = [
+    # overview
+    path('o',
+         views.overview,
+         name="surftof-overview"
+         ),
+
     # preview data
     path('',
          views.preview,

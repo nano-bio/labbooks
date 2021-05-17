@@ -3,10 +3,12 @@ gunicorn>=20.0.4
 mysqlclient>=2.0.3 # install this with --no-cache-dir --upgrade
 
 # for surftof
-djangorestframework>=3.12.2
-scipy>=1.6.0
+djangorestframework>=3.12.4
+scipy>=1.6.3
 h5py==2.10.0 # v3 doesnt work on windows
-django-crispy-forms>=1.11.0
+django-crispy-forms>=1.11.2
+django-mdeditor>=0.1.18
+markdown>=3.3.4
 
 # for cheminventory
 requests>=2.25.1

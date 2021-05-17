@@ -1,8 +1,11 @@
-from glob import glob
 from datetime import datetime, timedelta
-import numpy as np
+from glob import glob
+
 import h5py
+import numpy as np
 from scipy.optimize import curve_fit
+
+from surftof.models import Measurement, JournalEntry
 
 
 def import_pressure(measurement_id):
@@ -94,3 +97,26 @@ def masses_from_file(h5py_file, length_y_data, binned_by):
             times.append(row[1])
     popt, pcov = curve_fit(quadratic_fit_function, times, masses, p0=(1e-8, 10000))
     return quadratic_fit_function(np.array(np.arange(length_y_data) * binned_by), *popt)
+
+
+def get_measurements_and_journal_entries_per_month(date):
+    measurement_objs = Measurement.objects. \
+        filter(time__year=date.year). \
+        filter(time__month=date.month). \
+        order_by('-time')
+
+    journal_objs = JournalEntry.objects. \
+        filter(time__year=date.year). \
+        filter(time__month=date.month). \
+        order_by('-time')
+
+    # sort all values by time
+    measurements_journal_entries = []
+    journal_objs = list(journal_objs)
+    for measurement_obj in measurement_objs:
+        while len(journal_objs) > 0 and measurement_obj.time < journal_objs[0].time:
+            measurements_journal_entries.append({'t': 'journal', 'e': journal_objs.pop(0)})
+        measurements_journal_entries.append({'t': 'measurement', 'e': measurement_obj})
+    measurements_journal_entries += [{'t': 'journal', 'e': e} for e in journal_objs]
+
+    return measurements_journal_entries

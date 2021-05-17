@@ -6,13 +6,15 @@ import h5py
 from django.http import HttpResponse, JsonResponse, Http404, FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.timezone import now
 from django.views.generic import ListView
 from rest_framework.permissions import BasePermission
 from django.conf import settings
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
 from surftof.countsPerMass import CountsPerMassCreator
 from surftof.forms import CountsPerMassForm
-from surftof.helper import import_pressure, get_temp_from_file, masses_from_file
+from surftof.helper import import_pressure, get_temp_from_file, masses_from_file, \
+    get_measurements_and_journal_entries_per_month
 from surftof.models import PotentialSettings, Measurement
 from django.core import serializers
 from requests import get
@@ -274,3 +276,14 @@ def counts_per_mass(request):
             return FileResponse(open(zip_file_name, 'rb'))
         else:
             return render(request, 'surftof/counts-per-mass.html', {'form': form})
+
+
+def overview(request):
+    return render(
+        request=request,
+        template_name='surftof/index.html',
+        context={
+            'month': now().strftime("%B %Y"),
+            'entries': get_measurements_and_journal_entries_per_month(now())
+        }
+    )

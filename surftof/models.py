@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.html import format_html
 from django.utils.timezone import now
+from mdeditor.fields import MDTextField
 
 
 class PotentialSettings(models.Model):
@@ -226,3 +227,24 @@ class Measurement(models.Model):
     get_surface_temperature.short_description = "TEMPERATURE"
     get_impact_energy_surface.short_description = "IMPACT E"
     get_rating_stars.short_description = "RATING"
+
+
+class JournalEntry(models.Model):
+    # General
+    time = models.DateTimeField(
+        default=now)
+    short_description = models.CharField(
+        max_length=500)
+    image = models.ImageField(
+        blank=True,
+        null=True,
+        upload_to='surftof/journalimage/')
+    comment = MDTextField(
+        max_length=5000,
+        blank=True)
+
+    def __str__(self):
+        if len(self.short_description) > 50:
+            return f"ID {self.id}, {self.time.strftime('%Y-%m-%d %H:%M')}: {self.short_description[:45]}..."
+        else:
+            return f"ID {self.id}, {self.time.strftime('%Y-%m-%d %H:%M')}: {self.short_description}"
