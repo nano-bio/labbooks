@@ -10,8 +10,6 @@ from django.views.generic import ListView
 from rest_framework.permissions import BasePermission
 from django.conf import settings
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
-from surftof.countsPerMass import CountsPerMassCreator
-from surftof.forms import CountsPerMassForm
 from surftof.helper import import_pressure, get_temp_from_file, masses_from_file
 from surftof.models import PotentialSettings, Measurement
 from django.core import serializers
@@ -260,17 +258,3 @@ def surface_temperature_data(request, date):
         file_data = f.read()
     return HttpResponse(file_data)
 
-
-def counts_per_mass(request):
-    if request.method == "GET":
-        return render(request, 'surftof/counts-per-mass.html', {'form': CountsPerMassForm()})
-
-    if request.method == 'POST':
-        form = CountsPerMassForm(request.POST)
-        if form.is_valid():
-            c = CountsPerMassCreator(form.cleaned_data)
-            c.run()
-            zip_file_name = c.create_zip()
-            return FileResponse(open(zip_file_name, 'rb'))
-        else:
-            return render(request, 'surftof/counts-per-mass.html', {'form': form})

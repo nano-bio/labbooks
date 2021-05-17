@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
-from django.views.generic import TemplateView
 import surftof.views as views
 
 urlpatterns = [
@@ -38,11 +37,6 @@ urlpatterns = [
     path('set-rating-of-measurement/<int:measurement_id>/<int:rating>/',
          login_required(views.set_rating_of_measurement),
          name="surftof-set-measurement-rating"),
-
-    # counts per mass
-    path('counts-per-mass/',
-         views.counts_per_mass,
-         name="surftof-counts-per-mass"),
 
     # surface temperature
     path('surface-temperature/',
