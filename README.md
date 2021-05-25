@@ -6,6 +6,9 @@ Requires django >= 3.0 (tested until 3.1.3)
 
 Changelog
 =========
+25.05.2021
+* SURFTOF/ADD/Felix: Add Journal with overviews
+
 17.11.2020
 * TOFFY/MODIFY/Felix: Add infos to preview
 * ALL/MODIFY/Felix: restructure static files

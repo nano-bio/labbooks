@@ -1,0 +1,139 @@
+{% extends 'surftof/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-around mb-2 mt-2">
+            <div class="btn-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-plus"></i></span>
+                </div>
+                <a href="{% url 'surftof-journal-entry-add' %}" class="btn btn-secondary">Journal Entry</a>
+                <a href="{% url 'surftof-measurement-add' %}" class="btn btn-secondary">Measurement</a>
+            </div>
+            <div class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal" id="btn-settings">
+                <i class="fas fa-cogs"></i>
+            </div>
+        </div>
+
+        <div id="journal">
+            {% include "surftof/include/journal-month.html" %}
+        </div>
+
+        <p class="pagination">
+            <a class="pagination__next" href="{% url 'surftof-journal-page' next.year next.month %}">Next page</a>
+        </p>
+
+        {% include 'surftof/include/journal-settings-modal.html' %}
+
+    </div>
+{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'simple-lightbox/simple-lightbox.min.css' %}"/>
+    <style>
+        .img-thumbnail:hover {
+            transition: all 0.3s;
+            transform: scale(1.05);
+            overflow: visible;
+            z-index: 1 !important; /* you can change it, but better let this in default */
+            cursor: zoom-in;
+        }
+
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1350px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1500px;
+            }
+        }
+
+        body {
+            padding-bottom: 500px;
+        }
+
+        #journal .card {
+            max-width: 75%;
+            min-width: 50%;
+        }
+
+        .simpleLightbox img {
+            max-height: 350px;
+            max-width: 100%;
+        }
+
+        .simpleLightbox {
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="{% static 'simple-lightbox/simple-lightbox.jquery.min.js' %}"></script>
+    <script>
+      $(function () {
+
+        const settingsValues = $('.settingsValue');
+        settingsValues.each(function () {
+          let cookie = Cookies.get($(this).attr('id'));
+          if (cookie !== undefined) {
+            $(this).val(cookie)
+          }
+        });
+        settingsValues.change(function () {
+          Cookies.set($(this).attr('id'), $(this).val())
+        });
+
+        const settingsValueCheckbox = $('.settingsValueCheckbox');
+        settingsValueCheckbox.each(function () {
+          let cookie = Cookies.get($(this).attr('id'));
+          if (cookie !== undefined) {
+            $(this).prop("checked", cookie.toLowerCase() === 'true')
+          }
+        });
+        settingsValueCheckbox.change(function () {
+          Cookies.set($(this).attr('id'), $(this).prop("checked"))
+        });
+
+        const journal = $('#journal');
+        let nextURL;
+
+        function updateNextURL(doc) {
+          nextURL = $(doc).find('.pagination__next').attr('href');
+        }
+
+        // get initial nextURL
+        updateNextURL(document);
+        $('.simpleLightbox').simpleLightbox();
+        let infiniteScrollObj = journal.infiniteScroll({
+          // options
+          path: function () {
+            return nextURL;
+          },
+          append: '.journal-month',
+          button: '.pagination__next',
+        });
+        // update nextURL on page load
+        infiniteScrollObj.on('load.infiniteScroll', function (event, body) {
+          updateNextURL(body);
+        });
+      })
+
+      function deleteItem(itemId) {
+        return confirm("Do you want to delete an entry with the ID " + itemId + "?");
+      }
+    </script>
+{% endblock %}

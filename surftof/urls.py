@@ -1,11 +1,40 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
-from django.views.generic import TemplateView
+
 import surftof.views as views
 
 urlpatterns = [
-    # preview data
+    # overview
     path('',
+         views.overview,
+         name="surftof-overview"),
+    path('journal/<int:year>/<int:month>/',
+         views.overview,
+         name="surftof-journal-page"),
+    path('journal-entry/add/',
+         login_required(views.JournalEntryCreate.as_view()),
+         name='surftof-journal-entry-add'),
+    path('journal-entry/<int:pk>/',
+         login_required(views.JournalEntryUpdate.as_view()),
+         name='surftof-journal-entry-update'),
+    path('journal-entry/<int:pk>/delete/',
+         login_required(views.JournalEntryDelete.as_view()),
+         name='surftof-journal-entry-delete'),
+    path('measurement/add/',
+         login_required(views.MeasurementCreate.as_view()),
+         name='surftof-measurement-add'),
+    path('measurement/<int:pk>/',
+         login_required(views.MeasurementUpdate.as_view()),
+         name='surftof-measurement-update'),
+    path('measurement/<int:pk>/delete/',
+         login_required(views.MeasurementDelete.as_view()),
+         name='surftof-measurement-delete'),
+    path('preview-image/<int:measurement_id>/',
+         views.mass_spec_preview_image,
+         name="surftof-mass-spec-preview-image"),
+
+    # preview data
+    path('preview/',
          views.preview,
          name="surftof-preview"),
     path('preview/file_list/',
@@ -38,11 +67,6 @@ urlpatterns = [
     path('set-rating-of-measurement/<int:measurement_id>/<int:rating>/',
          login_required(views.set_rating_of_measurement),
          name="surftof-set-measurement-rating"),
-
-    # counts per mass
-    path('counts-per-mass/',
-         views.counts_per_mass,
-         name="surftof-counts-per-mass"),
 
     # surface temperature
     path('surface-temperature/',

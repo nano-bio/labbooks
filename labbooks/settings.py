@@ -18,7 +18,6 @@ SNOWBALLIP = '138.232.74.207'
 PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 
 SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
-SURFTOF_EXPORT_CPM_DIR = "/tmp/labbooks-surftof-cpm-export/"
 
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
@@ -36,8 +35,9 @@ DATABASES = {
         'PORT': '',
     }
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-ALLOWED_HOSTS = ['138.232.74.41', 'ideadb.uibk.ac.at']
+ALLOWED_HOSTS = ['138.232.74.41']
 
 SITE_ID = 1
 
@@ -134,9 +134,10 @@ INSTALLED_APPS = [
     'toffy2',
     'labinventory',
     'pulsetube',
-    'moses',
+    # 'moses',
     'rest_framework',
     'crispy_forms',
+    'ckeditor',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -161,12 +162,5 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    }
-}
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/var/tmp/django_cache',
     }
 }
