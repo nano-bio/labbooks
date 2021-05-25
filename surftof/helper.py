@@ -5,6 +5,7 @@ from io import BytesIO
 import h5py
 import numpy as np
 from django.conf import settings
+from django.utils.timezone import make_aware
 from scipy.optimize import curve_fit
 
 from surftof.models import Measurement, JournalEntry
@@ -102,14 +103,19 @@ def masses_from_file(h5py_file, length_y_data, binned_by):
 
 
 def get_measurements_and_journal_entries_per_month(date):
+    end = (date + timedelta(days=35)).replace(day=1)
+
+    start = make_aware(date)
+    end = make_aware(end)
+
     measurement_objs = Measurement.objects. \
-        filter(time__year=date.year). \
-        filter(time__month=date.month). \
+        filter(time__gte=start). \
+        filter(time__lt=end). \
         order_by('-time')
 
     journal_objs = JournalEntry.objects. \
-        filter(time__year=date.year). \
-        filter(time__month=date.month). \
+        filter(time__gte=start). \
+        filter(time__lt=end). \
         order_by('-time')
 
     # sort all values by time

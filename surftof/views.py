@@ -348,7 +348,6 @@ def mass_spec_preview_image(request, measurement_id):
         show_x_axis = True
 
     try:
-        print(show_x_axis)
         content = get_mass_spectrum_preview_image(
             measurement_id,
             mass_max,
