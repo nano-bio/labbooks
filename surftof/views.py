@@ -1,4 +1,5 @@
-from datetime import datetime
+import traceback
+from datetime import datetime, timedelta
 from glob import glob
 from json import loads
 from os.path import basename
@@ -10,16 +11,17 @@ from django.conf import settings
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from requests import get
 from rest_framework.permissions import BasePermission
 
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
-from surftof.helper import get_measurements_and_journal_entries_per_month
+from surftof.forms import JournalEntryForm, MeasurementForm
+from surftof.helper import get_measurements_and_journal_entries_per_month, get_mass_spectrum_preview_image
 from surftof.helper import import_pressure, get_temp_from_file, masses_from_file
-from surftof.models import PotentialSettings, Measurement
+from surftof.models import PotentialSettings, Measurement, JournalEntry
 
 
 def json_export(request, table, pk):
@@ -263,12 +265,107 @@ def surface_temperature_data(request, date):
     return HttpResponse(file_data)
 
 
-def overview(request):
+def overview(request, month=None, year=None):
+    if year is None:
+        year = now().year
+        month = now().month
+    date = datetime(year, month, 1)
+    next_page = (date - timedelta(days=3))
     return render(
         request=request,
         template_name='surftof/index.html',
         context={
-            'month': now().strftime("%B %Y"),
-            'entries': get_measurements_and_journal_entries_per_month(now())
+            'month': date.strftime("%B %Y"),
+            'entries': get_measurements_and_journal_entries_per_month(date),
+            'next': {'year': next_page.year, 'month': next_page.month}
         }
     )
+
+
+class JournalEntryUpdate(UpdateView):
+    form_class = JournalEntryForm
+    model = JournalEntry
+    template_name = 'surftof/journal_entry_form.html'
+    success_url = reverse_lazy('surftof-overview')
+
+
+class JournalEntryDelete(DeleteView):
+    form_class = JournalEntryForm
+    model = JournalEntry
+    success_url = reverse_lazy('surftof-overview')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
+class JournalEntryCreate(CreateView):
+    form_class = JournalEntryForm
+    template_name = 'surftof/journal_entry_form.html'
+    success_url = reverse_lazy('surftof-overview')
+
+
+class MeasurementUpdate(UpdateView):
+    model = Measurement
+    form_class = MeasurementForm
+    template_name = 'surftof/measurement_form.html'
+
+
+class MeasurementDelete(DeleteView):
+    form_class = MeasurementForm
+    model = Measurement
+    success_url = reverse_lazy('surftof-overview')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
+class MeasurementCreate(CreateView):
+    form_class = MeasurementForm
+    template_name = 'surftof/measurement_form.html'
+    success_url = reverse_lazy('surftof-overview')
+
+
+def mass_spec_preview_image(request, measurement_id):
+    try:
+        mass_max = float(request.COOKIES['previewMassMax'])
+    except (KeyError, ValueError):  # use defaults
+        mass_max = 80
+    try:
+        use_log = request.COOKIES['previewShowLog'].lower() in ['true', '1', 't']
+    except (KeyError, ValueError):  # use defaults
+        use_log = False
+    try:
+        pixel_width = int(request.COOKIES['previewWidth'])
+    except (KeyError, ValueError):  # use defaults
+        pixel_width = 400
+    try:
+        pixel_height = int(request.COOKIES['previewHeight'])
+    except (KeyError, ValueError):  # use defaults
+        pixel_height = 150
+    try:
+        show_x_axis = request.COOKIES['previewShowMassAxis'].lower() in ['true', '1', 't']
+    except (KeyError, ValueError):  # use defaults
+        show_x_axis = True
+
+    try:
+        print(show_x_axis)
+        content = get_mass_spectrum_preview_image(
+            measurement_id,
+            mass_max,
+            use_log,
+            pixel_height,
+            pixel_width,
+            show_x_axis)
+
+        html = HttpResponse(content, content_type="image/png")
+
+    except:
+        traceback.print_exc()
+        html = HttpResponse(status=404, content="could not create image preview")
+
+    html.set_cookie('previewMassMax', f'{mass_max}', max_age=None)
+    html.set_cookie('previewShowLog', f"{use_log}", max_age=None)
+    html.set_cookie('previewWidth', f"{pixel_width}", max_age=None)
+    html.set_cookie('previewHeight', f"{pixel_height}", max_age=None)
+    html.set_cookie('previewShowMassAxis', f"{show_x_axis}", max_age=None)
+    return html

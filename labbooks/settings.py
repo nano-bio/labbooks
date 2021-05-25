@@ -18,7 +18,6 @@ SNOWBALLIP = '138.232.74.207'
 PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 
 SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
-SURFTOF_EXPORT_CPM_DIR = "/tmp/labbooks-surftof-cpm-export/"
 
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
@@ -36,8 +35,9 @@ DATABASES = {
         'PORT': '',
     }
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-ALLOWED_HOSTS = ['138.232.74.41', 'ideadb.uibk.ac.at']
+ALLOWED_HOSTS = ['138.232.74.41']
 
 SITE_ID = 1
 
@@ -134,10 +134,10 @@ INSTALLED_APPS = [
     'toffy2',
     'labinventory',
     'pulsetube',
-    'moses',
+    # 'moses',
     'rest_framework',
     'crispy_forms',
-    'mdeditor',
+    'ckeditor',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -162,42 +162,5 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    }
-}
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/var/tmp/django_cache',
-    }
-}
-
-MDEDITOR_CONFIGS = {
-    'default': {
-        'width': '90% ',  # Custom edit box width
-        'heigth': 500,  # Custom edit box height
-        'toolbar': ["undo", "redo", "|",
-                    "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
-                    "h1", "h2", "h3", "h5", "h6", "|",
-                    "list-ul", "list-ol", "hr", "|",
-                    "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime",
-                    "emoji", "html-entities", "pagebreak", "goto-line", "|",
-                    "help", "info",
-                    "||", "preview", "watch", "fullscreen"],  # custom edit box toolbar
-        'upload_image_formats': ["jpg", "jpeg", "gif", "png", "bmp", "webp"],  # image upload format type
-        'image_folder': 'editor',  # image save the folder name
-        'theme': 'default',  # edit box theme, dark / default
-        'preview_theme': 'default',  # Preview area theme, dark / default
-        'editor_theme': 'default',  # edit area theme, pastel-on-dark / default
-        'toolbar_autofixed': True,  # Whether the toolbar capitals
-        'search_replace': True,  # Whether to open the search for replacement
-        'emoji': True,  # whether to open the expression function
-        'tex': True,  # whether to open the tex chart function
-        'flow_chart': True,  # whether to open the flow chart function
-        'sequence': True,  # Whether to open the sequence diagram function
-        'watch': True,  # Live preview
-        'lineWrapping': False,  # lineWrapping
-        'lineNumbers': False,  # lineNumbers
-        'language': 'en'  # zh / en / es
     }
 }

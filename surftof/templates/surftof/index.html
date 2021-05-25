@@ -1,106 +1,139 @@
 {% extends 'surftof/base.html' %}
-{% load static markdown %}
+{% load static %}
 
 {% block content %}
     <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-auto">
-                <div class="input-group btn-group mx-auto">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><strong>+</strong></span>
-                    </div>
-                    <a href="{% url 'experiment1-journal-entry-add' %}" class="btn btn-secondary">Journal Entry</a>
-                    <a href="{% url 'experiment1-measurement-add' %}" class="btn btn-secondary">Measurement</a>
+
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-around mb-2 mt-2">
+            <div class="btn-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-plus"></i></span>
                 </div>
+                <a href="{% url 'surftof-journal-entry-add' %}" class="btn btn-secondary">Journal Entry</a>
+                <a href="{% url 'surftof-measurement-add' %}" class="btn btn-secondary">Measurement</a>
+            </div>
+            <div class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal" id="btn-settings">
+                <i class="fas fa-cogs"></i>
             </div>
         </div>
-        <div class="journal">
-            <h3 class="border-bottom">{{ month }}</h3>
-            {% for entry in entries %}
-                <div
-                    class="mb-4 d-flex flex-row{% if entry.t == 'measurement' %}-reverse{% endif %} align-items-center">
-                    <div class="card">
-                        <div class="card-header">
-                            ID {{ entry.e.id }}: {{ entry.e.short_description }}
-                            <span
-                                {% if entry.t == 'measurement' %}
-                                    class="ml-2 float-right"
-                                {% else %}
-                                    class="mr-2 float-left"
-                                {% endif %}
-                            >
-                                <a
-                                    {% if entry.t == 'measurement' %}
-                                        href="{% url 'admin:experiment1_measurement_change' entry.e.id %}"
-                                    {% else %}
-                                        href="{% url 'admin:experiment1_journalentry_change' entry.e.id %}"
-                                    {% endif %}
-                                >
-                                    <img src="{% static "img/edit.png" %}" width="20" height="20">
-                                </a>
-                            </span>
-                        </div>
-                        <div class="card-body pb-1">
-                            {% if entry.t == 'measurement' %}
-                                <div class="text-right">
-                                    <a href="{% url 'experiment1-mass-spectra' %}?id={{ entry.e.id }}">
-                                        <img src="{% url 'experiment1-mass-spec-preview-image'  entry.e.id %}"
-                                             class="img-thumbnail float-right mb-2 ml-2">
-                                    </a>
-                                </div>
-                            {% else %}
 
-                            {% endif %}
-
-                            {% if entry.e.operator %}
-                                <p>Operator: {{ entry.e.operator }}</p>
-                            {% endif %}
-
-                            {% if entry.e.gas %}
-                                <p>
-                                    Gas: {{ entry.e.gas }}
-                                    {% if entry.e.gas_pressure %}
-                                        @ {{ entry.e.gas_pressure|stringformat:".1e" }} mbar</p>
-                                    {% endif %}
-                                </p>
-                            {% endif %}
-
-                            {% if entry.e.electron_impact_energy %}
-                                <p>Ionization energy: {{ entry.e.electron_impact_energy }} eV</p>
-                            {% endif %}
-
-
-                            <hr>
-
-                            {% if entry.e.comment %}
-                                <p class="md-content">{{ entry.e.comment }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="px-3">{{ entry.e.time }}</div>
-                </div>
-
-            {% endfor %}
+        <div id="journal">
+            {% include "surftof/include/journal-month.html" %}
         </div>
+
+        <p class="pagination">
+            <a class="pagination__next" href="{% url 'surftof-journal-page' next.year next.month %}">Next page</a>
+        </p>
+
+        {% include 'surftof/include/journal-settings-modal.html' %}
+
     </div>
 {% endblock %}
 
-{% block extrahead %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'simple-lightbox/simple-lightbox.min.css' %}"/>
     <style>
-        .journal .card {
+        .img-thumbnail:hover {
+            transition: all 0.3s;
+            transform: scale(1.05);
+            overflow: visible;
+            z-index: 1 !important; /* you can change it, but better let this in default */
+            cursor: zoom-in;
+        }
+
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1350px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1500px;
+            }
+        }
+
+        body {
+            padding-bottom: 500px;
+        }
+
+        #journal .card {
             max-width: 75%;
+            min-width: 50%;
+        }
+
+        .simpleLightbox img {
+            max-height: 350px;
+            max-width: 100%;
+        }
+
+        .simpleLightbox {
+            max-width: 400px;
         }
     </style>
 {% endblock %}
 
 {% block extra_js %}
-    <script src="  https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+    <script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="{% static 'simple-lightbox/simple-lightbox.jquery.min.js' %}"></script>
     <script>
       $(function () {
-        $('.md-content').each(function (val) {
-          console.log(this.text())
-        })
+
+        const settingsValues = $('.settingsValue');
+        settingsValues.each(function () {
+          let cookie = Cookies.get($(this).attr('id'));
+          if (cookie !== undefined) {
+            $(this).val(cookie)
+          }
+        });
+        settingsValues.change(function () {
+          Cookies.set($(this).attr('id'), $(this).val())
+        });
+
+        const settingsValueCheckbox = $('.settingsValueCheckbox');
+        settingsValueCheckbox.each(function () {
+          let cookie = Cookies.get($(this).attr('id'));
+          if (cookie !== undefined) {
+            $(this).prop("checked", cookie.toLowerCase() === 'true')
+          }
+        });
+        settingsValueCheckbox.change(function () {
+          Cookies.set($(this).attr('id'), $(this).prop("checked"))
+        });
+
+        const journal = $('#journal');
+        let nextURL;
+
+        function updateNextURL(doc) {
+          nextURL = $(doc).find('.pagination__next').attr('href');
+        }
+
+        // get initial nextURL
+        updateNextURL(document);
+        $('.simpleLightbox').simpleLightbox();
+        let infiniteScrollObj = journal.infiniteScroll({
+          // options
+          path: function () {
+            return nextURL;
+          },
+          append: '.journal-month',
+          button: '.pagination__next',
+        });
+        // update nextURL on page load
+        infiniteScrollObj.on('load.infiniteScroll', function (event, body) {
+          updateNextURL(body);
+        });
       })
 
+      function deleteItem(itemId) {
+        return confirm("Do you want to delete an entry with the ID " + itemId + "?");
+      }
     </script>
 {% endblock %}

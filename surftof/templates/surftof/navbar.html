@@ -1,5 +1,5 @@
-<nav class="navbar navbar-expand-sm navbar-light bg-light">
-    <a class="navbar-brand" href="{% url "surftof-preview" %}">Surftof</a>
+<nav class="navbar navbar-expand-sm navbar-light bg-light mb-3">
+    <a class="navbar-brand" href="{% url "surftof-overview" %}">Surftof</a>
     <button class=" navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -9,13 +9,10 @@
         <ul class="navbar-nav mr-auto">
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url "surftof-preview" %}">Preview</a>
+                <a class="nav-link" href="{% url "surftof-preview" %}">Mass Specs</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url "surftof-surface-temperature" %}">Surface Temperature</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url "surftof-counts-per-mass" %}">CPM</a>
             </li>
 
             <li class="nav-item dropdown">

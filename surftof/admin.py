@@ -1,8 +1,10 @@
 from urllib.parse import quote
+
 import pytz
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
-from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType
+
+from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, JournalEntry
 
 
 class PotentialSettingsAdmin(admin.ModelAdmin):
@@ -153,3 +155,4 @@ admin.site.register(Measurement, MeasurementsAdmin)
 admin.site.register(MeasurementType)
 admin.site.register(Gas)
 admin.site.register(Surface)
+admin.site.register(JournalEntry)

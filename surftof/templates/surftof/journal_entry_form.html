@@ -1,0 +1,18 @@
+{% extends 'surftof/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container mb-4">
+        <h4 class="border-bottom mb-4">New journal entry</h4>
+        <form method="post" novalidate enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extrahead %}
+    {{ form.media }}
+{% endblock %}

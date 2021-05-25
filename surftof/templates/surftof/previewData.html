@@ -483,6 +483,12 @@
             }
         );
 
+        let searchParams = new URLSearchParams(window.location.search)
+        if (searchParams.has('id')) {
+          dataIdFile1 = searchParams.get('id')
+          plot();
+        }
+
         $('#setTracesMinMax').click(function () {
             selectMassMinMax = 'min';
             massMin.addClass('active-input');

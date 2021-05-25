@@ -1,7 +1,7 @@
+from ckeditor.fields import RichTextField
 from django.db import models
 from django.utils.html import format_html
 from django.utils.timezone import now
-from mdeditor.fields import MDTextField
 
 
 class PotentialSettings(models.Model):
@@ -239,8 +239,11 @@ class JournalEntry(models.Model):
         blank=True,
         null=True,
         upload_to='surftof/journalimage/')
-    comment = MDTextField(
-        max_length=5000,
+    file = models.FileField(
+        blank=True,
+        null=True,
+        upload_to='surftof/journalFiles/')
+    comment = RichTextField(
         blank=True)
 
     def __str__(self):
