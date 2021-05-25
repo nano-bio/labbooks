@@ -9,7 +9,6 @@ chemspider_token.txt
 database*
 .idea/
 bin/
-include/
 lib/
 lib64/
 lib64
