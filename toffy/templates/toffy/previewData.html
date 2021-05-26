@@ -92,83 +92,84 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
 <script>
-    const tree = $('#tree');
-    const imgEdit = '<img src="{% static "toffyPreview/edit.png" %}">';
-    const imgView = '<img src="{% static "toffyPreview/view.png" %}">';
-    const imgDown = '<img src="{% static "toffyPreview/download.png" %}">';
+  const tree = $('#tree');
+  const imgEdit = '<img src="{% static "toffyPreview/edit.png" %}">';
+  const imgView = '<img src="{% static "toffyPreview/view.png" %}">';
+  const imgDown = '<img src="{% static "toffyPreview/download.png" %}">';
 
-    function getDataList() {
-        $.getJSON("/toffy/preview_file_list/").done(function (data) {
-            let treeContent = '<ul class="list-group">';
-            data.forEach(function (dates) {
-                treeContent += '<li class="list-group-item no-border">' + dates.date + '<ul class="list-group">';
-                dates.times.forEach(function (times) {
-                    treeContent += '<li class="list-group-item">' +
-                        '<a href="#" data-id="' + times.id + '" data-path="' + times.downloadUrl + '">' +
-                        times.time + ' (ID ' + times.id + ') ' + imgView + '</a> ' +
-                        '<a href="' + times.downloadUrl + '" download>' + imgDown + '</a> ' +
-                        '<a href="/admin/toffy/measurement/' + times.id + '/change/">' + imgEdit + '</a></li>';
-                });
-                treeContent += '</ul></li>';
-            });
-            treeContent += '</ul>';
-            tree.html(treeContent);
-            $('#tree a').click(function () {
-                plotPath($(this).attr('data-path'), $(this).attr('data-id'));
-                $('.list-group-item').removeClass('active');
-                $(this).parent().addClass('active');
-            });
+  function getDataList() {
+    $.getJSON("/toffy/preview_file_list/").done(function (data) {
+      let treeContent = '<ul class="list-group">';
+      data.forEach(function (dates) {
+        treeContent += '<li class="list-group-item no-border">' + dates.date + '<ul class="list-group">';
+        dates.times.forEach(function (times) {
+          treeContent += '<li class="list-group-item">' +
+            '<a href="#" data-id="' + times.id + '" data-path="' + times.downloadUrl + '">' +
+            times.time + ' (ID ' + times.id + ') ' + imgView + '</a> ' +
+            '<a href="' + times.downloadUrl + '" download>' + imgDown + '</a> ' +
+            '<a href="/admin/toffy/measurement/' + times.id + '/change/">' + imgEdit + '</a></li>';
         });
-    }
-
-    getDataList();
-
-    g = new Dygraph(
-        document.getElementById("graphdiv"),  // containing div
-        [[0, 0]],                                   // data
-        {labels: ['time', 'counts']}                                    // options
-    );
-
-    function plotId(id) {
-        $.getJSON("/toffy/preview_data/" + id + "/").done(function (data) {
-            g.updateOptions({'file': data.data});
-        });
-    }
-
-    function plotPath(path, dataid) {
-        if (path.includes("opj")) {
-            window.alert('This is a "OPJ" file. Not able to open it by this preview!');
-        } else {
-            g.updateOptions({'file': path});
-            $.getJSON("{% url 'toffy-preview-measurement-info' 999999 %}".replace("999999", dataid)).done(function (data) {
-                $('#measurement-info h3').html(
-                    "<a href='/admin/toffy/measurement/" +
-                    data.measurementId +
-                    "/change/' target='_blank'>ID " +
-                    data.measurementId + "</a>")
-                let table = ""
-                $.each(data.fields, function (key, value) {
-                    table += ('<tr>');
-                    table += ('<td class="fit">' + key + '</td>');
-                    if (value)
-                        table += ('<td>' + value + '</td>');
-                    else
-                        table += ('<td></td>');
-                    table += ('</tr>');
-                });
-                $('#measurement-info-table').html(table);
-            });
-        }
-    }
-
-
-    $('#button-lin-plot').click(function () {
-        if (g.getOption('logscale') === true) {
-            g.updateOptions({logscale: false});
-        } else {
-            g.updateOptions({logscale: true});
-        }
+        treeContent += '</ul></li>';
+      });
+      treeContent += '</ul>';
+      tree.html(treeContent);
+      $('#tree a').click(function (event) {
+        event.preventDefault();
+        plotPath($(this).attr('data-path'), $(this).attr('data-id'));
+        $('.list-group-item').removeClass('active');
+        $(this).parent().addClass('active');
+      });
     });
+  }
+
+  getDataList();
+
+  g = new Dygraph(
+    document.getElementById("graphdiv"),  // containing div
+    [[0, 0]],                                   // data
+    {labels: ['time', 'counts']}                                    // options
+  );
+
+  function plotId(id) {
+    $.getJSON("/toffy/preview_data/" + id + "/").done(function (data) {
+      g.updateOptions({'file': data.data});
+    });
+  }
+
+  function plotPath(path, dataid) {
+    if (path.includes("opj")) {
+      window.alert('This is a "OPJ" file. Not able to open it by this preview!');
+    } else {
+      g.updateOptions({'file': path});
+      $.getJSON("{% url 'toffy-preview-measurement-info' 999999 %}".replace("999999", dataid)).done(function (data) {
+        $('#measurement-info h3').html(
+          "<a href='/admin/toffy/measurement/" +
+          data.measurementId +
+          "/change/' target='_blank'>ID " +
+          data.measurementId + "</a>")
+        let table = ""
+        $.each(data.fields, function (key, value) {
+          table += ('<tr>');
+          table += ('<td class="fit">' + key + '</td>');
+          if (value)
+            table += ('<td>' + value + '</td>');
+          else
+            table += ('<td></td>');
+          table += ('</tr>');
+        });
+        $('#measurement-info-table').html(table);
+      });
+    }
+  }
+
+
+  $('#button-lin-plot').click(function () {
+    if (g.getOption('logscale') === true) {
+      g.updateOptions({logscale: false});
+    } else {
+      g.updateOptions({logscale: true});
+    }
+  });
 
 </script>
 </body>
