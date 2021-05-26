@@ -9,13 +9,13 @@
     <title>TOFFY - Preview Data</title>
     <style>
         .card {
-            margin-top: 10px;
             height: 100%;
         }
 
         .card-body {
             padding: 5px;
-            overflow: scroll;
+            overflow-y: scroll;
+            overflow-x: hidden;
         }
 
         .card-header {
@@ -39,6 +39,7 @@
         #tree img {
             width: 22px;
             height: 22px;
+            margin: 0 2px;
         }
 
         .active {
@@ -61,6 +62,12 @@
             white-space: nowrap;
             width: 1%;
         }
+
+        .col-100-h {
+            height: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
     </style>
 </head>
 <body translate="no">
@@ -77,7 +84,7 @@
                 <table class="table" id="measurement-info-table"></table>
             </div>
         </div>
-        <div class="col-lg-4 col-xl-3">
+        <div class="col-lg-4 col-xl-3 col-100-h">
             <div class="card">
                 <div class="card-header">Files &nbsp;
                     <button type="button" class="btn btn-sm btn-outline-dark" onclick="getDataList();">reload</button>
