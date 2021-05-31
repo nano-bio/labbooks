@@ -54,6 +54,7 @@ class Measurement(models.Model):
     pressure_cs = models.FloatField(verbose_name='Pressure CS', default=float('4e-5'))
     pressure_pu1 = models.FloatField(verbose_name='Pressure PU1', default=float('3e-6'))
     pressure_pu2 = models.FloatField(verbose_name='Pressure PU2', default=float('1e-6'))
+    pressure_pu3 = models.FloatField(verbose_name='Pressure PU3', default=float('1e-6'))
     pressure_ion = models.FloatField(verbose_name='Pressure ION', default=float('2e-8'))
     pressure_tof = models.FloatField(verbose_name='Pressure TOF', default=float('3e-7'))
     laser_timing = models.IntegerField(blank=True, null=True)

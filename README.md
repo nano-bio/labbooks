@@ -6,6 +6,9 @@ Requires django >= 3.0 (tested until 3.1.3)
 
 Changelog
 =========
+31.05.2021
+* CLUSTOF/MODIFY/Felix: Add pu3 to measurements
+
 25.05.2021
 * SURFTOF/ADD/Felix: Add Journal with overviews
 

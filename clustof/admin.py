@@ -66,7 +66,7 @@ class MeasurementAdmin(admin.ModelAdmin):
                 'rating', 'laser_timing')
         }),
         ('Pressures', {
-            'fields': ('pressure_cs', 'pressure_pu1', 'pressure_pu2', 'pressure_ion', 'pressure_tof'),
+            'fields': ('pressure_cs', 'pressure_pu1', 'pressure_pu2', 'pressure_pu3', 'pressure_ion', 'pressure_tof'),
             'classes': ('wide',)
         }),
         ('CS settings', {
