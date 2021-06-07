@@ -111,7 +111,7 @@
         treeContent += '<li class="list-group-item no-border">' + dates.date + '<ul class="list-group">';
         dates.times.forEach(function (times) {
           treeContent += '<li class="list-group-item">' +
-            '<a href="#" data-id="' + times.id + '" data-path="' + times.downloadUrl + '">' +
+            '<a href="#" data-id="' + times.id + '" data-path="' + times.downloadUrl + '" class="plotIt">' +
             times.time + ' (ID ' + times.id + ') ' + imgView + '</a> ' +
             '<a href="' + times.downloadUrl + '" download>' + imgDown + '</a> ' +
             '<a href="/admin/toffy/measurement/' + times.id + '/change/">' + imgEdit + '</a></li>';
@@ -120,7 +120,7 @@
       });
       treeContent += '</ul>';
       tree.html(treeContent);
-      $('#tree a').click(function (event) {
+      $('#tree .plotIt').click(function (event) {
         event.preventDefault();
         plotPath($(this).attr('data-path'), $(this).attr('data-id'));
         $('.list-group-item').removeClass('active');
