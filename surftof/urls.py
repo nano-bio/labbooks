@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
+from django.views.generic import TemplateView
 
 import surftof.views as views
 
@@ -75,4 +76,11 @@ urlpatterns = [
     path('surface-temperature-data/<date>/',
          views.surface_temperature_data,
          name="surftof-surface-temperature-data"),
+
+    # pressures
+    path('pressures/',
+         TemplateView.as_view(
+             template_name='surftof/pressure.html',
+             extra_context={'labels': ['IS', 'SURF', 'TOF', 'BOST', 'PIS', 'PTOF']}),
+         name="surftof-pressures")
 ]

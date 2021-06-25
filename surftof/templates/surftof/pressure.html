@@ -1,0 +1,146 @@
+{% extends "surftof/base.html" %}
+{% load static %}
+
+{% block title %}- Pressures{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css"/>
+    <style>
+        #div_g {
+            position: absolute;
+            inset: 140px 20px 20px 10px;
+        }
+
+        .dygraph-legend {
+            left: 70px !important;
+            position: absolute;
+            padding: 5px 10px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="form-row align-items-center mx-4 my-2">
+
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary mb-2" id="btn-lin-log">LIN / LOG</button>
+        </div>
+
+        <div class="col-auto">
+            <label class="sr-only" for="lastHours">History length</label>
+            <select class="form-control mb-2" id="lastHours">
+                <option value="5">Show last 5min</option>
+                <option value="30">Show last 30min</option>
+                <option value="60" selected>Show last 1h</option>
+                <option value="360">Show last 6h</option>
+                <option value="720">Show last 12h</option>
+                <option value="1440">Show last 1d</option>
+                <option value="2880">Show last 2d</option>
+                <option value="10080">Show last 7d</option>
+            </select>
+        </div>
+
+        {% for label in labels %}
+            <div class="col-auto">
+                <label class="mx-2">
+                    <input
+                        type="checkbox"
+                        value="{{ forloop.counter0 }}"
+                        {% if forloop.counter0 < 4 %}
+                        checked
+                        {% endif %}
+                    >
+                    {{ label }}
+                </label>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <div id="div_g"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
+    <script>
+      let lastTimeStamp = ""
+      let queryIsRunning = false
+      $.getJSON("//138.232.74.227/history", function (values) {
+        let data = values.values.map(function (elem) {
+          return [new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]];
+        });
+        const g = new Dygraph(document.getElementById("div_g"), data,
+          {
+            labels: ['Time'].concat(values.labels),
+            labelsSeparateLines: true,
+            legend: 'always',
+            logscale: true,
+            visibility: [true, true, true, true, false, false]
+          });
+
+        $('#btn-lin-log').click(function () {
+          g.updateOptions({
+            logscale: !g.getOption('logscale')
+          })
+        });
+
+        $(':checkbox').change(function () {
+          g.setVisibility(parseInt(this.value), this.checked)
+        })
+
+        $('#lastHours').change(function () {
+          $.getJSON("//138.232.74.227/history/" + this.value, function (values) {
+            data = values.values.map(function (elem) {
+              return [new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]];
+            });
+            g.updateOptions({
+              'file': data
+            });
+          })
+        });
+
+        function getLast() {
+          if (!queryIsRunning) {
+            queryIsRunning = true
+            $.getJSON("//138.232.74.227/last", function (elem) {
+              if (elem[0] === lastTimeStamp) return
+              lastTimeStamp = elem[0];
+
+              data.push([new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]])
+
+              const ind = data.findIndex(element => new Date(element[0]).addMinutes($('#lastHours').val()) > data[data.length - 1][0]);
+              if (ind > 0)
+                data = data.slice(ind);
+
+              if (g.isZoomed()) {
+                g.updateOptions({
+                  'file': data,
+                  valueRange: g.yAxisRange()
+                });
+              } else {
+                g.updateOptions({
+                  'file': data,
+                  valueRange: null
+                });
+              }
+            }).always(function () {
+              queryIsRunning = false
+              setTimeout(getLast, 300);
+            });
+          }
+        }
+
+        getLast()
+
+      });
+
+      Date.prototype.addMinutes = function (m) {
+        this.setTime(this.getTime() + (m * 60 * 1000));
+        return this;
+      }
+    </script>
+{% endblock %}
