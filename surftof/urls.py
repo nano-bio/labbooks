@@ -82,5 +82,5 @@ urlpatterns = [
          TemplateView.as_view(
              template_name='surftof/pressure.html',
              extra_context={'labels': ['IS', 'SURF', 'TOF', 'BOST', 'PIS', 'PTOF']}),
-         name="surftof-pressures")
+         name="surftof-pressures"),
 ]

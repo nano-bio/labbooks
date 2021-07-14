@@ -1,5 +1,13 @@
-    <link rel="stylesheet" href="/staticfiles/css/style.css" />
-    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/staticfiles/js/flot/excanvas.min.js"></script><![endif]-->
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/jquery-1.11.3.min.js"></script>
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/flot/jquery.flot.js"></script>
-    <script language="javascript" type="text/javascript" src="/staticfiles/js/flot/jquery.flot.crosshair.js"></script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'js/jquery.canvaswrapper.js' %}"></script>
+<script src="{% static 'js/jquery.colorhelpers.js' %}"></script>
+<script src="{% static 'js/jquery.flot.js' %}"></script>
+<script src="{% static 'js/jquery.flot.browser.js' %}"></script>
+<script src="{% static 'js/jquery.flot.drawSeries.js' %}"></script>
+<script src="{% static 'js/jquery.flot.saturated.js' %}"></script>
+<script src="{% static 'js/jquery.flot.crosshair.js' %}"></script>
+<script src="{% static "flot/jquery.flot.selection.js" %}"></script>
+<script src="{% static "flot/jquery.flot.time.js" %}"></script>
+<script src="{% static 'js/jquery.flot.uiConstants.js' %}"></script>

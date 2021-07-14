@@ -4,14 +4,12 @@
 <head>
     <title>VG Labbook</title>
     {% include "jscss.html" %}
-    <script language="javascript" type="text/javascript" src="{% static "js/flot/jquery.flot.selection.js" %}"></script>
-    <script language="javascript" type="text/javascript" src="{% static "js/flot/jquery.flot.time.js" %}"></script>
 </head>
 
 <body>
-    <div id="Header">VG Labbook</div>
-    <div id="Menu">
-        {% block sidebar %}
+<div id="Header">VG Labbook</div>
+<div id="Menu">
+    {% block sidebar %}
         <ul>
             <li><a href="/vg/">Home</a></li>
             <li><a href="/admin/vg/">Admin</a></li>
@@ -21,11 +19,11 @@
             <li><a href="/vg/insight/">Insights</a></li>
             <li><a href="/vg/pumps/">Turbopumps</a></li>
         </ul>
-        {% endblock %}
-    </div>
+    {% endblock %}
+</div>
 
-    <div id="Content">
-        {% block content %}{% endblock %}
-    </div>
+<div id="Content">
+    {% block content %}{% endblock %}
+</div>
 </body>
 </html>
