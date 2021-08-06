@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.safestring import mark_safe
 
+from journal.models import JournalEntry
+
 
 class Operator(models.Model):
     firstname = models.CharField(max_length=50)
@@ -66,3 +68,6 @@ class Measurement(models.Model):
     class Meta:
         ordering = ['-time']
         get_latest_by = 'time'
+
+    class JournalEntry(JournalEntry):
+        measurement = models.ForeignKey('toffy.Measurement', blank=True, null=True, on_delete=models.PROTECT)

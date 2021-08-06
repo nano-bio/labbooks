@@ -12,8 +12,10 @@ import toffy.urls
 import toffy2.urls
 import vg.urls
 import wippi.urls
+from journal.views import homepage
 
 urlpatterns = [
+    path('', homepage, name='homepage'),
     path('admin/', admin.site.urls),
     path('vg/', include(vg.urls)),
     path('wippi/', include(wippi.urls)),
