@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <a href="#" class="float"><i class="bi bi-plus-circle-fill"></i>
-    </a>
+    <div class="container pt-4">
+        {% include 'journal/journal_card.html' with experiment="SURFTOF" %}
+    </div>
 {% endblock %}
