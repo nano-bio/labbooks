@@ -1,8 +1,13 @@
 import csv
 import itertools
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from toffy.models import Measurement
+from django.urls import reverse_lazy
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView
+
+from toffy.forms import JournalEntryForm
+from toffy.models import Measurement, JournalEntry
 
 
 def preview_data(request, pk):
@@ -45,3 +50,37 @@ def preview_measurement_info(request, measurement_id):
         }
     }
     return JsonResponse(data, safe=False)
+
+
+class JournalListView(ListView):
+    paginate_by = 20
+    model = JournalEntry
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['experiment'] = "Toffy"
+        context['add_url'] = reverse_lazy('toffy-journal-add')
+        context['journal_change_url'] = reverse_lazy('toffy-journal-update', args=(1,))[:-2]
+        context['admin_measurement_url'] = reverse_lazy('admin:toffy_measurement_change', args=(1,))[:-9]
+        context['journal_delete_url'] = reverse_lazy('toffy-journal-delete', args=(1,))[:-9]
+        return context
+
+
+class JournalEntryUpdate(UpdateView):
+    form_class = JournalEntryForm
+    model = JournalEntry
+    template_name = 'journal/journal_entry_form.html'
+    success_url = reverse_lazy('toffy-journal')
+
+
+class JournalEntryDelete(DeleteView):
+    form_class = JournalEntryForm
+    model = JournalEntry
+    template_name = 'journal/journal_confirm_delete.html'
+    success_url = reverse_lazy('toffy-journal')
+
+
+class JournalEntryCreate(CreateView):
+    form_class = JournalEntryForm
+    template_name = 'journal/journal_entry_form.html'
+    success_url = reverse_lazy('toffy-journal')

@@ -9,46 +9,16 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 {# CLUSTOF #}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        CLUSTOF
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        {#                        <li><a class="dropdown-item" href="{% url 'clustof-journal' %}">Journal</a></li>#}
-                        {#                        <li><a class="dropdown-item" href="{% url 'clustof-mass-specs' %}">Mass Spectra</a></li>#}
-                        <li><a class="dropdown-item" href="{% url 'admin:clustof_measurement_changelist' %}">Measurements</a>
-                        </li>
-                    </ul>
-                </li>
+                {% include 'clustof/navigation.html' %}
 
                 {# TOFFY #}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        TOFFY
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        {#                        <li><a class="dropdown-item" href="{% url 'toffy-journal' %}">Journal</a></li>#}
-                        {#                        <li><a class="dropdown-item" href="{% url 'toffy-mass-specs' %}">Mass Spectra</a></li>#}
-                        <li><a class="dropdown-item"
-                               href="{% url 'admin:toffy_measurement_changelist' %}">Measurements</a></li>
-                    </ul>
-                </li>
+                {% include 'toffy/navigation.html' %}
 
                 {# TOFFY2 #}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        TOFFY2
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        {#                        <li><a class="dropdown-item" href="{% url 'toffy2-journal' %}">Journal</a></li>#}
-                        {#                        <li><a class="dropdown-item" href="{% url 'toffy2-mass-specs' %}">Mass Spectra</a></li>#}
-                        <li><a class="dropdown-item"
-                               href="{% url 'admin:toffy2_measurement_changelist' %}">Measurements</a></li>
-                    </ul>
-                </li>
+                {% include 'toffy2/navigation.html' %}
+
+                {# SURFTOF #}
+                {% include 'surftof/navigation.html' %}
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"

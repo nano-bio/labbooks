@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.safestring import mark_safe
 
-from journal.models import JournalEntry
+from journal.models import BasicJournalEntry
 
 
 class Operator(models.Model):
@@ -69,5 +69,6 @@ class Measurement(models.Model):
         ordering = ['-time']
         get_latest_by = 'time'
 
-    class JournalEntry(JournalEntry):
-        measurement = models.ForeignKey('toffy.Measurement', blank=True, null=True, on_delete=models.PROTECT)
+
+class JournalEntry(BasicJournalEntry):
+    measurement = models.ForeignKey('toffy.Measurement', blank=True, null=True, on_delete=models.PROTECT)

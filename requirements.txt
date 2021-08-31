@@ -7,6 +7,7 @@ djangorestframework>=3.12.4
 scipy>=1.5.4 # pip complains...
 h5py==2.10.0 # v3 doesnt work on windows
 django-crispy-forms>=1.11.2
+crispy-bootstrap5==0.5
 django-ckeditor
 matplotlib
 

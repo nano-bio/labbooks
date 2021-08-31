@@ -3,10 +3,10 @@ from django.db import models
 from django.utils.timezone import now
 
 
-class JournalEntry(models.Model):
+class BasicJournalEntry(models.Model):
     time = models.DateTimeField(
         default=now)
-    short_description = models.CharField(
+    title = models.CharField(
         max_length=500)
     image = models.ImageField(
         blank=True,
@@ -37,10 +37,10 @@ class JournalEntry(models.Model):
         blank=True)
 
     def __str__(self):
-        if len(self.short_description) > 50:
-            return f"ID {self.id}, {self.time.strftime('%Y-%m-%d %H:%M')}: {self.short_description[:45]}..."
+        if len(self.title) > 50:
+            return f"ID {self.id}, {self.time.strftime('%Y-%m-%d %H:%M')}: {self.title[:45]}..."
         else:
-            return f"ID {self.id}, {self.time.strftime('%Y-%m-%d %H:%M')}: {self.short_description}"
+            return f"ID {self.id}, {self.time.strftime('%Y-%m-%d %H:%M')}: {self.title}"
 
     class Meta:
         abstract = True
