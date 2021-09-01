@@ -125,6 +125,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
 
     'journal',
+    'massspectra',
     'vg',
     'clustof',
     'wippi',
