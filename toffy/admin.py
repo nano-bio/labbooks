@@ -1,8 +1,7 @@
-from django.contrib import admin, messages
-from django.http import HttpResponseRedirect
-from django.utils import http
+from django.contrib import admin
 import pytz
 
+from labbooks.admin_common import create_new_entry_based_on_existing_one
 from toffy.models import Operator, Measurement
 
 
@@ -93,23 +92,12 @@ class MeasurementAdmin(admin.ModelAdmin):
     )
 
     def create_new_measurement_based_on_existing_one(self, request, queryset):
-        # we can only base it on one measurement
-        if len(queryset) == 1:
-            s = queryset.get()
-            # this variable will hold all the values and is the address to the new measurement form
-            redirect_address = u'add/?'
-            # we don't want these to be adopted
-            forbidden_items = ['time', 'data_file']
-            # walk through all fields of the model
-            for item in s.__dict__:
-                if item not in forbidden_items:
-                    if s.__dict__[item] is not None:
-                        redirect_address += http.urlquote(item) + '=' + http.urlquote(s.__dict__[item]) + '&'
-
-            # redirect to newly created address
-            return HttpResponseRedirect(redirect_address)
-        else:
-            messages.error(request, 'You can only base a new measurement on ONE existing measurement, stupid.')
+        forbidden_items = ['time', 'data_file']
+        create_new_entry_based_on_existing_one(
+            request,
+            queryset,
+            forbidden_items
+        )
 
 
 admin.site.register(Measurement, MeasurementAdmin)
