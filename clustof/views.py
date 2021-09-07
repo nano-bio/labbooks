@@ -349,7 +349,7 @@ def readvacuumstatus(request):
 
         # get the data and split by line break
         rawinput = request.body
-        if rawinput is not "":
+        if rawinput != "":
             lines = rawinput.split("\r\n")
 
             # match each line and put to database

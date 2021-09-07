@@ -206,7 +206,7 @@ class ChemicalInstance(models.Model):
     def __str__(self):
         if self.chemical.state_of_matter == 'GAS':
             return u'%s Gas (Cylinder No. %s)' % (self.chemical.name, self.cylinder_number)
-        if self.chemical.chemical_formula is not u'':
+        if self.chemical.chemical_formula != u'':
             return u'%s (%s) at %s' % (self.chemical.name, self.chemical.chemical_formula, self.storage_location.name)
         else:
             return u'%s at %s' % (self.chemical.name, self.storage_location)
