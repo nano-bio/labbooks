@@ -4,8 +4,20 @@
         TOFFY
     </a>
     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <li><a class="dropdown-item" href="{% url 'toffy-journal' %}">Journal</a></li>
-{#        <li><a class="dropdown-item" href="{% url 'toffy-mass-specs' %}">Mass Spectra</a></li>#}
-        <li><a class="dropdown-item" href="{% url 'admin:toffy_measurement_changelist' %}">Measurements</a></li>
+        <li>
+            <a class="dropdown-item" href="{% url "toffy-journal" %}">Journal</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url "toffy-mass-spectra" %}">Mass Specs</a>
+        </li>
+
+        <li class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item" href="{% url 'admin:toffy_measurement_changelist' %}">Admin: Measurements</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url 'admin:app_list' 'toffy' %}">Admin: TOFFY</a>
+        </li>
     </ul>
 </li>

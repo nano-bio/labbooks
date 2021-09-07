@@ -8,6 +8,7 @@ from django.conf import settings
 from django.utils.timezone import make_aware
 from scipy.optimize import curve_fit
 
+from massspectra.views import slice_data
 from surftof.models import Measurement, JournalEntry
 
 
@@ -87,21 +88,6 @@ def import_pico_log_and_median(measurement_id):
         return -1
 
 
-def masses_from_file(h5py_file, length_y_data, binned_by):
-    def quadratic_fit_function(x, a, t0):
-        return a * (x + t0) ** 2
-
-    x_data = np.array(h5py_file['CALdata']['Mapping'])
-    masses = []
-    times = []
-    for row in x_data:
-        if row[0] != 0 and row[1] != 0:
-            masses.append(row[0])
-            times.append(row[1])
-    popt, pcov = curve_fit(quadratic_fit_function, times, masses, p0=(1e-8, 10000))
-    return quadratic_fit_function(np.array(np.arange(length_y_data) * binned_by), *popt)
-
-
 def get_measurements_and_journal_entries_per_month(date):
     end = (date + timedelta(days=35)).replace(day=1)
 
@@ -162,11 +148,11 @@ def get_mass_spectrum_preview_image(
             return pseudo_file.getvalue()
 
 
-def get_mass_spectrum(measurement_id, mass_max):
+def get_mass_spectrum(measurement_id, mass_max=None):
     def quadratic_fit_function(x, a, t0):
         return a * (x + t0) ** 2
 
-    with h5py.File(glob(f"{settings.SURFTOF_BIGSHARE_DATA_ROOT}{measurement_id}/*.h5")[0], 'r')as f:
+    with h5py.File(glob(f"{settings.SURFTOF_BIGSHARE_DATA_ROOT}{measurement_id}/*.h5")[0], 'r') as f:
         y_data = np.array(f['SPECdata']['AverageSpec'])
         x_data = np.array(f['CALdata']['Mapping'])
         masses = []
@@ -178,20 +164,6 @@ def get_mass_spectrum(measurement_id, mass_max):
         popt, pcov = curve_fit(quadratic_fit_function, times, masses, p0=(1e-8, 10000))
         x_data = quadratic_fit_function(np.array(np.arange(len(y_data))), *popt)
 
+    if mass_max is None:
+        return x_data, y_data
     return slice_data(x_data, y_data, 0, mass_max)
-
-
-def slice_data(x_data, y_data, x_min, x_max):
-    # returns part of the x and y data as a function of
-    # x min and x max
-    def find_index_of_nearest(array, value):
-        array = np.asarray(array)
-        return (np.abs(array - value)).argmin()
-
-    x_min_index = find_index_of_nearest(x_data, x_min)
-    x_max_index = find_index_of_nearest(x_data, x_max)
-
-    x_data = x_data[x_min_index:x_max_index]
-    y_data = y_data[x_min_index:x_max_index]
-
-    return x_data, y_data

@@ -1,0 +1,30 @@
+<div class="col">
+    <div class="card">
+        <div class="card-header">Settings</div>
+        <div class="card-body">
+
+            <div class="form-floating mb-2">
+                <input type="number" class="form-control" step="0.01" id="inputScaleFile2"
+                       placeholder="Scale Intensity of File 2" value="1">
+                <label for="inputScaleFile2">Scale Intensity of File 2</label>
+            </div>
+
+            <div class="form-floating mb-2">
+                <input type="number" class="form-control" id="inputBinning" placeholder="Binning" value="8">
+                <label for="inputBinning">Binning</label>
+            </div>
+
+            <div class="form-floating mb-2">
+                <input type="number" class="form-control" id="inputMassMax" placeholder="Maximal Mass" value="1000">
+                <label for="inputMassMax">max Mass</label>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="button" class="btn btn-secondary" id="button-download-plot">
+                    Download plot as csv
+                </button>
+            </div>
+
+            {% block extra_settings %}{% endblock %}
+        </div>
+    </div>
+</div>

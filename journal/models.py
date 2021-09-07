@@ -8,7 +8,7 @@ class BasicJournalEntry(models.Model):
         default=now)
     title = models.CharField(
         max_length=500)
-    image = models.ImageField(
+    image1 = models.ImageField(
         blank=True,
         null=True,
         upload_to='journal/journalImage/')

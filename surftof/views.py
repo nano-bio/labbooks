@@ -13,99 +13,71 @@ from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from requests import get
 from rest_framework.permissions import BasePermission
 
+from massspectra.views import mass_spectra_data
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
-from surftof.forms import JournalEntryForm, MeasurementForm
-from surftof.helper import get_measurements_and_journal_entries_per_month, get_mass_spectrum_preview_image
-from surftof.helper import import_pressure, get_temp_from_file, masses_from_file
+from surftof.forms import JournalEntryForm
+from surftof.helper import get_measurements_and_journal_entries_per_month, get_mass_spectrum_preview_image, \
+    get_mass_spectrum
+from surftof.helper import import_pressure, get_temp_from_file
 from surftof.models import PotentialSettings, Measurement, JournalEntry
 
 
-def json_export(request, table, pk):
-    try:
-        table = str(table).lower()
-        pk = int(pk)
-    except ValueError:
-        raise Http404("Table or pk format invalid!")
-    if table == "measurement":
-        obj = get_object_or_404(Measurement, pk=pk)
-    elif table == 'potentials' or table == 'potentialsettings':
-        obj = get_object_or_404(PotentialSettings, pk=pk)
-    else:
-        raise Http404("Table unknown!")
-    serialized_obj = serializers.serialize('json', [obj, ])
-    return HttpResponse(serialized_obj, content_type='application/json')
+# ------------
+# Mass Spectra
+# ------------
+class MassSpectraListView(ListView):
+    paginate_by = 15
+    model = Measurement
+    template_name = 'surftof/mass_spectra_viewer.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MassSpectraListView, self).get_context_data(**kwargs)
+        context['experiment'] = 'SurfTOF'
+        context['admin_measurement_url'] = reverse_lazy('admin:surftof_measurement_changelist')
+        context['url_data'] = reverse_lazy('surftof-mass-spectra-data')
+        context['url_json_file_info'] = reverse_lazy('surftof-json-data', args=('Measurement', '00'))
+        return context
 
 
-def preview(request):
-    return render(request, 'surftof/previewData.html', {
-        'measurements': preview_list_of_measurements(10)})
+@require_POST
+def get_mass_spectra_data(request):
+    data_id_file_1 = request.POST.get('dataIdFile1')
+    data_id_file_2 = request.POST.get('dataIdFile2', None)
 
-
-def preview_data(request):
-    MASS_SPEC_TIME_BIN_MAX = 60000
-
-    if request.method == 'POST':
-        time_bin_or_mass = request.POST.get('timeBinOrMass')
-        data_id_file_1 = request.POST.get('dataIdFile1')
-        data_id_file_2 = request.POST.get('dataIdFile2')
-        scale_data_file_2 = request.POST.get('scaleDataFile2')
-        diff_plot = request.POST.get('diffPlot')
-        binned_by = int(request.POST.get('binnedBy'))
-        max_time_bin = int(request.POST.get('maxTimeBin'))
-    else:
-        return HttpResponse('This is a post only view')
-
-    # get y-axis data from h5 file
-    file = glob("{}{}/*h5".format(settings.SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_1)))[-1]
-    with h5py.File(file, 'r')as f:
-        y_data1 = np.array(f['SPECdata']['AverageSpec'])[:MASS_SPEC_TIME_BIN_MAX]
-        y_data1 = reduce_data_by_mean(y_data1, binned_by, 1)
-
-        # x-axis
-        if time_bin_or_mass == 'mass':
-            xlabel = "m/z"
-            x_data = masses_from_file(f, len(y_data1), binned_by)[:MASS_SPEC_TIME_BIN_MAX]
-            # x_data = reduce_data_by_mean(x_data, binned_by, 1)
-
-        else:
-            x_data = range(binned_by - 1, max_time_bin, binned_by)
-            xlabel = "time bins"
+    x_data1, y_data1 = get_mass_spectrum(data_id_file_1)
 
     if data_id_file_2:
-        file = glob("{}{}/*h5".format(settings.SURFTOF_BIGSHARE_DATA_ROOT, int(data_id_file_2)))[-1]
-        with h5py.File(file, 'r')as f:
-            y_data2 = np.array(f['SPECdata']['AverageSpec'])[:MASS_SPEC_TIME_BIN_MAX]
-            y_data2 = reduce_data_by_mean(y_data2, binned_by, float(scale_data_file_2))
+        x_data2, y_data2 = get_mass_spectrum(data_id_file_2)
+        return mass_spectra_data(request, x_data1, y_data1, x_data2, y_data2)
 
-    # create json string from y-axis data
-    response = '{"data":['
-    for i in range(min([len(y_data1), len(x_data)])):
-        if not data_id_file_2:
-            response += "[{},{:.2e}],".format(x_data[i], y_data1[i])
-        elif diff_plot == 'true':
-            response += "[{},{:.2e}],".format(x_data[i], y_data1[i] - y_data2[i])
-        else:
-            response += "[{},{:.2e},{:.2e}],".format(x_data[i], y_data1[i], y_data2[i])
-    response = response[:-1]  # remove last ','
-
-    # append labels to json string
-    if not data_id_file_2:
-        labels = '["time bin","cps ID {}"]'.format(data_id_file_1)
-    elif diff_plot == 'true':
-        labels = '["time bin","cps ID {} - cps ID {}"]'.format(data_id_file_1, data_id_file_2)
     else:
-        labels = '["time bin","cps ID {}","cps ID {}"]'.format(data_id_file_1, data_id_file_2)
-
-    response += '],"xlabel":"{}","labels":{}}}'.format(xlabel, labels)
-
-    return HttpResponse(response, content_type='application/json')
+        return mass_spectra_data(request, x_data1, y_data1)
 
 
-def preview_trace(request):
+def preview_get_file_info(request, measurement_id):
+    response = []
+    measurement = get_object_or_404(Measurement, pk=int(measurement_id))
+    pressures = import_pressure(measurement_id)
+    response.append({'key': 'ID', 'value': measurement.id})
+    response.append({'key': 'Impact Energy', 'value': measurement.get_impact_energy_surface()})
+    response.append({'key': 'Temperature', 'value': get_temp_from_file(measurement_id)})
+    response.append({'key': 'Projectile', 'value': "{}".format(measurement.projectile)})
+    response.append({'key': 'Gas Surf', 'value': "{}".format(measurement.gas_surf.__str__())})
+    response.append({'key': 'Pressure IS', 'value': "{:.1e} mbar".format(pressures['is'])})
+    response.append({'key': 'Pressure Surf', 'value': "{:.1e} mbar".format(pressures['surf'])})
+    response.append({'key': 'Pressure Tof', 'value': "{:.1e} mbar".format(pressures['tof'])})
+    return JsonResponse(response, safe=False)
+
+
+# -------------------
+# Mass Spectra Traces
+# -------------------
+def mass_spectra_trace(request):
     if request.method != "POST":
         raise Http404("Wrong method")
 
@@ -130,7 +102,7 @@ def preview_trace(request):
     return JsonResponse({'data': np.column_stack((times, integrated_intervals)).tolist()}, safe=False)
 
 
-def preview_xkcd(request):
+def mass_spectra_xkcd(request):
     url = "https://xkcd.com/info.0.json"
     data = loads(get(url).content.decode())
     rand_num = randint(1, int(data['num']))
@@ -144,43 +116,75 @@ def preview_xkcd(request):
     })
 
 
-def preview_get_file_info(request, measurement_id):
+# Journal
+class JournalListView(ListView):
+    paginate_by = 20
+    model = JournalEntry
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['experiment'] = "SurfTOF"
+        context['add_url'] = reverse_lazy('surftof-journal-add')
+        context['journal_change_url'] = reverse_lazy('surftof-journal-update', args=(1,))[:-2]
+        context['admin_measurement_url'] = reverse_lazy('admin:surftof_measurement_changelist')
+        context['journal_delete_url'] = reverse_lazy('surftof-journal-delete', args=(1,))[:-9]
+        return context
+
+
+class JournalEntryUpdate(UpdateView):
+    form_class = JournalEntryForm
+    model = JournalEntry
+    template_name = 'journal/journal_entry_form.html'
+    success_url = reverse_lazy('surftof-journal')
+
+
+class JournalEntryDelete(DeleteView):
+    form_class = JournalEntryForm
+    model = JournalEntry
+    template_name = 'journal/journal_confirm_delete.html'
+    success_url = reverse_lazy('surftof-journal')
+
+
+class JournalEntryCreate(CreateView):
+    form_class = JournalEntryForm
+    template_name = 'journal/journal_entry_form.html'
+    success_url = reverse_lazy('surftof-journal')
+
+
+def json_export(request, table, pk):
+    try:
+        table = str(table).lower()
+        pk = int(pk)
+    except ValueError:
+        raise Http404("Table or pk format invalid!")
+    if table == "measurement":
+        obj = get_object_or_404(Measurement, pk=pk)
+    elif table == 'potentials' or table == 'potentialsettings':
+        obj = get_object_or_404(PotentialSettings, pk=pk)
+    else:
+        raise Http404("Table unknown!")
+    serialized_obj = serializers.serialize('json', [obj, ])
+    return HttpResponse(serialized_obj, content_type='application/json')
+
+
+def preview_list_of_measurements(last_id=None):
     response = []
-    measurement = get_object_or_404(Measurement, pk=int(measurement_id))
-    pressures = import_pressure(measurement_id)
-    response.append({'key': 'ID', 'value': measurement.id})
-    response.append({'key': 'Impact Energy', 'value': measurement.get_impact_energy_surface()})
-    response.append({'key': 'Temperature', 'value': get_temp_from_file(measurement_id)})
-    response.append({'key': 'Projectile', 'value': "{}".format(measurement.projectile)})
-    response.append({'key': 'Gas Surf', 'value': "{}".format(measurement.gas_surf.__str__())})
-    response.append({'key': 'Pressure IS', 'value': "{:.1e} mbar".format(pressures['is'])})
-    response.append({'key': 'Pressure Surf', 'value': "{:.1e} mbar".format(pressures['surf'])})
-    response.append({'key': 'Pressure Tof', 'value': "{:.1e} mbar".format(pressures['tof'])})
-    return JsonResponse(response, safe=False)
-
-
-# for preview_data
-def reduce_data_by_mean(data, binning, scale):
-    mean_value = 0
-    reduced_date = []
-    for i, v in enumerate(data):
-        mean_value += v
-        if i % binning == binning - 1:
-            reduced_date.append(mean_value / binning * scale)
-            mean_value = 0
-    return reduced_date
-
-
-def preview_list_of_measurements(limit=None):
-    response = []
-    objects = Measurement.objects.order_by('-id')[:limit]
+    objects = Measurement.objects.order_by('-id')
+    if last_id:
+        objects = objects.filter(pk__lt=int(last_id))
+    objects = objects[:20]
     for measurement in objects:
-        name = f"ID {measurement.id}: {measurement.short_description}"
+        name = f"{measurement.short_description}"
         if measurement.get_impact_energy_surface() != "-":
             name += f", {measurement.get_impact_energy_surface()}"
         if measurement.surface_temperature is not None:
             name += f", {measurement.surface_temperature} C"
-        name += "<br>"
+        if (
+                measurement.projectile is not None or
+                measurement.surface_material is not None or
+                measurement.gas_surf is not None
+        ):
+            name += "<br>"
         if measurement.projectile is not None:
             name += f"{measurement.projectile}"
         if measurement.surface_material is not None:
@@ -190,14 +194,17 @@ def preview_list_of_measurements(limit=None):
 
         response.append({
             'id': measurement.id,
-            'name': name
+            'time': measurement.time,
+            'short_description': name
         })
     return response
 
 
 # for preview data
-def preview_file_list(request):
-    return JsonResponse(preview_list_of_measurements(), safe=False)
+def preview_file_list(request, last_id=None):
+    if last_id is None:
+        last_id = request.GET.get('q', None)
+    return JsonResponse(preview_list_of_measurements(last_id), safe=False)
 
 
 # update the rating of a measurement
@@ -280,49 +287,6 @@ def overview(request, month=None, year=None):
             'next': {'year': next_page.year, 'month': next_page.month}
         }
     )
-
-
-class JournalEntryUpdate(UpdateView):
-    form_class = JournalEntryForm
-    model = JournalEntry
-    template_name = 'surftof/journal_entry_form.html'
-    success_url = reverse_lazy('surftof-overview')
-
-
-class JournalEntryDelete(DeleteView):
-    form_class = JournalEntryForm
-    model = JournalEntry
-    success_url = reverse_lazy('surftof-overview')
-
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-
-
-class JournalEntryCreate(CreateView):
-    form_class = JournalEntryForm
-    template_name = 'surftof/journal_entry_form.html'
-    success_url = reverse_lazy('surftof-overview')
-
-
-class MeasurementUpdate(UpdateView):
-    model = Measurement
-    form_class = MeasurementForm
-    template_name = 'surftof/measurement_form.html'
-
-
-class MeasurementDelete(DeleteView):
-    form_class = MeasurementForm
-    model = Measurement
-    success_url = reverse_lazy('surftof-overview')
-
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-
-
-class MeasurementCreate(CreateView):
-    form_class = MeasurementForm
-    template_name = 'surftof/measurement_form.html'
-    success_url = reverse_lazy('surftof-overview')
 
 
 def mass_spec_preview_image(request, measurement_id):

@@ -4,16 +4,15 @@
         SURFTOF
     </a>
     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-        {#                        <li><a class="dropdown-item" href="{% url 'toffy2-journal' %}">Journal</a></li>#}
-        {#                        <li><a class="dropdown-item" href="{% url 'toffy2-mass-specs' %}">Mass Spectra</a></li>#}
-        <li><a class="dropdown-item" href="{% url 'admin:toffy2_measurement_changelist' %}">Measurements</a></li>
+        <li>
+            <a class="dropdown-item" href="{% url "surftof-journal" %}">Journal</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url "surftof-mass-spectra" %}">Mass Specs</a>
+        </li>
 
-        <li>
-            <a class="dropdown-item" href="{% url "surftof-overview" %}">Journal</a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{% url "surftof-preview" %}">Mass Specs</a>
-        </li>
+        <div class="dropdown-divider"></div>
+
         <li>
             <a class="dropdown-item" href="{% url "surftof-surface-temperature" %}">Surface Temperature</a>
         </li>
@@ -23,7 +22,9 @@
 
         <div class="dropdown-divider"></div>
 
-        <li><a class="dropdown-item" href="{% url 'surftof-table-data' 'Measurement' %}">Table: Measurements</a></li>
+        <li>
+            <a class="dropdown-item" href="{% url 'surftof-table-data' 'Measurement' %}">Table: Measurements</a>
+        </li>
         <li>
             <a class="dropdown-item" href="{% url 'surftof-table-data' 'PotentialSettings' %}">Table: Potentials</a>
         </li>
@@ -35,7 +36,9 @@
         <li>
             <a class="dropdown-item" href="{% url 'admin:surftof_potentialsettings_changelist' %}">Admin: Potentials</a>
         </li>
-        <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin: Index</a></li>
+        <li>
+            <a class="dropdown-item" href="{% url 'admin:app_list' 'surftof' %}">Admin: SurfTOF</a>
+        </li>
 
     </ul>
 </li>

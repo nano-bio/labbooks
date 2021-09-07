@@ -10,6 +10,21 @@ from toffy.forms import JournalEntryForm
 from toffy.models import Measurement, JournalEntry
 
 
+# ------------
+# Mass Spectra
+# ------------
+class MassSpectraListView(ListView):
+    paginate_by = 15
+    model = Measurement
+    template_name = 'massspectra/mass_spectra_viewer.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MassSpectraListView, self).get_context_data(**kwargs)
+        context['experiment'] = 'TOFFY'
+        context['admin_measurement_url'] = reverse_lazy('admin:toffy_measurement_changelist')
+        return context
+
+
 def preview_data(request, pk):
     obj = get_object_or_404(Measurement, id=int(pk))
     reader = csv.reader(open(obj.data_file.path, 'r'), delimiter="\t")

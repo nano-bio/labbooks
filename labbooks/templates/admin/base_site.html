@@ -6,11 +6,16 @@
 {% block branding %}
     <h1 id="site-name">
         <a href="{% url 'admin:index' %}">Labbooks</a>
-        <a href="/vg/">VG</a>
+        -
         <a href="/clustof/">CLUSTOF</a>
-        <a href="{% url 'surftof-overview' %}">SURFTOF</a>
-        <a href="/wippi/">WIPPI</a>
-        <a href="/snowball/">SNOWBALL</a>
+        -
+        <a href="{% url 'surftof-journal' %}">SURFTOF</a>
+        -
+        <a href="{% url 'toffy-journal' %}">TOFFY</a>
+        {#        -#}
+        {# <a href="{% url 'toffy2-journal' %}">TOFFY2</a> #}
+        -
+        <a href="/vg/">VG</a>
     </h1>
 {% endblock %}
 

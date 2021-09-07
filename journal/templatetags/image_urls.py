@@ -7,7 +7,7 @@ register = template.Library()
 def get_image_urls(journal_entry):
     image_urls = []
     for image in [
-        journal_entry.image,
+        journal_entry.image1,
         journal_entry.image2,
         journal_entry.image3,
         journal_entry.image4,
