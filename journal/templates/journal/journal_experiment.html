@@ -18,54 +18,9 @@
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'simple-lightbox/simple-lightbox.jquery.min.js' %}"></script>
-    <script>
-      $('.simpleLightbox').simpleLightbox();
-    </script>
+    {% include 'journal/journal_common_js.html' %}
 {% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{% static 'simple-lightbox/simple-lightbox.min.css' %}"/>
-    <style>
-        .zoom-in-image {
-            color: rgba(255, 255, 255, 0.3);
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-            font-size: 7rem;
-        }
-
-        .zoom-in-image:hover {
-            color: rgba(0, 0, 0, 0.6);
-        }
-
-        .carousel-item {
-            height: 300px;
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-        }
-
-        @media (min-width: 576px) {
-            .carousel-item {
-                height: 200px
-            }
-        }
-
-        @media (min-width: 768px) {
-            .carousel-item {
-                height: 250px
-            }
-        }
-
-        @media (min-width: 992px) {
-            .carousel-item {
-                height: 280px
-            }
-        }
-
-        @media (min-width: 1200px) {
-            .carousel-item {
-                height: 300px
-            }
-        }
-    </style>
+    {% include 'journal/journal_common_css.html' %}
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
 
 from journal.models import BasicJournalEntry
@@ -63,7 +64,7 @@ class Measurement(models.Model):
         return "{}...".format(self.short_description[:30])
 
     def __str__(self):
-        return u'%s, %s' % (self.time, self.operator)
+        return f"ID {self.id}, {self.time}, {self.short_description}"
 
     class Meta:
         ordering = ['-time']
@@ -72,3 +73,21 @@ class Measurement(models.Model):
 
 class JournalEntry(BasicJournalEntry):
     measurement = models.ForeignKey('toffy.Measurement', blank=True, null=True, on_delete=models.PROTECT)
+
+    def url_form_update(self):
+        return reverse_lazy('toffy-journal-update', args=(self.pk,))
+
+    @staticmethod
+    def url_form_add():
+        return reverse_lazy('toffy-journal-add')
+
+    def url_form_delete(self):
+        return reverse_lazy('toffy-journal-delete', args=(self.pk,))
+
+    def url_measurement_admin_change(self):
+        if self.measurement:
+            return reverse_lazy('admin:toffy_measurement_change', args=(self.pk,))
+
+    def url_mass_spec(self):
+        if self.measurement:
+            return reverse_lazy('toffy-mass-spectra') + f'?id={self.pk}'

@@ -15,13 +15,13 @@
             <div class="col-lg-8 col-xl-9 col-md-7">
                 <button type="button" class="btn btn-secondary" id="button-lin-log-plot">lin / log</button>
                 <div id="graphdiv"></div>
-                <div class="row">
                     {% include 'massspectra/mass_spectra_viewer_measurement_infos.html' %}
-                    {% include 'massspectra/mass_spectra_viewer_settings.html' %}
-                    {% block 2nd_row_extra_cards %}{% endblock %}
-                </div>
             </div>
-            {% include 'massspectra/mass_spectra_viewer_measurements.html' %}
+
+            <div class="col-lg-4 col-xl-3 col-md-5 vh-100">
+                {% include 'massspectra/mass_spectra_viewer_accordion.html' %}
+            </div>
+
         </div>
     </div>
     <div id="loading">
@@ -35,9 +35,6 @@
     {# All the plotting things #}
     {% include 'massspectra/mass_spectra_viewer_js_plot.html' %}
 
-    {# Loading list of measurements #}
-    {% include 'massspectra/mass_spectra_viewer_js_load_measurements.html' %}
-
     {# Download plot as csv #}
-    {% include 'massspectra/mass_spectra_viewer_download_csv.html' %}
+    {% include 'massspectra/mass_spectra_viewer_js_download_csv.html' %}
 {% endblock %}

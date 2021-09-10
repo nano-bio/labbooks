@@ -1,14 +1,75 @@
-<div class="col">
-    <div class="card">
-        <div class="card-header">File 1: Info<span class="plot-indicator plot-indicator-green"
-                                                   style="display: none"></span></div>
-        <div class="card-body" id="fileInfoBody1"></div>
-    </div>
-</div>
-<div class="col" id="col-card-file2-info" style="display: none">
-    <div class="card">
-        <div class="card-header">File 2: Info<span class="plot-indicator plot-indicator-blue"></span>
+{% load static %}
+<div class="row">
+    <div class="col col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex">
+                    <div class="me-auto">File 1: ID <span id="fileInfoId1"></span></div>
+                    <div class="plot-indicator plot-indicator-green" style="display: none"></div>
+                    <button type="button" class="btn btn-secondary ms-4" data-bs-toggle="modal"
+                            data-bs-target="#modalSettingsFileInfo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-gear-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body" id="fileInfoBody1" style="overflow-x: auto"></div>
         </div>
-        <div class="card-body" id="fileInfoBody2"></div>
+    </div>
+    <div class="col col-sm-6" id="col-card-file2-info" style="display: none">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex">
+                    <div class="me-auto">File 2: ID <span id="fileInfoId2"></span></div>
+                    <div class="plot-indicator plot-indicator-blue"></div>
+                </div>
+            </div>
+            <div class="card-body" style="overflow-x: auto" id="fileInfoBody2"></div>
+        </div>
     </div>
 </div>
+<div class="modal fade" id="modalSettingsFileInfo" tabindex="-1" aria-labelledby="modalSettingsFileInfoLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSettingsFileInfoLabel">Show / Hide Settings in File Info</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="toggle-values">
+                {% for field in fields %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheck{{ field.name }}"
+                               name="{{ field.name }}" checked>
+                        <label class="form-check-label" for="flexSwitchCheck{{ field.name }}">
+                            {{ field.verbose_name }} <span class="text-muted">({{ field.name }})</span>
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'jquery.deparam/jquery-deparam.js' %}"></script>
+<script>
+  const cookieName = '{{ experiment }}FileInfoValues';
+  let switchStates = {};
+  $(function () {
+    switchStates = deparam(Cookies.get(cookieName));
+
+    {# On initial set all input switches from cookie and hide all corresponding File Info Values #}
+    $.each(switchStates, function (key, value) {
+      $("#flexSwitchCheck" + key).prop('checked', value === 'true');
+      $('.fileInfoRow' + key).toggle(value === 'true');
+    });
+  });
+  {# When a switch is clicked, Cookie gets updated and File Info Value toggled #}
+  $('#toggle-values :checkbox').change(function () {
+    $('.fileInfoRow' + $(this).attr('name')).toggle($(this).is(":checked"));
+    switchStates[$(this).attr('name')] = $(this).is(":checked")
+    Cookies.set(cookieName, $.param(switchStates));
+  });
+</script>

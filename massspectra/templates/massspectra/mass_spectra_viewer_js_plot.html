@@ -140,13 +140,21 @@
       $.getJSON(urlJson1).done(function (data) {
         fileInfoBody1.html(
           buildHtmlForFileInfo(data));
+        $('#fileInfoId1').html(data[0].pk)
       });
       if (dataIdFile2 != null) {
         let urlJson2 = '{{ url_json_file_info }}'.replace('00', dataIdFile2);
         $.getJSON(urlJson2).done(function (data) {
+          $('#col-card-file2-info').show()
+          $('.plot-indicator-green').show()
           fileInfoBody2.html(
-            buildHtmlForFileInfo(data));
+            buildHtmlForFileInfo(data)
+          );
+          $('#fileInfoId2').html(data[0].pk)
         });
+      } else {
+        $('#col-card-file2-info').hide()
+        $('.plot-indicator-green').hide()
       }
     }).fail(function () {
       $.toast({
@@ -160,10 +168,29 @@
     });
   }
 
+  const fields = {
+  {% for field in fields %}
+    {{ field.name }}: "{{ field.verbose_name }}",
+  {% endfor %}
+  }
+
   function buildHtmlForFileInfo(data) {
     let content = '<table class="table">';
     $.each(data[0].fields, function (key, value) {
-      content += '<tr><td>' + key + '</td><td>' + value + '</td></tr>';
+      if (key in fields && value !== null && value !== '') {
+        if (value === 'NEG')
+          value = 'negative'
+        else if (value === 'POS')
+          value = 'positive'
+        else if (value === true)
+          value = '✓'
+        else if (value === false)
+          value = '✕'
+        let view = ''
+        if (key in switchStates && switchStates[key] !== 'true')
+          view = ' style="display: none;"'
+        content += '<tr class="fileInfoRow' + key + '"' + view + '><td title="' + key + '">' + fields[key] + '</td><td>' + value + '</td></tr>';
+      }
     });
     content += '</table>';
     return content;

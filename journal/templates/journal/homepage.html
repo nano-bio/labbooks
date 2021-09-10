@@ -1,7 +1,19 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <div class="container pt-4">
-        {#        {% include 'journal/journal_card.html' with experiment="SURFTOF" %}#}
+    <div class="container pb-5 pt-4">
+        <h2 class="mb-4">News from {{ experiments }} <span class="text-muted">(last 30 days)</span></h2>
+        {% for entry in journal_entries %}
+            {% include 'journal/journal_card.html' with experiment=entry.experiment %}
+        {% endfor %}
     </div>
+{% endblock %}
+
+{% block extra_js %}
+    {% include 'journal/journal_common_js.html' %}
+{% endblock %}
+
+{% block extra_head %}
+    {% include 'journal/journal_common_css.html' %}
 {% endblock %}

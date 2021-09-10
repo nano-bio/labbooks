@@ -15,4 +15,9 @@ def get_image_urls(journal_entry):
     ]:
         if image:
             image_urls.append(image.url)
+    if journal_entry.measurement:
+        try:
+            image_urls.append(journal_entry.measurement.get_mass_spec_image_url())
+        except:
+            pass
     return image_urls

@@ -2,30 +2,46 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.generic import TemplateView
 
+import massspectra.views
+import journal.views
 import surftof.views as views
+from surftof.admin import MeasurementsAdmin
+from surftof.models import Measurement, JournalEntry
 
 urlpatterns = [
     # Journal
     path('journal/',
-         views.JournalListView.as_view(template_name='journal/journal_experiment.html'),
+         journal.views.JournalListView.as_view(
+             model=JournalEntry,
+             experiment='SurfTOF'),
          name='surftof-journal'),
     path('journal/add/',
-         login_required(views.JournalEntryCreate.as_view()),
+         login_required(journal.views.JournalEntryCreate.as_view(
+             model=JournalEntry,
+             experiment='SurfTOF')),
          name='surftof-journal-add'),
     path('journal/<int:pk>/',
-         login_required(views.JournalEntryUpdate.as_view()),
+         login_required(journal.views.JournalEntryUpdate.as_view(
+             model=JournalEntry,
+         )),
          name='surftof-journal-update'),
     path('journal/<int:pk>/delete/',
-         login_required(views.JournalEntryDelete.as_view()),
+         login_required(journal.views.JournalEntryDelete.as_view(
+             model=JournalEntry,
+             experiment='SurfTOF')),
          name='surftof-journal-delete'),
 
-    path('preview-image/<int:measurement_id>/',
+    # Journal Preview Images of Mass Spectra
+    path('preview-image/<int:measurement_id>.png',
          views.mass_spec_preview_image,
          name="surftof-mass-spec-preview-image"),
 
     # mass spectra
     path('mass-spectra/',
-         views.MassSpectraListView.as_view(),
+         massspectra.views.MassSpectraListView.as_view(
+             model=Measurement,
+             model_admin=MeasurementsAdmin,
+             experiment_name='SurfTOF'),
          name="surftof-mass-spectra"),
     path('mass-spectra/data/',
          views.get_mass_spectra_data,
@@ -43,6 +59,12 @@ urlpatterns = [
     path('<table>/<int:pk>.json',
          views.json_export,
          name="surftof-json-data"),
+
+    # json export measurement
+    path('measurement/<int:pk>.json',
+         massspectra.views.json_export,
+         {'model': Measurement},
+         name="surftof-measurement-json"),
 
     # table export
     path('<table>.html',

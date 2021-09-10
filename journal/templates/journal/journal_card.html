@@ -2,7 +2,9 @@
 
 <div class="card mb-3">
     <div class="card-header d-flex">
-        <div class="me-auto">{{ experiment }}</div>
+        <div class="me-auto">
+            {% if experiment %}{{ experiment }}{% elif entry.experiment %}{{ entry.experiment }}{% endif %}
+        </div>
         <div>{{ entry.time }}</div>
     </div>
     <div class="row g-0">
@@ -28,20 +30,20 @@
     {% if not hide_buttons %}
         <div class="card-footer">
             {% if entry.measurement %}
-                <a href="#" class="btn btn-outline-success btn-sm">
+                <a href="{{ entry.url_mass_spec }}" class="btn btn-outline-success btn-sm">
                     <i class="bi bi-graph-up"></i>
                     Show Mass Spec
                 </a>
-                <a href="{{ admin_measurement_url }}{{ entry.id }}/change/" class="btn btn-outline-primary btn-sm">
+                <a href="{{ entry.url_measurement_admin_change }}" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-eye"></i>
                     Show related Measurement
                 </a>
             {% endif %}
-            <a href="{{ journal_change_url }}{{ entry.id }}/" class="btn btn-outline-secondary btn-sm"><i
+            <a href="{{ entry.url_form_update }}" class="btn btn-outline-secondary btn-sm"><i
                 class="bi bi-pencil"></i>
-                Edit Journal</a>
-            <a href="{{ journal_delete_url }}{{ entry.id }}/delete/" class="btn btn-outline-danger btn-sm"><i
-                class="bi bi-trash"></i> Delete Journal</a>
+                Edit </a>
+            <a href="{{ entry.url_form_delete }}" class="btn btn-outline-danger btn-sm"><i
+                class="bi bi-trash"></i> Delete </a>
         </div>
     {% endif %}
 </div>

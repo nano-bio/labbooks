@@ -1,6 +1,9 @@
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
+
+from journal.models import BasicJournalEntry
 
 
 class Operator(models.Model):
@@ -90,3 +93,25 @@ class Measurement(models.Model):
     class Meta:
         ordering = ['-time']
         get_latest_by = 'time'
+
+
+class JournalEntry(BasicJournalEntry):
+    measurement = models.ForeignKey('toffy2.Measurement', blank=True, null=True, on_delete=models.PROTECT)
+
+    def url_form_update(self):
+        return reverse_lazy('toffy2-journal-update', args=(self.pk,))
+
+    @staticmethod
+    def url_form_add():
+        return reverse_lazy('toffy2-journal-add')
+
+    def url_form_delete(self):
+        return reverse_lazy('toffy2-journal-delete', args=(self.pk,))
+
+    def url_measurement_admin_change(self):
+        if self.measurement:
+            return reverse_lazy('admin:toffy2_measurement_change', args=(self.pk,))
+
+    def url_mass_spec(self):
+        if self.measurement:
+            return reverse_lazy('toffy2-mass-spectra') + f'?id={self.pk}'

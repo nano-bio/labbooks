@@ -1,9 +1,14 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path
+
+import massspectra.views
+from clustof.admin import MeasurementAdmin
 from clustof.models import Measurement, JournalEntry, Turbopump
 from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 from django.contrib.flatpages import views as flatpageviews
 import clustof.views
+import journal.views
 
 urlpatterns = [
     path('readsettings/',
@@ -30,15 +35,6 @@ urlpatterns = [
     path('insight/<parameter1>/',
          clustof.views.plot_parameters,
          name="clustof-insight-parameter1"),
-    path('journal/',
-         ListView.as_view(model=JournalEntry, template_name='clustof/journalentry_list.html'),
-         name="clustof-view-journals"),
-    path('journal/new/',
-         clustof.views.newjournalentry,
-         name="clustof-journal-new"),
-    path('journal/<int:id>/',
-         clustof.views.showjournalentry,
-         name="clustof-view-journal"),
     path('',
          flatpageviews.flatpage, {'url': '/clustof/'},
          name='clustof-home'),
@@ -84,4 +80,41 @@ urlpatterns = [
     path('public/<int:pk>/export/',
          clustof.views.exportfile_public,
          name="clustof-public-exportfile"),
+
+    # mass spectra
+    path('mass-spectra/',
+         massspectra.views.MassSpectraListView.as_view(
+             model=Measurement,
+             model_admin=MeasurementAdmin,
+             experiment_name='ClusTOF'),
+         name="clustof-mass-spectra"),
+    path('mass-spectra/data/',
+         clustof.views.get_mass_spectra_data,
+         name="clustof-mass-spectra-data"),
+
+    # json export measurement
+    path('measurement/<int:pk>.json',
+         massspectra.views.json_export,
+         {'model': Measurement},
+         name="clustof-measurement-json"),
+
+    # Journal
+    path('journal/',
+         journal.views.JournalListView.as_view(
+             model=JournalEntry,
+             experiment='ClusTof'),
+         name='clustof-journal'),
+    path('journal/add/',
+         login_required(journal.views.JournalEntryCreate.as_view(
+             model=JournalEntry,
+             experiment='ClusTof')),
+         name='clustof-journal-add'),
+    path('journal/<int:pk>/',
+         login_required(journal.views.JournalEntryUpdate.as_view(
+             model=JournalEntry)),
+         name='clustof-journal-update'),
+    path('journal/<int:pk>/delete/',
+         login_required(journal.views.JournalEntryDelete.as_view(
+             model=JournalEntry)),
+         name='clustof-journal-delete'),
 ]

@@ -1,5 +1,5 @@
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 from glob import glob
 from json import loads
 from os.path import basename
@@ -11,39 +11,20 @@ from django.conf import settings
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
-from django.utils.timezone import now
+from django.urls import reverse
 from django.views.decorators.http import require_POST
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView
 from requests import get
-from rest_framework.permissions import BasePermission
 
 from massspectra.views import mass_spectra_data
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
-from surftof.forms import JournalEntryForm
-from surftof.helper import get_measurements_and_journal_entries_per_month, get_mass_spectrum_preview_image, \
-    get_mass_spectrum
-from surftof.helper import import_pressure, get_temp_from_file
-from surftof.models import PotentialSettings, Measurement, JournalEntry
+from surftof.helper import get_mass_spectrum_preview_image, get_mass_spectrum
+from surftof.models import PotentialSettings, Measurement
 
 
 # ------------
 # Mass Spectra
 # ------------
-class MassSpectraListView(ListView):
-    paginate_by = 15
-    model = Measurement
-    template_name = 'surftof/mass_spectra_viewer.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(MassSpectraListView, self).get_context_data(**kwargs)
-        context['experiment'] = 'SurfTOF'
-        context['admin_measurement_url'] = reverse_lazy('admin:surftof_measurement_changelist')
-        context['url_data'] = reverse_lazy('surftof-mass-spectra-data')
-        context['url_json_file_info'] = reverse_lazy('surftof-json-data', args=('Measurement', '00'))
-        return context
-
-
 @require_POST
 def get_mass_spectra_data(request):
     data_id_file_1 = request.POST.get('dataIdFile1')
@@ -57,21 +38,6 @@ def get_mass_spectra_data(request):
 
     else:
         return mass_spectra_data(request, x_data1, y_data1)
-
-
-def preview_get_file_info(request, measurement_id):
-    response = []
-    measurement = get_object_or_404(Measurement, pk=int(measurement_id))
-    pressures = import_pressure(measurement_id)
-    response.append({'key': 'ID', 'value': measurement.id})
-    response.append({'key': 'Impact Energy', 'value': measurement.get_impact_energy_surface()})
-    response.append({'key': 'Temperature', 'value': get_temp_from_file(measurement_id)})
-    response.append({'key': 'Projectile', 'value': "{}".format(measurement.projectile)})
-    response.append({'key': 'Gas Surf', 'value': "{}".format(measurement.gas_surf.__str__())})
-    response.append({'key': 'Pressure IS', 'value': "{:.1e} mbar".format(pressures['is'])})
-    response.append({'key': 'Pressure Surf', 'value': "{:.1e} mbar".format(pressures['surf'])})
-    response.append({'key': 'Pressure Tof', 'value': "{:.1e} mbar".format(pressures['tof'])})
-    return JsonResponse(response, safe=False)
 
 
 # -------------------
@@ -116,41 +82,6 @@ def mass_spectra_xkcd(request):
     })
 
 
-# Journal
-class JournalListView(ListView):
-    paginate_by = 20
-    model = JournalEntry
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['experiment'] = "SurfTOF"
-        context['add_url'] = reverse_lazy('surftof-journal-add')
-        context['journal_change_url'] = reverse_lazy('surftof-journal-update', args=(1,))[:-2]
-        context['admin_measurement_url'] = reverse_lazy('admin:surftof_measurement_changelist')
-        context['journal_delete_url'] = reverse_lazy('surftof-journal-delete', args=(1,))[:-9]
-        return context
-
-
-class JournalEntryUpdate(UpdateView):
-    form_class = JournalEntryForm
-    model = JournalEntry
-    template_name = 'journal/journal_entry_form.html'
-    success_url = reverse_lazy('surftof-journal')
-
-
-class JournalEntryDelete(DeleteView):
-    form_class = JournalEntryForm
-    model = JournalEntry
-    template_name = 'journal/journal_confirm_delete.html'
-    success_url = reverse_lazy('surftof-journal')
-
-
-class JournalEntryCreate(CreateView):
-    form_class = JournalEntryForm
-    template_name = 'journal/journal_entry_form.html'
-    success_url = reverse_lazy('surftof-journal')
-
-
 def json_export(request, table, pk):
     try:
         table = str(table).lower()
@@ -167,46 +98,6 @@ def json_export(request, table, pk):
     return HttpResponse(serialized_obj, content_type='application/json')
 
 
-def preview_list_of_measurements(last_id=None):
-    response = []
-    objects = Measurement.objects.order_by('-id')
-    if last_id:
-        objects = objects.filter(pk__lt=int(last_id))
-    objects = objects[:20]
-    for measurement in objects:
-        name = f"{measurement.short_description}"
-        if measurement.get_impact_energy_surface() != "-":
-            name += f", {measurement.get_impact_energy_surface()}"
-        if measurement.surface_temperature is not None:
-            name += f", {measurement.surface_temperature} C"
-        if (
-                measurement.projectile is not None or
-                measurement.surface_material is not None or
-                measurement.gas_surf is not None
-        ):
-            name += "<br>"
-        if measurement.projectile is not None:
-            name += f"{measurement.projectile}"
-        if measurement.surface_material is not None:
-            name += f" on {measurement.surface_material}"
-        if measurement.gas_surf is not None:
-            name += f" with {measurement.gas_surf}"
-
-        response.append({
-            'id': measurement.id,
-            'time': measurement.time,
-            'short_description': name
-        })
-    return response
-
-
-# for preview data
-def preview_file_list(request, last_id=None):
-    if last_id is None:
-        last_id = request.GET.get('q', None)
-    return JsonResponse(preview_list_of_measurements(last_id), safe=False)
-
-
 # update the rating of a measurement
 def set_rating_of_measurement(request, measurement_id, rating):
     if request.user.has_perm('surftof.add_measurement'):
@@ -214,11 +105,6 @@ def set_rating_of_measurement(request, measurement_id, rating):
         obj.rating = int(rating)
         obj.save()
         return redirect('/admin/surftof/measurement/')
-
-
-class SurfTofPermission(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.has_perm('surftof.add_measurement')
 
 
 class TableViewer(ListView):
@@ -270,23 +156,6 @@ def surface_temperature_data(request, date):
             settings.SURFTOF_BIGSHARE_DATA_ROOT, date.strftime('%Y-%m-%d'))) as f:
         file_data = f.read()
     return HttpResponse(file_data)
-
-
-def overview(request, month=None, year=None):
-    if year is None:
-        year = now().year
-        month = now().month
-    date = datetime(year, month, 1)
-    next_page = (date - timedelta(days=3))
-    return render(
-        request=request,
-        template_name='surftof/index.html',
-        context={
-            'month': date.strftime("%B %Y"),
-            'entries': get_measurements_and_journal_entries_per_month(date),
-            'next': {'year': next_page.year, 'month': next_page.month}
-        }
-    )
 
 
 def mass_spec_preview_image(request, measurement_id):
