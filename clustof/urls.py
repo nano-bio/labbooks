@@ -6,9 +6,6 @@ from django.contrib.flatpages import views as flatpageviews
 import clustof.views
 
 urlpatterns = [
-    path('readsettings/',
-         clustof.views.readsettings,
-         name="clustof-readsettings"),
     path('newmeasurement/',
          clustof.views.newmeasurement,
          name="clustof-newmeasurement"),

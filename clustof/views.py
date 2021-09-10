@@ -1,22 +1,22 @@
-from django.conf import settings
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
-from django import forms
-from django.shortcuts import render, get_object_or_404
-from django.core.exceptions import ValidationError
-from django.contrib.auth.decorators import login_required
-from django.core.files import File
-from django.core import serializers
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, DetailView
-from django.core.files.storage import FileSystemStorage
+import datetime
 import json
 import re
-import clustof.models as models
-import hashlib
+import time
+
+from django import forms
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.core.files.storage import FileSystemStorage
 from django.db import models as djangomodels
-import datetime, time
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
+from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import utc, now
-from clustof.models import CurrentSetting, Measurement, Turbopump, TurbopumpStatus, JournalEntry
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import ListView, DetailView
+
+import clustof.models as models
+from clustof.models import Measurement, Turbopump, TurbopumpStatus
 
 
 def retrieve_plotable_parameters():
@@ -41,65 +41,6 @@ def readable_time_ago(datetimeobject):
     else:
         message = str(minutes) + ' m ago'
     return message
-
-
-def readsettings(request):
-    # this is only allowed from ClusTOF
-    if request.META.get('HTTP_X_REAL_IP') != settings.CLUSTOFIP:
-        return HttpResponseForbidden()
-
-    # we always just edit the first entry
-    cs_instance = CurrentSetting.objects.get(id__exact=1)
-
-    # we only want those values
-    values_to_read = ['time',
-                      'tof_settings_file',
-                      'data_filename',
-                      'scantype',
-                      'pressure_cs',
-                      'pressure_pu1',
-                      'pressure_pu2',
-                      'pressure_ion',
-                      'pressure_tof',
-                      'temperature_he',
-                      'electron_energy_set',
-                      'ion_block',
-                      'pusher',
-                      'wehnelt',
-                      'extraction_1',
-                      'extraction_2',
-                      'deflector_1',
-                      'deflector_2',
-                      'filament_current',
-                      'trap_current',
-                      'oven_temperature',
-                      'polarity'
-                      ]
-
-    # lets see what we got in the request
-    for field in request.GET:
-        if field in values_to_read:
-            # this is a field we want. update it
-            cs_instance.__dict__[field] = request.GET[field]
-            # also set a timestamp so we know when we last updated it
-            cs_instance.__dict__[field + '_time'] = datetime.datetime.utcnow().replace(tzinfo=utc)
-
-    # validate dat shit:
-    try:
-        cs_instance.clean_fields()
-    except ValidationError as errors:
-        # somebody gave us a weird value
-        # empty error message
-        message = ''
-        for error in errors.message_dict:
-            message += 'failure:' + error + ';'
-
-        return HttpResponse(message)
-
-    # data seems to be fine
-    cs_instance.save()
-
-    return HttpResponse('success')
 
 
 # define a class for a form to enter new measurements
@@ -254,81 +195,6 @@ def pump(request, pumpnumber):
     t = 'clustof/pump.html'
     c = {'values': values, 'pump': pump}
 
-    return HttpResponse(render(request, t, c))
-
-
-# define a class for a form to enter new measurements
-class TechJournalForm(forms.ModelForm):
-    written_notes = forms.CharField(widget=forms.HiddenInput())
-
-    def __init__(self, *args, **kwargs):
-        super(TechJournalForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = JournalEntry
-        exclude = ('written_notes',)
-
-
-@login_required
-def newjournalentry(request):
-    # form was already submitted
-    if request.method == 'POST':
-        emptyimage = False
-
-        form = TechJournalForm(request.POST, request.FILES)
-        dataUrlPattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
-        ImageData = request.POST.get('written_notes')
-        ImageData = dataUrlPattern.match(ImageData).group(2)
-
-        # If none or len 0, means illegal image data
-        if (ImageData == None) or len(ImageData) == 0:
-            # PRINT ERROR MESSAGE HERE
-            raise ValidationError('Image not OK!')
-        elif hashlib.md5(ImageData).hexdigest() == 'ce10d4fbd8e265922741742759b06f71':
-            # this could a completely blank image... we don't save those...
-            emptyimage = True
-
-        if emptyimage is not True:
-            tmp_filename_written_notes = '/tmp/output.png'
-            output = open(tmp_filename_written_notes, 'wb')
-            output.write(ImageData.decode('base64'))
-            output.close()
-
-        if form.is_valid():
-            new_journal_entry = form.save()
-            if emptyimage is not True:
-                new_journal_entry.written_notes.save(new_journal_entry.generate_filename(),
-                                                     File(open(tmp_filename_written_notes)))
-            return HttpResponseRedirect('/clustof/journal/' + str(new_journal_entry.id))
-
-    # form was not submitted, create a form
-    else:
-        # now create a new form for a Measurement
-        form = TechJournalForm()
-
-    return render(request, 'clustof/newjournalentry.html', {'form': form})
-
-
-# show journal entries
-def showjournalentry(request, id):
-    """ Generic display page for all measurements """
-    # fetch from db
-    m = models.JournalEntry.objects.get(id=id)
-
-    # get next and last scan for convenient switching
-    try:
-        m.nextid = models.JournalEntry.objects.filter(time__gt=m.time).order_by('time')[0:1].get().id
-    except models.JournalEntry.DoesNotExist:
-        m.nextid = m.id
-
-    try:
-        m.lastid = models.JournalEntry.objects.filter(time__lt=m.time).order_by('-time')[0:1].get().id
-    except models.JournalEntry.DoesNotExist:
-        m.lastid = m.id
-
-    # ready to render
-    t = 'clustof/showjournalentry.html'
-    c = {'m': m}
     return HttpResponse(render(request, t, c))
 
 
