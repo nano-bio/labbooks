@@ -51,65 +51,6 @@ def readable_time_ago(datetimeobject):
     return message
 
 
-def readsettings(request):
-    # this is only allowed from ClusTOF
-    if request.META.get('HTTP_X_REAL_IP') != settings.CLUSTOFIP:
-        return HttpResponseForbidden()
-
-    # we always just edit the first entry
-    cs_instance = CurrentSetting.objects.get(id__exact=1)
-
-    # we only want those values
-    values_to_read = ['time',
-                      'tof_settings_file',
-                      'data_filename',
-                      'scantype',
-                      'pressure_cs',
-                      'pressure_pu1',
-                      'pressure_pu2',
-                      'pressure_ion',
-                      'pressure_tof',
-                      'temperature_he',
-                      'electron_energy_set',
-                      'ion_block',
-                      'pusher',
-                      'wehnelt',
-                      'extraction_1',
-                      'extraction_2',
-                      'deflector_1',
-                      'deflector_2',
-                      'filament_current',
-                      'trap_current',
-                      'oven_temperature',
-                      'polarity'
-                      ]
-
-    # lets see what we got in the request
-    for field in request.GET:
-        if field in values_to_read:
-            # this is a field we want. update it
-            cs_instance.__dict__[field] = request.GET[field]
-            # also set a timestamp so we know when we last updated it
-            cs_instance.__dict__[field + '_time'] = datetime.datetime.utcnow().replace(tzinfo=utc)
-
-    # validate dat shit:
-    try:
-        cs_instance.clean_fields()
-    except ValidationError as errors:
-        # somebody gave us a weird value
-        # empty error message
-        message = ''
-        for error in errors.message_dict:
-            message += 'failure:' + error + ';'
-
-        return HttpResponse(message)
-
-    # data seems to be fine
-    cs_instance.save()
-
-    return HttpResponse('success')
-
-
 # define a class for a form to enter new measurements
 class MeasurementForm(forms.ModelForm):
     # we need to overwrite the __init__ because we want to access the instance object

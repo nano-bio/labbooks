@@ -11,9 +11,6 @@ import clustof.views
 import journal.views
 
 urlpatterns = [
-    path('readsettings/',
-         clustof.views.readsettings,
-         name="clustof-readsettings"),
     path('newmeasurement/',
          clustof.views.newmeasurement,
          name="clustof-newmeasurement"),
