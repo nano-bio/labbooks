@@ -1,7 +1,7 @@
-from django.contrib.auth.decorators import login_required
 from django.urls import path
-import massspectra.views
+
 import journal.views
+import massspectra.views
 from toffy.admin import MeasurementAdmin
 from toffy.models import Measurement, JournalEntry
 
@@ -13,17 +13,17 @@ urlpatterns = [
              experiment='Toffy'),
          name='toffy-journal'),
     path('journal/add/',
-         login_required(journal.views.JournalEntryCreate.as_view(
+         journal.views.JournalEntryCreate.as_view(
              model=JournalEntry,
-             experiment='Toffy')),
+             experiment='Toffy'),
          name='toffy-journal-add'),
     path('journal/<int:pk>/',
-         login_required(journal.views.JournalEntryUpdate.as_view(
-             model=JournalEntry)),
+         journal.views.JournalEntryUpdate.as_view(
+             model=JournalEntry),
          name='toffy-journal-update'),
     path('journal/<int:pk>/delete/',
-         login_required(journal.views.JournalEntryDelete.as_view(
-             model=JournalEntry)),
+         journal.views.JournalEntryDelete.as_view(
+             model=JournalEntry),
          name='toffy-journal-delete'),
 
     # mass spectra

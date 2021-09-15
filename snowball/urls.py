@@ -1,14 +1,12 @@
 from django.urls import path
-from django.views.generic import ListView
-from django.contrib.flatpages import views as flatpageviews
-
-from snowball.models import Measurement, JournalEntry, Turbopump
+from django.views.generic import ListView, RedirectView
 
 import snowball.views
+from snowball.models import Measurement, JournalEntry, Turbopump
 
 urlpatterns = [
     path('',
-         flatpageviews.flatpage, {'url': '/snowball/'},
+         RedirectView.as_view(pattern_name="snowball-home"),
          name='snowball-home'),
     path('view/',
          ListView.as_view(model=Measurement, template_name='snowball/measurement_list.html', paginate_by=100),

@@ -1,13 +1,14 @@
-from django.urls import path
-from django.views.generic import ListView
 from django.http import HttpResponseRedirect
-from django.contrib.flatpages import views as flatpageviews
-from vg.models import Measurement, Calibration, JournalEntry, Turbopump
+from django.urls import path
+from django.views.generic import ListView, RedirectView
+
 import vg.views
+from vg.models import Measurement, Calibration, JournalEntry, Turbopump
 
 urlpatterns = [
-    path('', flatpageviews.flatpage, {'url': '/vg/'}, name='vghome'),
-    path('view/', ListView.as_view(model=Measurement, template_name='vg/measurement_list.html', paginate_by=100)),
+    path('', RedirectView.as_view(pattern_name="vg-measurements"), name='vghome'),
+    path('view/', ListView.as_view(model=Measurement, template_name='vg/measurement_list.html', paginate_by=100),
+         name="vg-measurements"),
     path('view/<int:id>/', vg.views.showmeasurement),
     path('view/<int:m_id>/cal/<int:c_id>/', vg.views.showcalibratedmeasurement),
     path('view/<int:m_id>/calexport/<int:c_id>/', vg.views.exportcalibratedmeasurement),

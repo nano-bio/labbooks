@@ -1,14 +1,12 @@
-from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.urls import path
+from django.views.generic import ListView, RedirectView
 
+import clustof.views
+import journal.views
 import massspectra.views
 from clustof.admin import MeasurementAdmin
 from clustof.models import Measurement, JournalEntry, Turbopump
-from django.views.generic import ListView
-from django.http import HttpResponseRedirect
-from django.contrib.flatpages import views as flatpageviews
-import clustof.views
-import journal.views
 
 urlpatterns = [
     path('newmeasurement/',
@@ -33,7 +31,7 @@ urlpatterns = [
          clustof.views.plot_parameters,
          name="clustof-insight-parameter1"),
     path('',
-         flatpageviews.flatpage, {'url': '/clustof/'},
+         RedirectView.as_view(pattern_name='clustof-journal'),
          name='clustof-home'),
     path('export/<int:id>/',
          clustof.views.exportfile,
@@ -102,16 +100,16 @@ urlpatterns = [
              experiment='ClusTof'),
          name='clustof-journal'),
     path('journal/add/',
-         login_required(journal.views.JournalEntryCreate.as_view(
+         journal.views.JournalEntryCreate.as_view(
              model=JournalEntry,
-             experiment='ClusTof')),
+             experiment='ClusTof'),
          name='clustof-journal-add'),
     path('journal/<int:pk>/',
-         login_required(journal.views.JournalEntryUpdate.as_view(
-             model=JournalEntry)),
+         journal.views.JournalEntryUpdate.as_view(
+             model=JournalEntry),
          name='clustof-journal-update'),
     path('journal/<int:pk>/delete/',
-         login_required(journal.views.JournalEntryDelete.as_view(
-             model=JournalEntry)),
+         journal.views.JournalEntryDelete.as_view(
+             model=JournalEntry),
          name='clustof-journal-delete'),
 ]

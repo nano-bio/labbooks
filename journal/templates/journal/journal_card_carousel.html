@@ -14,7 +14,12 @@
     <div class="simpleLightbox carousel-inner">
         {% for image_url in image_urls %}
             <div class="d-flex carousel-item{% if forloop.first %} active{% endif %}"
-                 style="background-image: url('{{ image_url }}');">
+                 style="
+                     background-image: url('{{ image_url }}');
+                     {% if 'preview' in image_url %}
+                         background-position-x: left;
+                         background-position-y: bottom;
+                     {% endif %}">
                 <a class="m-auto" href="{{ image_url }}">
                     <i class="bi bi-arrows-fullscreen zoom-in-image"></i>
                 </a>

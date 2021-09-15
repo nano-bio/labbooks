@@ -19,5 +19,12 @@
         <li>
             <a class="dropdown-item" href="{% url 'admin:app_list' 'clustof' %}">Admin: ClusTOF</a>
         </li>
+
+        <li class="dropdown-divider"></li>
+        {# The following URLs come from the old style #}
+        <li><a class="dropdown-item" href="{% url 'clustof-view-measurements' %}">Measurements</a></li>
+        <li><a class="dropdown-item" href="{% url 'clustof-newmeasurement' %}">New Measurement</a></li>
+        <li><a class="dropdown-item" href="{% url 'clustof-insight' %}">Insights</a></li>
+        <li><a class="dropdown-item" href="{% url 'clustof-view-pumps' %}">Turbopumps</a></li>
     </ul>
 </li>

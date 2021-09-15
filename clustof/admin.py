@@ -1,14 +1,15 @@
-from urllib.parse import quote
-from django.contrib import admin, messages
-from clustof.models import Comment, Measurement, Operator, CurrentSetting, JournalEntry, Turbopump, TurbopumpStatus, \
-    VacuumStatus
-from django.http import HttpResponseRedirect, HttpResponse
-from django.conf import settings
-from django.template.loader import get_template
-from django.template import Context
 import datetime
 import re
+from urllib.parse import quote
+
 import pytz
+from django.conf import settings
+from django.contrib import admin, messages
+from django.http import HttpResponseRedirect, HttpResponse
+from django.template import Context
+from django.template.loader import get_template
+
+from clustof.models import Comment, Measurement, Operator, Turbopump, TurbopumpStatus, VacuumStatus
 
 
 class CommentInline(admin.TabularInline):
@@ -159,18 +160,18 @@ class MeasurementAdmin(admin.ModelAdmin):
     scan_properties.short_description = u'Export measurement properties'
 
 
-class JournalEntryAdmin(admin.ModelAdmin):
-    def propertime(self, obj):
-        return obj.time.strftime('%d %m %Y, %H:%M')
-
-    propertime.short_description = 'Time and date'
-
-    list_display = ('propertime', 'operator', 'attachment', 'written_notes')
-    list_filter = ('operator', 'time')
-    search_fields = ('comment',)
-    save_as = True
-    save_on_top = True
-    ordering = ('-time',)
+# class JournalEntryAdmin(admin.ModelAdmin):
+#     def propertime(self, obj):
+#         return obj.time.strftime('%d %m %Y, %H:%M')
+#
+#     propertime.short_description = 'Time and date'
+#
+#     list_display = ('propertime', 'operator', 'attachment', 'written_notes')
+#     list_filter = ('operator', 'time')
+#     search_fields = ('comment',)
+#     save_as = True
+#     save_on_top = True
+#     ordering = ('-time',)
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -180,8 +181,7 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Measurement, MeasurementAdmin)
 admin.site.register(Operator)
-admin.site.register(CurrentSetting)
-admin.site.register(JournalEntry, JournalEntryAdmin)
+# admin.site.register(JournalEntry, JournalEntryAdmin)
 admin.site.register(Turbopump)
 admin.site.register(TurbopumpStatus)
 admin.site.register(VacuumStatus)

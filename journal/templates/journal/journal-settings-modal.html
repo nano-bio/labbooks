@@ -1,0 +1,85 @@
+{% load static %}
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-outline-secondary mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <i class="bi bi-gear-fill"></i>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Settings: Journal mass spec previews</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-2 row">
+                        <label for="previewMassMax" class="col-sm-5 col-form-label">Mass max</label>
+                        <div class="col">
+                            <input id="previewMassMax" class="form-control settingsValue" type="number">
+                        </div>
+                    </div>
+                    <div class="mb-2 row">
+                        <label for="previewWidth" class="col-sm-5 col-form-label">Preview width</label>
+                        <div class="col">
+                            <input id="previewWidth" class="form-control settingsValue" type="number">
+                        </div>
+                    </div>
+                    <div class="mb-2 row">
+                        <label for="previewHeight" class="col-sm-5 col-form-label">Preview height</label>
+                        <div class="col">
+                            <input id="previewHeight" class="form-control settingsValue" type="number">
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input settingsValueCheckbox" type="checkbox" value=""
+                               id="previewShowMassAxis">
+                        <label class="form-check-label" for="previewShowMassAxis">
+                            Show mass-axis
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input settingsValueCheckbox" type="checkbox" value=""
+                               id="previewShowLog">
+                        <label class="form-check-label" for="previewShowLog">
+                            Log y-axis
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="location.reload()">Save and reload page</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js.cookie/js.cookie.min.js' %}"></script>
+<script>
+  $(function () {
+
+    const settingsValues = $('.settingsValue');
+    settingsValues.each(function () {
+      let cookie = Cookies.get($(this).attr('id'));
+      if (cookie !== undefined) {
+        $(this).val(cookie)
+      }
+    });
+    settingsValues.change(function () {
+      Cookies.set($(this).attr('id'), $(this).val())
+    });
+
+    const settingsValueCheckbox = $('.settingsValueCheckbox');
+    settingsValueCheckbox.each(function () {
+      let cookie = Cookies.get($(this).attr('id'));
+      if (cookie !== undefined) {
+        $(this).prop("checked", cookie.toLowerCase() === 'true')
+      }
+    });
+    settingsValueCheckbox.change(function () {
+      Cookies.set($(this).attr('id'), $(this).prop("checked"))
+    });
+  });
+</script>

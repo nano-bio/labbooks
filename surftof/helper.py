@@ -1,15 +1,12 @@
 from datetime import datetime, timedelta
 from glob import glob
-from io import BytesIO
 
 import h5py
 import numpy as np
 from django.conf import settings
-from django.utils.timezone import make_aware
 from scipy.optimize import curve_fit
 
 from massspectra.views import slice_data
-from surftof.models import Measurement, JournalEntry
 
 
 def import_pressure(measurement_id):
@@ -86,66 +83,6 @@ def import_pico_log_and_median(measurement_id):
         return np.median(a)
     except:
         return -1
-
-
-def get_measurements_and_journal_entries_per_month(date):
-    end = (date + timedelta(days=35)).replace(day=1)
-
-    start = make_aware(date)
-    end = make_aware(end)
-
-    measurement_objs = Measurement.objects. \
-        filter(time__gte=start). \
-        filter(time__lt=end). \
-        order_by('-time')
-
-    journal_objs = JournalEntry.objects. \
-        filter(time__gte=start). \
-        filter(time__lt=end). \
-        order_by('-time')
-
-    # sort all values by time
-    measurements_journal_entries = []
-    journal_objs = list(journal_objs)
-    for measurement_obj in measurement_objs:
-        while len(journal_objs) > 0 and measurement_obj.time < journal_objs[0].time:
-            measurements_journal_entries.append({'t': 'journal', 'e': journal_objs.pop(0)})
-        measurements_journal_entries.append({'t': 'measurement', 'e': measurement_obj})
-    measurements_journal_entries += [{'t': 'journal', 'e': e} for e in journal_objs]
-    return measurements_journal_entries
-
-
-def get_mass_spectrum_preview_image(
-        measurement_id,
-        mass_max,
-        use_log,
-        pixel_height,
-        pixel_width,
-        show_x_axis):
-    xs, ys = get_mass_spectrum(
-        measurement_id=measurement_id,
-        mass_max=mass_max)
-    if len(xs) == len(ys) and len(xs) > 2:
-
-        from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-        from matplotlib.figure import Figure
-        fig = Figure(figsize=(pixel_width / 100, pixel_height / 100))
-        ax = fig.subplots()
-        if use_log:
-            ax.semilogy(xs, ys)
-        else:
-            ax.plot(xs, ys)
-
-        ax.spines["left"].set_visible(False)
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.spines["bottom"].set_visible(show_x_axis)
-
-        fig.subplots_adjust(left=0, right=1, bottom=int(show_x_axis) * 25 / pixel_height, top=1)
-
-        with BytesIO() as pseudo_file:
-            FigureCanvas(fig).print_png(pseudo_file)
-            return pseudo_file.getvalue()
 
 
 def get_mass_spectrum(measurement_id, mass_max=None):

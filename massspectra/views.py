@@ -44,8 +44,12 @@ def field_names_verbose_names(model_admin, model):
 
 
 def get_mass_spectrum_from_csv(file_path):
-    data = np.genfromtxt(file_path, delimiter='\t')
-    return data[:, 0], data[:, 1]
+    try:
+        data = np.genfromtxt(file_path, delimiter='\t')
+        return data[:, 0], data[:, 1]
+    except:
+        data = np.genfromtxt(file_path, delimiter=',')
+        return data[:, 0], data[:, 1]
 
 
 def bin_array(arr, binning):

@@ -1,4 +1,3 @@
-import traceback
 from datetime import datetime
 from glob import glob
 from json import loads
@@ -18,7 +17,7 @@ from requests import get
 
 from massspectra.views import mass_spectra_data
 from surftof.admin import PotentialSettingsAdmin, MeasurementsAdmin
-from surftof.helper import get_mass_spectrum_preview_image, get_mass_spectrum
+from surftof.helper import get_mass_spectrum
 from surftof.models import PotentialSettings, Measurement
 
 
@@ -156,48 +155,3 @@ def surface_temperature_data(request, date):
             settings.SURFTOF_BIGSHARE_DATA_ROOT, date.strftime('%Y-%m-%d'))) as f:
         file_data = f.read()
     return HttpResponse(file_data)
-
-
-def mass_spec_preview_image(request, measurement_id):
-    try:
-        mass_max = float(request.COOKIES['previewMassMax'])
-    except (KeyError, ValueError):  # use defaults
-        mass_max = 80
-    try:
-        use_log = request.COOKIES['previewShowLog'].lower() in ['true', '1', 't']
-    except (KeyError, ValueError):  # use defaults
-        use_log = False
-    try:
-        pixel_width = int(request.COOKIES['previewWidth'])
-    except (KeyError, ValueError):  # use defaults
-        pixel_width = 400
-    try:
-        pixel_height = int(request.COOKIES['previewHeight'])
-    except (KeyError, ValueError):  # use defaults
-        pixel_height = 150
-    try:
-        show_x_axis = request.COOKIES['previewShowMassAxis'].lower() in ['true', '1', 't']
-    except (KeyError, ValueError):  # use defaults
-        show_x_axis = True
-
-    try:
-        content = get_mass_spectrum_preview_image(
-            measurement_id,
-            mass_max,
-            use_log,
-            pixel_height,
-            pixel_width,
-            show_x_axis)
-
-        html = HttpResponse(content, content_type="image/png")
-
-    except:
-        traceback.print_exc()
-        html = HttpResponse(status=404, content="could not create image preview")
-
-    html.set_cookie('previewMassMax', f'{mass_max}', max_age=None)
-    html.set_cookie('previewShowLog', f"{use_log}", max_age=None)
-    html.set_cookie('previewWidth', f"{pixel_width}", max_age=None)
-    html.set_cookie('previewHeight', f"{pixel_height}", max_age=None)
-    html.set_cookie('previewShowMassAxis', f"{show_x_axis}", max_age=None)
-    return html

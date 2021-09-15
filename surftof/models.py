@@ -1,5 +1,4 @@
 from django.db import models
-from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.utils.timezone import now
 
@@ -220,9 +219,6 @@ class Measurement(models.Model):
 
         return format_html(html_string)
 
-    def get_mass_spec_image_url(self):
-        return reverse_lazy('surftof-mass-spec-preview-image', args=(self.id,))
-
     def __str__(self):
         return f"ID {self.id}, {self.time}, {self.short_description}"
 
@@ -238,22 +234,8 @@ class Measurement(models.Model):
 
 
 class JournalEntry(BasicJournalEntry):
-    measurement = models.ForeignKey('surftof.Measurement', blank=True, null=True, on_delete=models.PROTECT)
+    pass
 
-    def url_form_update(self):
-        return reverse_lazy('surftof-journal-update', args=(self.pk,))
 
-    @staticmethod
-    def url_form_add():
-        return reverse_lazy('surftof-journal-add')
-
-    def url_form_delete(self):
-        return reverse_lazy('surftof-journal-delete', args=(self.pk,))
-
-    def url_measurement_admin_change(self):
-        if self.measurement:
-            return reverse_lazy('admin:surftof_measurement_change', args=(self.pk,))
-
-    def url_mass_spec(self):
-        if self.measurement:
-            return reverse_lazy('surftof-mass-spectra') + f'?id={self.pk}'
+class Operator(models.Model):
+    name = models.CharField(max_length=50)

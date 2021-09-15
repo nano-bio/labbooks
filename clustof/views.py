@@ -1,30 +1,27 @@
+import datetime
+import json
+import re
+import time
 from os.path import exists
 
 import h5py
-from django.conf import settings
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
 from django import forms
-from django.shortcuts import render, get_object_or_404
-from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.files import File
 from django.core import serializers
+from django.core.files.storage import FileSystemStorage
+from django.db import models as djangomodels
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
+from django.shortcuts import render, get_object_or_404
+from django.utils.timezone import utc, now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView
-from django.core.files.storage import FileSystemStorage
-import json
-import re
-
 from numpy import array
 
 import clustof.models as models
-import hashlib
-from django.db import models as djangomodels
-import datetime, time
-from django.utils.timezone import utc, now
-from clustof.models import CurrentSetting, Measurement, Turbopump, TurbopumpStatus, JournalEntry
-from massspectra.views import mass_spectra_data
+from clustof.models import Measurement, Turbopump, TurbopumpStatus
+from massspectra.views import mass_spectra_data, slice_data
 
 
 def retrieve_plotable_parameters():
@@ -97,16 +94,6 @@ def newmeasurement(request):
         except:
             return HttpResponse('Bad Error. No latest measurement is available. Create one in the admin interface.')
 
-        # retrieve the values from the machine
-        try:
-            prefill_values = CurrentSetting.objects.get(id=1)
-        except:
-            return HttpResponse('No current settings measurement found. Create one in the admin interface.')
-
-        # overwrite all values available therefore leaving a mix of machine-values and latest-values
-        for field in prefill_values.__dict__:
-            m.__dict__[field] = prefill_values.__dict__[field]
-
         # now...
         m.time = datetime.datetime.utcnow().replace(tzinfo=utc)
 
@@ -154,6 +141,7 @@ def plot_parameters(request, parameter1='extraction_1', parameter2='extraction_2
 
 def exportfile(request, id):
     m = get_object_or_404(Measurement, id=id)
+    # this is a redirect to a URL handled by nginx
     return HttpResponseRedirect(
         '/clustof/export/files/' + m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\', ''))
 
@@ -304,17 +292,6 @@ def exportfile_public(request, pk):
 # ------------
 @require_POST
 def get_mass_spectra_data(request):
-    def get_mass_spectrum(measurement_id):
-        m = Measurement.objects.get(pk=int(measurement_id))
-        file_name = m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\', '')
-        file_name_full = f"/var/storage/clustof/{file_name}"
-        if not exists(file_name_full):
-            return HttpResponseBadRequest(f'File for this measurement not found ({file_name_full})')
-        with h5py.File(file_name_full, 'r') as f:
-            y_data = array(f['FullSpectra']['SumSpectrum'])
-            x_data = array(f['FullSpectra']['MassAxis'])
-        return x_data, y_data
-
     data_id_file_1 = request.POST.get('dataIdFile1')
     data_id_file_2 = request.POST.get('dataIdFile2', None)
 
@@ -326,3 +303,18 @@ def get_mass_spectra_data(request):
 
     else:
         return mass_spectra_data(request, x_data1, y_data1)
+
+
+def get_mass_spectrum(measurement_id, mass_max=None):
+    m = Measurement.objects.get(pk=int(measurement_id))
+    file_name = m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\', '')
+    file_name_full = f"{settings.CLUSTOF_FILES_ROOT}{file_name}"
+    if not exists(file_name_full):
+        raise Exception(f'File for this measurement not found ({file_name_full})')
+    with h5py.File(file_name_full, 'r') as f:
+        y_data = array(f['FullSpectra']['SumSpectrum'])
+        x_data = array(f['FullSpectra']['MassAxis'])
+
+    if mass_max is None:
+        return x_data, y_data
+    return slice_data(x_data, y_data, 0, mass_max)

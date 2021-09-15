@@ -1,15 +1,14 @@
 import datetime
 import re
-import time
 from operator import attrgetter
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.safestring import mark_safe
 
 from cheminventory import models as cheminventory_models
+from journal.models import BasicJournalEntry
 
 SCANTYPES = (
     ('ES', 'Energyscan'),
@@ -197,23 +196,8 @@ class Comment(models.Model):
         return u'%s, on %s' % (self.operator, self.time)
 
 
-class JournalEntry(models.Model):
-    time = models.DateTimeField(auto_now=False, auto_now_add=True)
-    operator = models.ForeignKey('Operator',
-                                 on_delete=models.PROTECT)
-    comment = models.TextField()
-    attachment = models.FileField(upload_to='clustof/techjournal/', blank=True, default='')
-    written_notes = models.ImageField(blank=True, upload_to='clustof/techjournal/notes/')
-
-    def __str__(self):
-        return u'%s, %s, %s: %s' % (self.id, self.time, self.operator, self.comment[:50])
-
-    def generate_filename(self):
-        return settings.MEDIA_ROOT + 'clustof/techjournal/notes/' + str(time.time()) + '.png'
-
-    class Meta:
-        ordering = ['-time']
-        verbose_name_plural = "Journal Entries"
+class JournalEntry(BasicJournalEntry):
+    pass
 
 
 class Turbopump(models.Model):

@@ -1,4 +1,5 @@
 from django import template
+from django.urls import reverse
 
 register = template.Library()
 
@@ -17,7 +18,11 @@ def get_image_urls(journal_entry):
             image_urls.append(image.url)
     if journal_entry.measurement:
         try:
-            image_urls.append(journal_entry.measurement.get_mass_spec_image_url())
+            image_urls.append(
+                reverse(
+                    "journal-mass-spec-preview-image",
+                    args=(journal_entry._meta.app_label, journal_entry.measurement.id)
+                ))
         except:
-            pass
+            print('no working mass spec preview url found')
     return image_urls
