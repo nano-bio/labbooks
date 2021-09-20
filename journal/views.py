@@ -3,7 +3,7 @@ from datetime import timedelta
 from io import BytesIO
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.db.models import Model
+from django.db.models import Model, Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -63,6 +63,13 @@ class JournalListView(ListView):
         context['experiment'] = self.experiment
         context['add_url'] = reverse_lazy(f'{self.model._meta.app_label}-journal-add')
         return context
+
+    def get_queryset(self):
+        q = self.request.GET.get('q', '')
+        object_list = self.model.objects.all()
+        if q:
+            object_list = object_list.filter(Q(title__icontains=q) | Q(comment__icontains=q))
+        return object_list
 
 
 class JournalEntryUpdate(PermissionRequiredMixin, UpdateView):

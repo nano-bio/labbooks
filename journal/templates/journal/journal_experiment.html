@@ -3,10 +3,21 @@
 
 {% block content %}
     <div class="container pb-5">
-        <div class="d-flex justify-content-between align-items-end">
+        <div class="d-flex flex-wrap justify-content-between align-items-end d-grid gap-3">
             <h2 class="mt-4 mb-3">{{ experiment }}</h2>
-            <a href="{{ add_url }}" type="button" class="btn btn-primary mb-3">Add new Journal Entry</a>
-
+            <a href="{{ add_url }}" type="button" class="btn btn-outline-success mb-3 text-nowrap">
+                <i class="bi bi-plus-lg"></i>
+                Journal Entry
+            </a>
+            <div>
+                <form>
+                    <div class="input-group mb-3">
+                        <input name="q" type="text" class="form-control" style="min-width: 200px"
+                               placeholder="Filter in titles, comments" value="{{ request.GET.q }}">
+                        <button class="btn btn-outline-secondary" type="submit">Filter</button>
+                    </div>
+                </form>
+            </div>
             {% include 'journal/journal-settings-modal.html' %}
 
             <div class="mb-3">{% include 'journal/pagination.html' %}</div>

@@ -1,13 +1,17 @@
 Django>=3.2.3
 gunicorn>=20.1.0
 mysqlclient>=2.0.3 # install this with --no-cache-dir --upgrade
+crispy-bootstrap5==0.5
 
 # for surftof
 djangorestframework>=3.12.4
+
+# for mass-spectra
 scipy>=1.5.4 # pip complains...
 h5py==2.10.0 # v3 doesnt work on windows
+
+# for journal
 django-crispy-forms>=1.11.2
-crispy-bootstrap5==0.5
 django-ckeditor
 matplotlib
 
