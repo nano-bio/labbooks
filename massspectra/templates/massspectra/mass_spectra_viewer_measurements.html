@@ -4,11 +4,12 @@
     <input type="text" class="form-control form-control-sm" id="inputSearchMeasurement" placeholder="Search...">
     <label for="inputSearchMeasurement">Search</label>
 </div>
-<ul class="list-group" id="measurements"></ul>
-
+<div style="overflow-y: scroll; max-height: 800px" id="measurementsArea">
+    <ul class="list-group" id="measurements"></ul>
+</div>
 <script src="{% static 'clusterize/clusterize.min.js' %}"></script>
 <script>
-  const rows = [{% for measurement in page_obj %}{
+  const rows = [{% for measurement in object_list %}{
       values: ['{{ measurement.id }}', '{{ measurement.short_description }}'],
       markup: '<li class="list-group-item">' +
         'ID {{ measurement.id }} - {{ measurement.time }}<br>' +

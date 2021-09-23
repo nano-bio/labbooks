@@ -126,7 +126,6 @@ class MassSpectraListView(ListView):
     model_admin: ModelAdmin = None  # define the corresponding Admin Measurement Model
     experiment_name: str = None  # set the verbose experiment name, which will be shown on the page
 
-    paginate_by = 15
     ordering = '-id'
     template_name = 'massspectra/mass_spectra_viewer.html'
 
