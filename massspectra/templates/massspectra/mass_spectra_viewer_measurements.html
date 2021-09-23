@@ -1,51 +1,70 @@
-<div class="d-flex flex-row-reverse mb-2">
-    <button type="button" class="btn btn-secondary" onclick="location.reload();"
-            style="position: absolute; z-index: 99; margin: -10px -12px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat"
-             viewBox="0 0 16 16">
-            <path
-                d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
-            <path fill-rule="evenodd"
-                  d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
-        </svg>
-    </button>
+{% load static %}
+
+<div class="form-floating mb-1">
+    <input type="text" class="form-control form-control-sm" id="inputSearchMeasurement" placeholder="Search...">
+    <label for="inputSearchMeasurement">Search</label>
 </div>
-<ul class="list-group" id="measurements">
-    {% for measurement in page_obj %}
-        <li class="list-group-item">
-            ID {{ measurement.id }} - {{ measurement.time }}<br>
-            {{ measurement.short_description|safe }}<br>
-            <button type="button" onclick="show({{ measurement.id }})"
-                    class="btn btn-sm btn-outline-secondary m-1">
-                Show
-            </button>
-            <button type="button" onclick="compare({{ measurement.id }})"
-                    class="btn btn-sm btn-outline-secondary m-1">
-                Compare
-            </button>
-            <button type="button" onclick="diff({{ measurement.id }})"
-                    class="btn btn-sm btn-outline-secondary m-1">
-                Diff
-            </button>
-            <a href="{{ admin_measurement_url }}{{ measurement.id }}/change/"
-               class="btn btn-sm btn-outline-secondary m-1">
-                Show Measurement
-            </a>
-        </li>
-    {% endfor %}
-</ul>
-{% if page_obj.has_next %}
-    <a class="pagination__next pagination" href="?page={{ page_obj.next_page_number }}">next</a>
-    <script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"></script>
-    <script>
-      $(function () {
-        $('#measurements').infiniteScroll({
-          path: '.pagination__next',
-          append: '.list-group-item',
-          history: false,
-          prefill: true,
-          hideNav: '.pagination'
-        });
-      });
-    </script>
-{% endif %}
+<ul class="list-group" id="measurements"></ul>
+
+<script src="{% static 'clusterize/clusterize.min.js' %}"></script>
+<script>
+  const rows = [{% for measurement in page_obj %}{
+      values: ['{{ measurement.id }}', '{{ measurement.short_description }}'],
+      markup: '<li class="list-group-item">' +
+        'ID {{ measurement.id }} - {{ measurement.time }}<br>' +
+        '{{ measurement.short_description|safe }}<br>' +
+        '<button type="button" onclick="show({{ measurement.id }})"' +
+        'class="btn btn-sm btn-outline-secondary m-1">' +
+        'Show' +
+        '</button>' +
+        '<button type="button" onclick="compare({{ measurement.id }})"' +
+        'class="btn btn-sm btn-outline-secondary m-1">' +
+        'Compare' +
+        '</button>' +
+        '<button type="button" onclick="diff({{ measurement.id }})"' +
+        'class="btn btn-sm btn-outline-secondary m-1">' +
+        'Diff' +
+        '</button>' +
+        '<a href="{{ admin_measurement_url }}{{ measurement.id }}/change/"' +
+        'class="btn btn-sm btn-outline-secondary m-1">' +
+        'Show Measurement' +
+        '</a>' +
+        '</li>',
+      active: true
+      },{% endfor %}]
+
+  function filterRows(rows) {
+    var results = [];
+    for (var i = 0, ii = rows.length; i < ii; i++) {
+      if (rows[i].active) results.push(rows[i].markup)
+    }
+    return results;
+  }
+
+  /*
+  * Init clusterize.js
+  */
+  const clusterize = new Clusterize({
+    rows: filterRows(rows),
+    scrollId: 'measurementsArea',
+    contentId: 'measurements'
+  });
+
+  /*
+  * Attach listener to search input tag and filter list on change
+  */
+  function onSearch() {
+    for (let i = 0, ii = rows.length; i < ii; i++) {
+      let suitable = false;
+      for (let j = 0, jj = rows[i].values.length; j < jj; j++) {
+        if (rows[i].values[j].toString().toLowerCase().indexOf(search.value.toString().toLowerCase()) + 1)
+          suitable = true;
+      }
+      rows[i].active = suitable;
+    }
+    clusterize.update(filterRows(rows));
+  }
+
+  const search = document.getElementById('inputSearchMeasurement')
+  search.oninput = onSearch;
+</script>

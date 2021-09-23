@@ -5,7 +5,7 @@
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'dygraph/dygraph.min.css' %}">
-    <link rel=" stylesheet" href="{% static 'jquery.toast/jquery.toast.min.css' %}">
+    <link rel="stylesheet" href="{% static 'jquery.toast/jquery.toast.min.css' %}">
     {% include 'massspectra/mass_spectra_viewer_style.html' %}
 {% endblock %}
 
@@ -15,7 +15,7 @@
             <div class="col-lg-8 col-xl-9 col-md-7">
                 <button type="button" class="btn btn-secondary" id="button-lin-log-plot">lin / log</button>
                 <div id="graphdiv"></div>
-                    {% include 'massspectra/mass_spectra_viewer_measurement_infos.html' %}
+                {% include 'massspectra/mass_spectra_viewer_measurement_infos.html' %}
             </div>
 
             <div class="col-lg-4 col-xl-3 col-md-5 vh-100">
