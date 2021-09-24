@@ -4,7 +4,7 @@
 <script src="{% static 'jquery.toast/jquery.toast.min.js' %}"></script>
 <script src="{% static 'js.cookie/js.cookie.min.js' %}"></script>
 <script>
-  let dataIdFile1 = {{ object_list.0.id }};
+  let dataIdFile1 = {{ last_measurement_id}};
   let dataIdFile2 = null;
   let diffPlot = false;
   const scaleDataFile2 = $('#inputScaleFile2');

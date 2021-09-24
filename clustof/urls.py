@@ -78,11 +78,15 @@ urlpatterns = [
 
     # mass spectra
     path('mass-spectra/',
-         massspectra.views.MassSpectraListView.as_view(
+         massspectra.views.MassSpectraView.as_view(
              model=Measurement,
              model_admin=MeasurementAdmin,
              experiment_name='ClusTOF'),
          name="clustof-mass-spectra"),
+    path('mass-spectra/measurements/',
+         massspectra.views.MassSpectraMeasurementListJson.as_view(
+             measurement_model=Measurement),
+         name="clustof-mass-spectra-measurements"),
     path('mass-spectra/data/',
          clustof.views.get_mass_spectra_data,
          name="clustof-mass-spectra-data"),

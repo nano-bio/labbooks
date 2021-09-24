@@ -9,63 +9,38 @@
 </div>
 <script src="{% static 'clusterize/clusterize.min.js' %}"></script>
 <script>
-  const rows = [{% for measurement in object_list %}{
-      values: ['{{ measurement.id }}', '{{ measurement.short_description }}'],
-      markup: '<li class="list-group-item">' +
-        'ID {{ measurement.id }} - {{ measurement.time }}<br>' +
-        '{{ measurement.short_description|safe }}<br>' +
-        '<button type="button" onclick="show({{ measurement.id }})"' +
-        'class="btn btn-sm btn-outline-secondary m-1">' +
-        'Show' +
-        '</button>' +
-        '<button type="button" onclick="compare({{ measurement.id }})"' +
-        'class="btn btn-sm btn-outline-secondary m-1">' +
-        'Compare' +
-        '</button>' +
-        '<button type="button" onclick="diff({{ measurement.id }})"' +
-        'class="btn btn-sm btn-outline-secondary m-1">' +
-        'Diff' +
-        '</button>' +
-        '<a href="{{ admin_measurement_url }}{{ measurement.id }}/change/"' +
-        'class="btn btn-sm btn-outline-secondary m-1">' +
-        'Show Measurement' +
-        '</a>' +
-        '</li>',
-      active: true
-      },{% endfor %}]
+  $.getJSON("{{ mass_spectra_measurements_url }}", function (data) {
+    const rows = data
 
-  function filterRows(rows) {
-    var results = [];
-    for (var i = 0, ii = rows.length; i < ii; i++) {
-      if (rows[i].active) results.push(rows[i].markup)
-    }
-    return results;
-  }
-
-  /*
-  * Init clusterize.js
-  */
-  const clusterize = new Clusterize({
-    rows: filterRows(rows),
-    scrollId: 'measurementsArea',
-    contentId: 'measurements'
-  });
-
-  /*
-  * Attach listener to search input tag and filter list on change
-  */
-  function onSearch() {
-    for (let i = 0, ii = rows.length; i < ii; i++) {
-      let suitable = false;
-      for (let j = 0, jj = rows[i].values.length; j < jj; j++) {
-        if (rows[i].values[j].toString().toLowerCase().indexOf(search.value.toString().toLowerCase()) + 1)
-          suitable = true;
+    function filterRows(rows) {
+      let results = [];
+      for (let i = 0, ii = rows.length; i < ii; i++) {
+        if (rows[i].active) results.push(rows[i].markup)
       }
-      rows[i].active = suitable;
+      return results;
     }
-    clusterize.update(filterRows(rows));
-  }
 
-  const search = document.getElementById('inputSearchMeasurement')
-  search.oninput = onSearch;
+    /*
+    * Init clusterize.js
+    */
+    const clusterize = new Clusterize({
+      rows: filterRows(rows),
+      scrollId: 'measurementsArea',
+      contentId: 'measurements'
+    });
+
+    /*
+    * Attach listener to search input tag and filter list on change
+    */
+    function onSearch() {
+      for (let i = 0, ii = rows.length; i < ii; i++) {
+        if (rows[i].markup.toString().toLowerCase().indexOf(search.value.toString().toLowerCase()) + 1)
+          rows[i].active = true;
+      }
+      clusterize.update(filterRows(rows));
+    }
+
+    const search = document.getElementById('inputSearchMeasurement')
+    search.oninput = onSearch;
+  });
 </script>

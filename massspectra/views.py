@@ -2,11 +2,13 @@ import numpy as np
 from django.contrib.admin import ModelAdmin
 from django.core import serializers
 from django.db.models import Model
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse
+from django.views import View
 from django.views.decorators.http import require_POST
-from django.views.generic import ListView
+from django.views.generic import TemplateView
 from scipy.interpolate import interp1d
 
 
@@ -121,21 +123,37 @@ def mass_spectra_data(request, x_data1, y_data1, x_data2=None, y_data2=None):
     return HttpResponse("{" + f'"data":[{data_str}]' + "}", content_type="application/json")
 
 
-class MassSpectraListView(ListView):
+class MassSpectraMeasurementListJson(View):
+    measurement_model: Model = None
+
+    def get(self, request):
+        data = [{
+            'markup': render_to_string(
+                'massspectra/mass_spectra_viewer_measurement_single.html', {
+                    'measurement': measurement,
+                    'admin_measurement_url': reverse(
+                        f'admin:{self.measurement_model._meta.app_label}_measurement_changelist')}),
+            'active': True
+        } for measurement in self.measurement_model.objects.all()]
+        return JsonResponse(list(data), safe=False)
+
+
+class MassSpectraView(TemplateView):
     model: Model = None  # define the Measurement Model from an experiment
     model_admin: ModelAdmin = None  # define the corresponding Admin Measurement Model
     experiment_name: str = None  # set the verbose experiment name, which will be shown on the page
 
-    ordering = '-id'
     template_name = 'massspectra/mass_spectra_viewer.html'
 
     def get_context_data(self, **kwargs):
-        context = super(MassSpectraListView, self).get_context_data(**kwargs)
+        context = super(MassSpectraView, self).get_context_data(**kwargs)
+        context['last_measurement_id'] = self.model.objects.last().id
         context['experiment'] = self.experiment_name
         context['admin_measurement_url'] = reverse(f'admin:{self.model._meta.app_label}_measurement_changelist')
         context['url_data'] = reverse(f'{self.model._meta.app_label}-mass-spectra-data')
         context['url_json_file_info'] = reverse(f'{self.model._meta.app_label}-measurement-json', args=('00',))
         context['fields'] = field_names_verbose_names(self.model_admin, self.model)
+        context['mass_spectra_measurements_url'] = reverse(f'{self.model._meta.app_label}-mass-spectra-measurements')
         return context
 
 
