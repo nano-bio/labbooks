@@ -147,7 +147,7 @@ class MassSpectraView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(MassSpectraView, self).get_context_data(**kwargs)
-        context['last_measurement_id'] = self.model.objects.last().id
+        context['last_measurement_id'] = self.model.objects.order_by('id').last().id
         context['experiment'] = self.experiment_name
         context['admin_measurement_url'] = reverse(f'admin:{self.model._meta.app_label}_measurement_changelist')
         context['url_data'] = reverse(f'{self.model._meta.app_label}-mass-spectra-data')
