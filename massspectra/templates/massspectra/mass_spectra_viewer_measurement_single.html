@@ -1,14 +1,8 @@
 {% spaceless %}
-    <li class='list-group-item'><div class="m-1 mt-2">ID {{ measurement.id }} - {{ measurement.time }}<br>
-        {{ measurement.short_description }} {{ measurement.comment }}</div>
-        <button type='button' onclick='show({{ measurement.id }})' class='btn btn-sm btn-outline-secondary m-1'>Show
-        </button>
-        <button type='button' onclick='compare({{ measurement.id }})' class='btn btn-sm btn-outline-secondary m-1'>
-            Compare
-        </button>
-        <button type='button' onclick='diff({{ measurement.id }})' class='btn btn-sm btn-outline-secondary m-1'>Diff
-        </button>
-        <a href='{{ admin_measurement_url }}{{ measurement.id }}/change/'
-           class='btn btn-sm btn-outline-secondary m-1'>Show Measurement</a>
+    <li class='list-group-item'><div class="m-1 mt-2">ID {{ measurement.id }} - {{ measurement.time }}<br>{{ measurement.short_description }}</div>
+        <button type='button' onclick='show({{ measurement.id }})' class='btn btn-sm btn-outline-secondary m-1'>Show</button>
+        <button type='button' onclick='compare({{ measurement.id }})' class='btn btn-sm btn-outline-secondary m-1'>Compare</button>
+        <button type='button' onclick='diff({{ measurement.id }})' class='btn btn-sm btn-outline-secondary m-1'>Diff</button>
+        <a href='{{ admin_measurement_url }}{{ measurement.id }}/change/' class='btn btn-sm btn-outline-secondary m-1'>Show Measurement</a>
     </li>
 {% endspaceless %}

@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views import View
 from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView
+from django.views.generic import ListView
 from scipy.interpolate import interp1d
 
 
@@ -138,16 +138,16 @@ class MassSpectraMeasurementListJson(View):
         return JsonResponse(list(data), safe=False)
 
 
-class MassSpectraView(TemplateView):
+class MassSpectraView(ListView):
     model: Model = None  # define the Measurement Model from an experiment
     model_admin: ModelAdmin = None  # define the corresponding Admin Measurement Model
     experiment_name: str = None  # set the verbose experiment name, which will be shown on the page
+    paginate_by = 50  # first paginate_by results will be rendered directly, all results will be loaded by clusterize
 
     template_name = 'massspectra/mass_spectra_viewer.html'
 
     def get_context_data(self, **kwargs):
         context = super(MassSpectraView, self).get_context_data(**kwargs)
-        context['last_measurement_id'] = self.model.objects.order_by('id').last().id
         context['experiment'] = self.experiment_name
         context['admin_measurement_url'] = reverse(f'admin:{self.model._meta.app_label}_measurement_changelist')
         context['url_data'] = reverse(f'{self.model._meta.app_label}-mass-spectra-data')

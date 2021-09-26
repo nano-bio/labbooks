@@ -157,6 +157,12 @@ class Measurement(models.Model):
 
         return "{:.1f}".format(ee)
 
+    # following function is used for the preview in mass spectra measurements list
+    # a crazy chicken decided to use the 'substance' field for comments by using a
+    # verbose name of 'comment'
+    def short_description(self):
+        return self.substance
+
     def chems(self):
         chems = [self.chem_pu1_oven, self.chem_pu1_gas, self.chem_pu2_oven, self.chem_pu2_gas, self.is_inlet_gas]
         chems_used = filter(None, chems)

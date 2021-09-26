@@ -1,46 +1,46 @@
 {% load static %}
 
-<div class="form-floating mb-1">
+<div class="form-floating mb-1" style="display: none">
     <input type="text" class="form-control form-control-sm" id="inputSearchMeasurement" placeholder="Search...">
     <label for="inputSearchMeasurement">Search</label>
 </div>
 <div style="overflow-y: scroll; max-height: 800px" id="measurementsArea">
-    <ul class="list-group" id="measurements"></ul>
+    <ul class="list-group" id="measurements">
+        {% for measurement in page_obj %}
+            {% include 'massspectra/mass_spectra_viewer_measurement_single.html' %}
+        {% endfor %}
+        <li class="px-5 py-3 list-group-item">Loading more ...</li>
+    </ul>
 </div>
 <script src="{% static 'clusterize/clusterize.min.js' %}"></script>
 <script>
-  $.getJSON("{{ mass_spectra_measurements_url }}", function (data) {
-    const rows = data
-
-    function filterRows(rows) {
-      let results = [];
-      for (let i = 0, ii = rows.length; i < ii; i++) {
-        if (rows[i].active) results.push(rows[i].markup)
-      }
-      return results;
+  function filterRows(rows) {
+    let results = [];
+    for (let i = 0, ii = rows.length; i < ii; i++) {
+      if (rows[i].active) results.push(rows[i].markup)
     }
+    return results;
+  }
 
-    /*
-    * Init clusterize.js
-    */
+  const search = $('#inputSearchMeasurement')
+
+  $.getJSON("{{ mass_spectra_measurements_url }}", function (data) {
+    const rows = data;
+
+    /* Init clusterize.js */
     const clusterize = new Clusterize({
       rows: filterRows(rows),
       scrollId: 'measurementsArea',
       contentId: 'measurements'
     });
+    search.parent().show();
 
-    /*
-    * Attach listener to search input tag and filter list on change
-    */
-    function onSearch() {
+    /* Attach listener to search input tag and filter list on change */
+    search.on('input', function () {
       for (let i = 0, ii = rows.length; i < ii; i++) {
-        if (rows[i].markup.toString().toLowerCase().indexOf(search.value.toString().toLowerCase()) + 1)
-          rows[i].active = true;
+        rows[i].active = !!(rows[i].markup.toString().toLowerCase().indexOf(search.val().toString().toLowerCase()) + 1);
       }
       clusterize.update(filterRows(rows));
-    }
-
-    const search = document.getElementById('inputSearchMeasurement')
-    search.oninput = onSearch;
+    });
   });
 </script>

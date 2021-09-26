@@ -35,7 +35,7 @@ urlpatterns = [
     path('mass-spectra/measurements/',
          massspectra.views.MassSpectraMeasurementListJson.as_view(
              measurement_model=Measurement),
-         name="toffy-mass-spectra-measurements"),
+         name="toffy2-mass-spectra-measurements"),
     path('mass-spectra/data/',
          massspectra.views.get_toffy_like_mass_spectra_data,
          {'measurement_model': Measurement},

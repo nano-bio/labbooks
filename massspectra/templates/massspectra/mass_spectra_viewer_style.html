@@ -119,8 +119,17 @@
     #graphdiv {
         width: 100%;
         height: 500px;
-        {#float: left;#}
-        {#padding: 20px;#}
         margin: 20px;
+    }
+
+    #measurements li div::-webkit-scrollbar {
+        display: none;
+    }
+
+    #measurements li div {
+        max-height: 50px;
+        overflow: scroll;
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
     }
 </style>
