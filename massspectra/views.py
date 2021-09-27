@@ -128,12 +128,9 @@ class MassSpectraMeasurementListJson(View):
 
     def get(self, request):
         data = [{
-            'markup': render_to_string(
-                'massspectra/mass_spectra_viewer_measurement_single.html', {
-                    'measurement': measurement,
-                    'admin_measurement_url': reverse(
-                        f'admin:{self.measurement_model._meta.app_label}_measurement_changelist')}),
-            'active': True
+            'id': measurement.id,
+            'time': measurement.time,
+            'title': measurement.short_description
         } for measurement in self.measurement_model.objects.all()]
         return JsonResponse(list(data), safe=False)
 

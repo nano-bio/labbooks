@@ -7,11 +7,33 @@
 <div style="overflow-y: scroll; max-height: 800px" id="measurementsArea">
     <ul class="list-group" id="measurements">
         {% for measurement in page_obj %}
-            {% include 'massspectra/mass_spectra_viewer_measurement_single.html' %}
+            <li class='list-group-item'>
+                <div class="m-1 mt-2">
+                    ID {{ measurement.id }} - {{ measurement.time }}<br>
+                    {{ measurement.short_description }}
+                </div>
+                <button type='button' onclick='show({{ measurement.id }})'
+                        class='btn btn-sm btn-outline-secondary m-1'>
+                    Show
+                </button>
+                <button type='button' onclick='compare({{ measurement.id }})'
+                        class='btn btn-sm btn-outline-secondary m-1'>
+                    Compare
+                </button>
+                <button type='button' onclick='diff({{ measurement.id }})'
+                        class='btn btn-sm btn-outline-secondary m-1'>
+                    Diff
+                </button>
+                <a href='{{ admin_measurement_url }}{{ measurement.id }}/change/'
+                   class='btn btn-sm btn-outline-secondary m-1'>Show
+                    Measurement
+                </a>
+            </li>
         {% endfor %}
         <li class="px-5 py-3 list-group-item">Loading more ...</li>
     </ul>
 </div>
+
 <script src="{% static 'clusterize/clusterize.min.js' %}"></script>
 <script>
   function filterRows(rows) {
@@ -25,7 +47,15 @@
   const search = $('#inputSearchMeasurement')
 
   $.getJSON("{{ mass_spectra_measurements_url }}", function (data) {
-    const rows = data;
+    let rows = [];
+    for (let i = 0; i < data.length; i++) {
+      rows.push({
+        values: `${data[i].id}${data[i].time}${data[i].title}`.toLowerCase(),
+        {#values: [data[i].id, data[i].time, data[i].title],#}
+        markup: `<li class='list-group-item'><div class='m-1 mt-2'>ID ${data[i].id} - ${data[i].time}<br>${data[i].title}</div><button type='button' onclick='show(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Show</button><button type='button' onclick='compare(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Compare</button><button type='button' onclick='diff(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Diff</button><a href='{{admin_measurement_url}}${data[i].id}/change/'class='btn btn-sm btn-outline-secondary m-1'>ShowMeasurement</a></li>`,
+        active: true
+      });
+    }
 
     /* Init clusterize.js */
     const clusterize = new Clusterize({
@@ -37,9 +67,20 @@
 
     /* Attach listener to search input tag and filter list on change */
     search.on('input', function () {
+
+      {#for (let i = 0, ii = rows.length; i < ii; i++) {#}
+      {#  let suitable = false;#}
+      {#  for (let j = 0, jj = rows[i].values.length; j < jj; j++) {#}
+      {#    if (rows[i].values[j].toString().toLowerCase().indexOf(search.val().toLowerCase()) + 1)#}
+      {#      suitable = true;#}
+      {#  }#}
+      {#  rows[i].active = suitable;#}
+      {# }#}
+      let s = search.val().toLowerCase();
       for (let i = 0, ii = rows.length; i < ii; i++) {
-        rows[i].active = !!(rows[i].markup.toString().toLowerCase().indexOf(search.val().toString().toLowerCase()) + 1);
+        rows[i].active = !!(rows[i].values.indexOf(s) + 1);
       }
+
       clusterize.update(filterRows(rows));
     });
   });
