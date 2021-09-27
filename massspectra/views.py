@@ -1,10 +1,13 @@
+import datetime
+from json import JSONEncoder
+
 import numpy as np
 from django.contrib.admin import ModelAdmin
 from django.core import serializers
-from django.db.models import Model
+from django.db.models import Model, F
+from django.db.models.functions import Substr
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -123,16 +126,27 @@ def mass_spectra_data(request, x_data1, y_data1, x_data2=None, y_data2=None):
     return HttpResponse("{" + f'"data":[{data_str}]' + "}", content_type="application/json")
 
 
+class DateTimeEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime("%d.%m.%Y %H:%M")
+        return super(DateTimeEncoder, self).default(obj)
+
+
 class MassSpectraMeasurementListJson(View):
     measurement_model: Model = None
 
     def get(self, request):
-        data = [{
-            'id': measurement.id,
-            'time': measurement.time,
-            'title': measurement.short_description
-        } for measurement in self.measurement_model.objects.all()]
-        return JsonResponse(list(data), safe=False)
+        if self.measurement_model._meta.app_label == 'clustof':
+            # clustof uses substance as comment and too much text :-(
+            measurements = self.measurement_model.objects \
+                .annotate(t=Substr('substance', 1, 150)) \
+                .values('id', 'time', 't')
+        else:
+            measurements = self.measurement_model.objects \
+                .annotate(t=F('short_description')) \
+                .values('id', 'time', 't')
+        return JsonResponse(list(measurements), encoder=DateTimeEncoder, safe=False)
 
 
 class MassSpectraView(ListView):

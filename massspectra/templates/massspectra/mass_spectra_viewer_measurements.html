@@ -50,9 +50,9 @@
     let rows = [];
     for (let i = 0; i < data.length; i++) {
       rows.push({
-        values: `${data[i].id}${data[i].time}${data[i].title}`.toLowerCase(),
-        {#values: [data[i].id, data[i].time, data[i].title],#}
-        markup: `<li class='list-group-item'><div class='m-1 mt-2'>ID ${data[i].id} - ${data[i].time}<br>${data[i].title}</div><button type='button' onclick='show(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Show</button><button type='button' onclick='compare(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Compare</button><button type='button' onclick='diff(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Diff</button><a href='{{admin_measurement_url}}${data[i].id}/change/'class='btn btn-sm btn-outline-secondary m-1'>ShowMeasurement</a></li>`,
+        values: `${data[i].id}${data[i].time}${data[i].t}`.toLowerCase(),
+        {#values: [data[i].id, data[i].time, data[i].t],#}
+        markup: `<li class='list-group-item'><div class='m-1 mt-2'>ID ${data[i].id} - ${data[i].time}<br>${data[i].t}</div><button type='button' onclick='show(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Show</button><button type='button' onclick='compare(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Compare</button><button type='button' onclick='diff(${data[i].id})'class='btn btn-sm btn-outline-secondary m-1'>Diff</button><a href='{{admin_measurement_url}}${data[i].id}/change/'class='btn btn-sm btn-outline-secondary m-1'>ShowMeasurement</a></li>`,
         active: true
       });
     }
@@ -63,7 +63,7 @@
       scrollId: 'measurementsArea',
       contentId: 'measurements'
     });
-    search.parent().show();
+    search.parent().show('slow');
 
     /* Attach listener to search input tag and filter list on change */
     search.on('input', function () {
