@@ -37,7 +37,7 @@ def homepage(request):
     for journal_entry_model in journal_models:
         all_journal_entries += journal_entry_model.objects.filter(time__gte=now() - timedelta(days=30))
 
-    all_journal_entries.sort(key=lambda x: x.time, reverse=False)
+    all_journal_entries.sort(key=lambda x: x.time, reverse=True)
     for i in all_journal_entries:
         i.experiment = str(i._meta).split('.')[0].capitalize()
 
