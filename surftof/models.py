@@ -212,9 +212,9 @@ class Measurement(models.Model):
         html_string = ""
         for i in range(1, 6):
             if self.rating < i:
-                symbol = "&#9956;"
+                symbol = "&#9734;"
             else:
-                symbol = "&#11088;"
+                symbol = "&#9733;"
             html_string += '<a href="/surftof/set-rating-of-measurement/{}/{}/">{}</a>'.format(self.id, i, symbol)
 
         return format_html(html_string)
