@@ -68,7 +68,7 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 
     def create_new_measurement_based_on_existing_one(self, request, queryset):
         forbidden_items = ['time', '_state']
-        create_new_entry_based_on_existing_one(
+        return create_new_entry_based_on_existing_one(
             request,
             queryset,
             forbidden_items
@@ -115,7 +115,7 @@ class MeasurementsAdmin(admin.ModelAdmin):
 
     def create_new_measurement_based_on_existing_one(self, request, queryset):
         forbidden_items = ['time', '_state']
-        create_new_entry_based_on_existing_one(
+        return create_new_entry_based_on_existing_one(
             request,
             queryset,
             forbidden_items
