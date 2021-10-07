@@ -215,7 +215,7 @@ class Measurement(models.Model):
                 symbol = "&#9734;"
             else:
                 symbol = "&#9733;"
-            html_string += '<a href="/surftof/set-rating-of-measurement/{}/{}/">{}</a>'.format(self.id, i, symbol)
+            html_string += '<a style="font-size:larger" href="/surftof/set-rating-of-measurement/{}/{}/">{}</a>'.format(self.id, i, symbol)
 
         return format_html(html_string)
 
