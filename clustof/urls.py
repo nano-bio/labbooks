@@ -81,6 +81,18 @@ urlpatterns = [
          massspectra.views.MassSpectraView.as_view(
              model=Measurement,
              model_admin=MeasurementAdmin,
+             extra_context={
+                 "custom_clusterize_row": "{values: `${data[i].id}${data[i].time}${data[i].t}${data[i].scantype}`.toLo"
+                                          "werCase(), markup: `<li class='list-group-item'><div class='m-1 mt-2'>"
+                                          "<span class='clustof-scan-type'>${data[i].scantype}</span>"
+                                          "ID ${data[i].id} - ${dat"
+                                          "a[i].time}<br>${data[i].t}</div><button type='button' onclick='show(${data["
+                                          "i].id})'class='btn btn-sm btn-outline-secondary m-1'>Show</button><button t"
+                                          "ype='button' onclick='compare(${data[i].id})'class='btn btn-sm btn-outline-"
+                                          "secondary m-1'>Compare</button><button type='button' onclick='diff(${data[i"
+                                          "].id})'class='btn btn-sm btn-outline-secondary m-1'>Diff</button><a href='{"
+                                          "{admin_measurement_url}}${data[i].id}/change/'class='btn btn-sm btn-outline"
+                                          "-secondary m-1'>ShowMeasurementttt</a></li>`, active: true}"},
              experiment_name='ClusTOF'),
          name="clustof-mass-spectra"),
     path('mass-spectra/measurements/',

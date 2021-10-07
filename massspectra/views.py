@@ -141,7 +141,7 @@ class MassSpectraMeasurementListJson(View):
             # clustof uses substance as comment and too much text :-(
             measurements = self.measurement_model.objects \
                 .annotate(t=Substr('substance', 1, 150)) \
-                .values('id', 'time', 't')
+                .values('id', 'time', 't', 'scantype')
         else:
             measurements = self.measurement_model.objects \
                 .annotate(t=F('short_description')) \
