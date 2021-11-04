@@ -9,7 +9,7 @@
     <style>
         #div_g {
             position: absolute;
-            inset: 140px 20px 20px 10px;
+            inset: 5px;
         }
 
         .dygraph-legend {
@@ -18,50 +18,73 @@
             padding: 5px 10px;
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
+
+        body, html {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
+    <div class="container-fluid d-flex h-100 flex-column">
 
-    <div class="row align-items-center mx-4 my-2">
-
-        <div class="col-auto">
-            <button class="btn btn-outline-secondary mb-2" id="btn-lin-log">LIN / LOG</button>
+        <div class="row mt-3 mb-1 g-2 fs-5">
+            {% for label in labels %}
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <div class="card">
+                        <div class="card-body">
+                            {{ label }}:
+                            <span id="value-{{ label }}"></span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
 
-        <div class="col-auto">
-            <label class="sr-only" for="lastHours">History length</label>
-            <select class="form-control mb-2" id="lastHours">
-                <option value="5">Show last 5min</option>
-                <option value="30">Show last 30min</option>
-                <option value="60" selected>Show last 1h</option>
-                <option value="360">Show last 6h</option>
-                <option value="720">Show last 12h</option>
-                <option value="1440">Show last 1d</option>
-                <option value="2880">Show last 2d</option>
-                <option value="10080">Show last 7d</option>
-            </select>
-        </div>
+        <div class="row align-items-center my-2">
 
-        {% for label in labels %}
             <div class="col-auto">
-                <label class="mx-2">
-                    <input
-                        type="checkbox"
-                        value="{{ forloop.counter0 }}"
-                        {% if forloop.counter0 < 4 %}
-                        checked
-                        {% endif %}
-                    >
-                    {{ label }}
-                </label>
+                <button class="btn btn-outline-secondary mb-2" id="btn-lin-log">LIN / LOG</button>
             </div>
-        {% endfor %}
+
+            <div class="col-auto">
+                <label class="sr-only" for="lastHours">History length</label>
+                <select class="form-control mb-2" id="lastHours">
+                    <option value="5">Show last 5min</option>
+                    <option value="30">Show last 30min</option>
+                    <option value="60" selected>Show last 1h</option>
+                    <option value="360">Show last 6h</option>
+                    <option value="720">Show last 12h</option>
+                    <option value="1440">Show last 1d</option>
+                    <option value="2880">Show last 2d</option>
+                    <option value="10080">Show last 7d</option>
+                </select>
+            </div>
+
+            {% for label in labels %}
+                <div class="col-auto">
+                    <label class="mx-2">
+                        <input
+                            type="checkbox"
+                            value="{{ forloop.counter0 }}"
+                            {% if forloop.counter0 < 4 %}
+                            checked
+                            {% endif %}
+                        >
+                        {{ label }}
+                    </label>
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="flex-grow-1 position-relative mb-2">
+            <div id="div_g"></div>
+        </div>
 
     </div>
-
-    <div id="div_g"></div>
-
 {% endblock %}
 
 {% block extra_js %}
@@ -112,6 +135,10 @@
 
               data.push([new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]])
 
+              {% for label in labels %}
+                $('#value-{{ label }}').html(elem[{{ forloop.counter }}].toExponential(2))
+              {% endfor %}
+
               const ind = data.findIndex(element => new Date(element[0]).addMinutes($('#lastHours').val()) > data[data.length - 1][0]);
               if (ind > 0)
                 data = data.slice(ind);
@@ -129,7 +156,7 @@
               }
             }).always(function () {
               queryIsRunning = false
-              setTimeout(getLast, 300);
+              setTimeout(getLast, 500);
             });
           }
         }
