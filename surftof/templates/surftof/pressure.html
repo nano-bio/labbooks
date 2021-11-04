@@ -24,17 +24,30 @@
             flex-direction: column;
             height: 100%;
         }
+
+        .card.active {
+            border-color: black;
+            background-color: #eeeeee;
+        }
+
+        .card.active {
+            color: #212529
+        }
+
+        .card {
+            color: #81858b
+        }
     </style>
 {% endblock %}
 
 {% block content %}
     <div class="container-fluid d-flex h-100 flex-column">
 
-        <div class="row mt-3 mb-1 g-2 fs-5">
+        <div class="row mt-2 g-2 fs-5">
             {% for label in labels %}
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="card{% if forloop.counter0 < 4 %} active{% endif %}">
+                        <div class="card-body" data-field-id="{{ forloop.counter0 }}">
                             {{ label }}:
                             <span id="value-{{ label }}"></span>
                         </div>
@@ -43,15 +56,14 @@
             {% endfor %}
         </div>
 
-        <div class="row align-items-center my-2">
+        <div class="row my-2 g-2">
 
             <div class="col-auto">
-                <button class="btn btn-outline-secondary mb-2" id="btn-lin-log">LIN / LOG</button>
+                <button class="btn btn-outline-secondary" id="btn-lin-log">LIN / LOG</button>
             </div>
 
             <div class="col-auto">
-                <label class="sr-only" for="lastHours">History length</label>
-                <select class="form-control mb-2" id="lastHours">
+                <select id="lastHours" class="form-select" aria-label="Default select example">
                     <option value="5">Show last 5min</option>
                     <option value="30">Show last 30min</option>
                     <option value="60" selected>Show last 1h</option>
@@ -62,21 +74,6 @@
                     <option value="10080">Show last 7d</option>
                 </select>
             </div>
-
-            {% for label in labels %}
-                <div class="col-auto">
-                    <label class="mx-2">
-                        <input
-                            type="checkbox"
-                            value="{{ forloop.counter0 }}"
-                            {% if forloop.counter0 < 4 %}
-                            checked
-                            {% endif %}
-                        >
-                        {{ label }}
-                    </label>
-                </div>
-            {% endfor %}
 
         </div>
 
@@ -115,16 +112,27 @@
           g.setVisibility(parseInt(this.value), this.checked)
         })
 
+        $('.card-body').click(function () {
+          if ($(this).parent().hasClass('active')) {
+            $(this).parent().removeClass('active')
+            g.setVisibility($(this).data('field-id'), false)
+          } else {
+            $(this).parent().addClass('active')
+            g.setVisibility($(this).data('field-id'), true)
+          }
+        })
+
         $('#lastHours').change(function () {
-          $.getJSON("//138.232.74.227/history/" + this.value, function (values) {
-            data = values.values.map(function (elem) {
-              return [new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]];
-            });
-            g.updateOptions({
-              'file': data
-            });
-          })
-        });
+            $.getJSON("//138.232.74.227/history/" + this.value, function (values) {
+              data = values.values.map(function (elem) {
+                return [new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]];
+              });
+              g.updateOptions({
+                'file': data
+              });
+            })
+          }
+        );
 
         function getLast() {
           if (!queryIsRunning) {
@@ -163,7 +171,8 @@
 
         getLast()
 
-      });
+      })
+      ;
 
       Date.prototype.addMinutes = function (m) {
         this.setTime(this.getTime() + (m * 60 * 1000));
