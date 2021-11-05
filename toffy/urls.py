@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 
 import journal.views
 import massspectra.views
@@ -46,4 +47,14 @@ urlpatterns = [
          massspectra.views.json_export,
          {'model': Measurement},
          name="toffy-measurement-json"),
+
+    # pressures
+    path('pressures/',
+         TemplateView.as_view(
+             template_name='toffy/pressure.html',
+             extra_context={
+                 'labels': ['PCS', 'PQT', 'CS', 'QUAD', 'PUP', 'EVAP'],
+                 'ip': '138.232.74.63'
+             }),
+         name="toffy-pressures"),
 ]
