@@ -54,7 +54,7 @@ urlpatterns = [
              template_name='toffy/pressure.html',
              extra_context={
                  'labels': ['PCS', 'PQT', 'CS', 'QUAD', 'PUP', 'EVAP'],
-                 'ip': '138.232.74.63'
+                 'ip': '138.232.74.63:8000'
              }),
          name="toffy-pressures"),
 ]
