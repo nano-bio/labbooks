@@ -90,9 +90,11 @@ urlpatterns = [
                                           "i].id})'class='btn btn-sm btn-outline-secondary m-1'>Show</button><button t"
                                           "ype='button' onclick='compare(${data[i].id})'class='btn btn-sm btn-outline-"
                                           "secondary m-1'>Compare</button><button type='button' onclick='diff(${data[i"
-                                          "].id})'class='btn btn-sm btn-outline-secondary m-1'>Diff</button><a href='{"
-                                          "{admin_measurement_url}}${data[i].id}/change/'class='btn btn-sm btn-outline"
-                                          "-secondary m-1'>ShowMeasurementttt</a></li>`, active: true}"},
+                                          "].id})'class='btn btn-sm btn-outline-secondary m-1'>Diff</button><a href='/"
+                                          "admin/clustof/measurement/${data[i].id}/change/'class='btn btn-sm btn-outli"
+                                          "ne-secondary m-1'>Show Measurement</a><a href='/clustof/laser-scan/1/' clas"
+                                          "s='btn btn-sm btn-outline-secondary m-1'>Laser Scan</a></li>`, active: true"
+                                          "}"},
              experiment_name='ClusTOF'),
          name="clustof-mass-spectra"),
     path('mass-spectra/measurements/',
@@ -102,6 +104,14 @@ urlpatterns = [
     path('mass-spectra/data/',
          clustof.views.get_mass_spectra_data,
          name="clustof-mass-spectra-data"),
+
+    # laser scan
+    path('laser-scan/<int:measurement_id>/',
+         clustof.views.laser_scan,
+         name="clustof-laser-scan"),
+    path('laser-scan/data/',
+         clustof.views.laser_scan_data,
+         name="clustof-laser-scan-data"),
 
     # json export measurement
     path('measurement/<int:pk>.json',

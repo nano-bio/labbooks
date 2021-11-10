@@ -3,15 +3,18 @@ import json
 import re
 import time
 from os.path import exists
+from time import time
 
 import h5py
+import numpy
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.files.storage import FileSystemStorage
 from django.db import models as djangomodels
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest, JsonResponse, \
+    Http404
 from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import utc, now
 from django.views.decorators.csrf import csrf_exempt
@@ -305,10 +308,14 @@ def get_mass_spectra_data(request):
         return mass_spectra_data(request, x_data1, y_data1)
 
 
-def get_mass_spectrum(measurement_id, mass_max=None):
+def get_measurement_file_name(measurement_id):
     m = Measurement.objects.get(pk=int(measurement_id))
     file_name = m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\', '')
-    file_name_full = f"{settings.CLUSTOF_FILES_ROOT}{file_name}"
+    return f"{settings.CLUSTOF_FILES_ROOT}{file_name}"
+
+
+def get_mass_spectrum(measurement_id, mass_max=None):
+    file_name_full = get_measurement_file_name(measurement_id)
     if not exists(file_name_full):
         raise Exception(f'File for this measurement not found ({file_name_full})')
     with h5py.File(file_name_full, 'r') as f:
@@ -318,3 +325,49 @@ def get_mass_spectrum(measurement_id, mass_max=None):
     if mass_max is None:
         return x_data, y_data
     return slice_data(x_data, y_data, 0, mass_max)
+
+
+def laser_scan_data(request):
+    measurement_id = int(request.POST.get('measurementId'))
+    mass_column = int(request.POST.get('massColumn'))
+    mode = request.POST.get('mode')
+    x_start = request.POST.get('xStart', None)
+    x_end = request.POST.get('xEnd', None)
+
+    file_name_full = get_measurement_file_name(measurement_id)
+
+    with open(file_name_full, 'rb') as f:
+        hf = h5py.File(f, 'r')
+        laser_on_data = hf['PeakData']['PeakData'][:, 0, 0, mass_column]
+        laser_off_data = numpy.mean(hf['PeakData']['PeakData'][:, 0, 1:, mass_column], axis=1)
+    if mode == '-':
+        data = laser_on_data - laser_off_data
+    elif mode == '/':
+        data = laser_on_data / laser_off_data
+    else:
+        raise Http404('Provide either mode "-" or mode "/"')
+
+    try:
+        # when wavelength start and end is provided, return a xy array
+        if x_start and x_end:
+            x_start = float(x_start)
+            x_end = float(x_end)
+            xs = numpy.linspace(x_start, x_end, len(data))
+        else:
+            xs = range(len(data))
+
+        return JsonResponse({'data': numpy.stack([xs, data], axis=-1).tolist()})
+    except Exception as e:
+        raise Http404(f'xs problem: {e}')
+
+
+def laser_scan(request, measurement_id):
+    file_name_full = get_measurement_file_name(measurement_id)
+    with open(file_name_full, 'rb') as f:
+        hf = h5py.File(f, 'r')
+        k = hf['PeakData']['PeakTable'][()]
+    mass_list = [f"{int(row[1])} ({row[2]:.1f}-{row[3]:.1f})" for row in k]
+    return render(request, 'clustof/laser_scan.html', {
+        'measurement_id': measurement_id,
+        'mass_list': mass_list
+    })
