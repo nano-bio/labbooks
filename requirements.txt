@@ -7,13 +7,13 @@ crispy-bootstrap5==0.6
 djangorestframework==3.12.4
 
 # for mass-spectra
-scipy==1.7.2 # pip complains...
+scipy==1.5.4 # pip complains on server that a newer version does not exists
 h5py==2.10.0 # v3 doesnt work on windows
 
 # for journal
 django-crispy-forms==1.13.0
 django-ckeditor==6.1.0
-matplotlib==3.4.3
+matplotlib==3.3.4 # pip complains on server that a newer version does not exists
 
 # for cheminventory
 requests==2.26.0
@@ -22,7 +22,7 @@ periodictable==1.6.0
 # fitlib==0.0.* # pip install git+https://github.com/nano-bio/fitlib.git@package
 
 # for snowball & surftof
-numpy==1.21.4 # pip complains...
+numpy==1.19.5 # pip complains on server that a newer version does not exists
 
 # for wippi
 pytz==2021.3
