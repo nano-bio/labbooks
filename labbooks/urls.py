@@ -5,6 +5,7 @@ from django.urls import path, include
 
 import cheminventory.urls
 import clustof.urls
+import journal.urls
 import labinventory.urls
 import snowball.urls
 import surftof.urls
@@ -12,8 +13,10 @@ import toffy.urls
 import toffy2.urls
 import vg.urls
 import wippi.urls
+from journal.views import homepage
 
 urlpatterns = [
+    path('', homepage, name='homepage'),
     path('admin/', admin.site.urls),
     path('vg/', include(vg.urls)),
     path('wippi/', include(wippi.urls)),
@@ -24,6 +27,7 @@ urlpatterns = [
     path('labinventory/', include(labinventory.urls)),
     path('toffy/', include(toffy.urls)),
     path('toffy2/', include(toffy2.urls)),
+    path('journal/', include(journal.urls)),
 ]
 
 if settings.DEBUG:

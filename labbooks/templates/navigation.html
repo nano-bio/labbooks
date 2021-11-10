@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'homepage' %}">Labbooks</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+                {# CLUSTOF #}
+                {% include 'clustof/navigation.html' %}
+
+                {# TOFFY #}
+                {% include 'toffy/navigation.html' %}
+
+                {# TOFFY2 #}
+                {% include 'toffy2/navigation.html' %}
+
+                {# SURFTOF #}
+                {% include 'surftof/navigation.html' %}
+
+                <li><a class="nav-link" href="{% url 'wippihome' %}">WIPPI</a></li>
+                <li><a class="nav-link" href="{% url 'vghome' %}">VG</a></li>
+                <li><a class="nav-link" href="{% url 'labinventory-temp' %}">Temperature</a></li>
+            </ul>
+            <ul class="navbar-nav mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:logout' %}">Logout</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}- Pressures{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css"/>
+    <style>
+        #div_g {
+            position: absolute;
+            inset: 5px;
+        }
+
+        .dygraph-legend {
+            left: 70px !important;
+            position: absolute;
+            padding: 5px 10px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        body, html {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card.active {
+            border-color: black;
+            background-color: #eeeeee;
+        }
+
+        .card.active {
+            color: #212529
+        }
+
+        .card {
+            color: #81858b
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid d-flex h-100 flex-column">
+
+        <div class="row mt-2 g-2 fs-5">
+            {% for label in labels %}
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <div class="card{% if forloop.counter0 > 2 %} active{% endif %}">
+                        <div class="card-body" data-field-id="{{ forloop.counter0 }}">
+                            {{ label }}:
+                            <span id="value-{{ label }}"></span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="row my-2 g-2">
+
+            <div class="col-auto">
+                <button class="btn btn-outline-secondary" id="btn-lin-log">LIN / LOG</button>
+            </div>
+
+            <div class="col-auto">
+                <select id="lastHours" class="form-select" aria-label="Default select example">
+                    <option value="5">Show last 5min</option>
+                    <option value="30">Show last 30min</option>
+                    <option value="60" selected>Show last 1h</option>
+                    <option value="360">Show last 6h</option>
+                    <option value="720">Show last 12h</option>
+                    <option value="1440">Show last 1d</option>
+                    <option value="2880">Show last 2d</option>
+                    <option value="10080">Show last 7d</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="flex-grow-1 position-relative mb-2">
+            <div id="div_g"></div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
+    <script>
+      let lastTimeStamp = ""
+      let queryIsRunning = false
+      $.getJSON("//{{ ip }}/history", function (values) {
+        let data = values.values.map(function (elem) {
+          return [new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]];
+        });
+        const g = new Dygraph(document.getElementById("div_g"), data,
+          {
+            labels: ['Time'].concat(values.labels),
+            labelsSeparateLines: true,
+            legend: 'always',
+            logscale: true,
+            visibility: [false, false, false, true, true, true]
+          });
+
+        $('#btn-lin-log').click(function () {
+          g.updateOptions({
+            logscale: !g.getOption('logscale')
+          })
+        });
+
+        $(':checkbox').change(function () {
+          g.setVisibility(parseInt(this.value), this.checked)
+        })
+
+        $('.card-body').click(function () {
+          if ($(this).parent().hasClass('active')) {
+            $(this).parent().removeClass('active')
+            g.setVisibility($(this).data('field-id'), false)
+          } else {
+            $(this).parent().addClass('active')
+            g.setVisibility($(this).data('field-id'), true)
+          }
+        })
+
+        $('#lastHours').change(function () {
+            $.getJSON("//{{ ip }}/history/" + this.value, function (values) {
+              data = values.values.map(function (elem) {
+                return [new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]];
+              });
+              g.updateOptions({
+                'file': data
+              });
+            })
+          }
+        );
+
+        function getLast() {
+          if (!queryIsRunning) {
+            queryIsRunning = true
+            $.getJSON("//{{ ip }}/last", function (elem) {
+              if (elem[0] === lastTimeStamp) return
+              lastTimeStamp = elem[0];
+
+              data.push([new Date(elem[0]), elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]])
+
+              {% for label in labels %}
+                $('#value-{{ label }}').html(elem[{{ forloop.counter }}].toExponential(2))
+              {% endfor %}
+
+              const ind = data.findIndex(element => new Date(element[0]).addMinutes($('#lastHours').val()) > data[data.length - 1][0]);
+              if (ind > 0)
+                data = data.slice(ind);
+
+              if (g.isZoomed()) {
+                g.updateOptions({
+                  'file': data,
+                  valueRange: g.yAxisRange()
+                });
+              } else {
+                g.updateOptions({
+                  'file': data,
+                  valueRange: null
+                });
+              }
+            }).always(function () {
+              queryIsRunning = false
+              setTimeout(getLast, 500);
+            });
+          }
+        }
+
+        getLast()
+
+      })
+      ;
+
+      Date.prototype.addMinutes = function (m) {
+        this.setTime(this.getTime() + (m * 60 * 1000));
+        return this;
+      }
+    </script>
+{% endblock %}

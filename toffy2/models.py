@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 
+from journal.models import BasicJournalEntry
+
 
 class Operator(models.Model):
     firstname = models.CharField(max_length=50)
@@ -90,3 +92,7 @@ class Measurement(models.Model):
     class Meta:
         ordering = ['-time']
         get_latest_by = 'time'
+
+
+class JournalEntry(BasicJournalEntry):
+    pass

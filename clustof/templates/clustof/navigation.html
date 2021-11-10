@@ -1,0 +1,30 @@
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+       data-bs-toggle="dropdown" aria-expanded="false">
+        ClusTOF
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <li>
+            <a class="dropdown-item" href="{% url "clustof-journal" %}">Journal</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url "clustof-mass-spectra" %}">Mass Specs</a>
+        </li>
+
+        <li class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item" href="{% url 'admin:clustof_measurement_changelist' %}">Admin: Measurements</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url 'admin:app_list' 'clustof' %}">Admin: ClusTOF</a>
+        </li>
+
+        <li class="dropdown-divider"></li>
+        {# The following URLs come from the old style #}
+        <li><a class="dropdown-item" href="{% url 'clustof-view-measurements' %}">Measurements</a></li>
+        <li><a class="dropdown-item" href="{% url 'clustof-newmeasurement' %}">New Measurement</a></li>
+        <li><a class="dropdown-item" href="{% url 'clustof-insight' %}">Insights</a></li>
+        <li><a class="dropdown-item" href="{% url 'clustof-view-pumps' %}">Turbopumps</a></li>
+    </ul>
+</li>

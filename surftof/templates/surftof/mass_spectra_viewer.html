@@ -1,0 +1,159 @@
+{% extends 'massspectra/mass_spectra_viewer.html' %}
+{% load static %}
+
+{% block extra_settings %}
+    <button class="btn btn-block btn-secondary" id="button-traces-counts" type="button">
+        Get traces
+    </button>
+{% endblock %}
+
+{% block 2nd_row_extra_cards %}
+    <div class="col" id="col-card-traces-counts" style="display: none">
+        <div class="card">
+            <div class="card-header">Traces</div>
+            <div class="card-body">
+                <div class="form-group form-row">
+                    <div class="col">
+                        <label for="inputMassMin" class="col col-form-label sr-only">Mass min</label>
+                        <input type="number" step="0.01" class="form-control" id="inputMassMin"
+                               placeholder="Mass min">
+                    </div>
+                    <div class="col">
+                        <label for="inputMassMax" class="col col-form-label sr-only">Mass max</label>
+                        <input type="number" step="0.01" class="form-control" id="inputMassMax"
+                               placeholder="Mass max">
+                    </div>
+                    <div class="col-auto">
+                        <i  id="setTracesMinMax" class="bi bi-hand-index"></i>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-secondary" id="button-create-trace">get trace</button>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    <!-- Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="detailModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Maybe this will take some time. Therefore
+                        you get a cartoon :-) <span id="modal-ready-loading"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="button-hide-xkcd" onclick="hideXkcd()">
+                        Never ever show me this shit again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+
+    {# Get Traces #}
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+    <script>
+      setInterval(function () {
+        $('#modal-ready-loading').fadeIn(300).fadeOut(500);
+      }, 1000);
+
+      $('#setTracesMinMax').click(function () {
+        selectMassMinMax = 'min';
+        massMin.addClass('active-input');
+      });
+
+      $('#button-traces-counts').click(function () {
+        $('#col-card-traces-counts').toggle();
+      });
+
+      function hideXkcd() {
+        Cookies.set('hide-xkcd', "true");
+        $('#detailModal').modal('hide');
+      }
+
+      $('#button-create-trace').click(function () {
+        modalReadyLoading.text('');
+        if (
+          typeof parseFloat(massMin.val()) !== 'number' ||
+          typeof parseFloat(massMax.val()) !== 'number'
+        )
+          alert('Set Mass min and max properly!');
+        else if (massMin > massMax) {
+          alert('Mass min is larger than Mass max!');
+        } else {
+          if (Cookies.get('hide-xkcd') !== "true") {
+            $('#detailModal').modal({show: true});
+            $('#detailModal .modal-body').load('{% url "surftof-mass-spectra-xkcd" %}');
+          }
+          let minMaxBin = getArrayIndex(
+            g.rawData_.map(function (value, index) {
+              return value[0];
+            }),
+            massMin.val(),
+            massMax.val()
+          );
+          $.post("{% url 'surftof-mass-spectra-trace' %}", {
+            massMin: minMaxBin.minIndex,
+            massMax: minMaxBin.maxIndex,
+            measurementId: dataIdFile1,
+          }).done(function (data) {
+            modalReadyLoading.text('READY');
+            g.updateOptions({
+              'file': data.data,
+              'xlabel': 'time [s]'
+            });
+            g.resetZoom();
+          }).fail(function () {
+            $.toast({
+              heading: 'Error',
+              text: 'Something went wrong',
+              showHideTransition: 'fade',
+              icon: 'warning'
+            })
+          });
+        }
+      });
+
+      function getArrayIndex(array, min, max) {
+        let minIndex = null;
+        let maxIndex = null;
+        let binning = inputBinning.val();
+        for (let i = 0; i < array.length; i++) {
+          if (minIndex === null) {
+            if (array[i] >= min) {
+              minIndex = i * binning;
+            }
+          } else if (array[i] <= max) {
+            maxIndex = i * binning;
+          } else {
+            console.log(minIndex, maxIndex);
+            return {
+              minIndex: minIndex,
+              maxIndex: maxIndex
+            }
+          }
+        }
+      }
+
+    </script>
+    <script>
+      let selectMassMinMax = false;
+      const massMin = $('#inputMassMin');
+      const modalReadyLoading = $('#modal-ready-loading');
+
+
+    </script>
+{% endblock %}

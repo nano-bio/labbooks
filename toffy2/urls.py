@@ -1,19 +1,49 @@
 from django.urls import path
-from django.views.generic import TemplateView
-import toffy2.views
+
+import journal.views
+import massspectra.views
+from toffy2.admin import MeasurementAdmin
+from toffy2.models import Measurement, JournalEntry
 
 urlpatterns = [
-    # preview of data
-    path('preview_file_list/',
-         toffy2.views.preview_file_list,
-         name="toffy2-preview-file-list"),
-    path('preview_data/<int:pk>/',
-         toffy2.views.preview_data,
-         name="toffy2-preview-data"),
-    path('preview/',
-         TemplateView.as_view(template_name='toffy2/previewData.html'),
-         name="toffy2-preview"),
-    path('preview_measurement_info/<int:measurement_id>/',
-         toffy2.views.preview_measurement_info,
-         name="toffy2-preview-measurement-info"),
+    # Journal
+    path('journal/',
+         journal.views.JournalListView.as_view(
+             model=JournalEntry,
+             experiment='Toffy2'),
+         name='toffy2-journal'),
+    path('journal/add/',
+         journal.views.JournalEntryCreate.as_view(
+             model=JournalEntry,
+             experiment='Toffy2'),
+         name='toffy2-journal-add'),
+    path('journal/<int:pk>/',
+         journal.views.JournalEntryUpdate.as_view(
+             model=JournalEntry),
+         name='toffy2-journal-update'),
+    path('journal/<int:pk>/delete/',
+         journal.views.JournalEntryDelete.as_view(
+             model=JournalEntry),
+         name='toffy2-journal-delete'),
+
+    # mass spectra
+    path('mass-spectra/',
+         massspectra.views.MassSpectraView.as_view(
+             model=Measurement,
+             model_admin=MeasurementAdmin),
+         name="toffy2-mass-spectra"),
+    path('mass-spectra/measurements/',
+         massspectra.views.MassSpectraMeasurementListJson.as_view(
+             measurement_model=Measurement),
+         name="toffy2-mass-spectra-measurements"),
+    path('mass-spectra/data/',
+         massspectra.views.get_toffy_like_mass_spectra_data,
+         {'measurement_model': Measurement},
+         name="toffy2-mass-spectra-data"),
+
+    # json export
+    path('measurement/<int:pk>.json',
+         massspectra.views.json_export,
+         {'model': Measurement},
+         name="toffy2-measurement-json"),
 ]

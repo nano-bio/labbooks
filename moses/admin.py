@@ -17,6 +17,6 @@ class TargetAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-admin.site.register(Target, TargetAdmin)
-admin.site.register(File)
-admin.site.register(Measurement, MeasurementsAdmin)
+# admin.site.register(Target, TargetAdmin)
+# admin.site.register(File)
+# admin.site.register(Measurement, MeasurementsAdmin)

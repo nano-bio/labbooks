@@ -1,0 +1,41 @@
+<div id="carousel{{ experiment }}{{ entry.id }}" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    {% if image_urls|length > 1 %}
+        <div class="carousel-indicators">
+            {% for image in image_urls %}
+                <button
+                    type="button" data-bs-target="#carousel{{ experiment }}{{ entry.id }}"
+                    data-bs-slide-to="{{ forloop.counter0 }}"
+                    {% if forloop.first %}class="active"{% endif %}
+                    {% if forloop.first %} aria-current="true"{% endif %}
+                    aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="simpleLightbox carousel-inner">
+        {% for image_url in image_urls %}
+            <div class="d-flex carousel-item{% if forloop.first %} active{% endif %}"
+                 style="
+                     background-image: url('{{ image_url }}');
+                     {% if 'preview' in image_url %}
+                         background-position-x: left;
+                         background-position-y: bottom;
+                     {% endif %}">
+                <a class="m-auto" href="{{ image_url }}">
+                    <i class="bi bi-arrows-fullscreen zoom-in-image"></i>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    {% if image_urls|length > 1 %}
+        <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ experiment }}{{ entry.id }}"
+                data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ experiment }}{{ entry.id }}"
+                data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    {% endif %}
+</div>

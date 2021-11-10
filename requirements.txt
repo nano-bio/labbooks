@@ -1,23 +1,28 @@
-Django>=3.2.3
-gunicorn>=20.1.0
-mysqlclient>=2.0.3 # install this with --no-cache-dir --upgrade
+Django==3.2.9
+gunicorn==20.1.0
+mysqlclient==2.0.3 # install this with --no-cache-dir --upgrade
+crispy-bootstrap5==0.6
 
 # for surftof
-djangorestframework>=3.12.4
-scipy>=1.5.4 # pip complains...
+djangorestframework==3.12.4
+
+# for mass-spectra
+scipy==1.7.2 # pip complains...
 h5py==2.10.0 # v3 doesnt work on windows
-django-crispy-forms>=1.11.2
-django-ckeditor
-matplotlib
+
+# for journal
+django-crispy-forms==1.13.0
+django-ckeditor==6.1.0
+matplotlib==3.4.3
 
 # for cheminventory
-requests>=2.25.1
-openpyxl>=3.0.7
-periodictable>=1.5.3
-# fitlib>=0.0.* # pip install git+https://github.com/nano-bio/fitlib.git@package
+requests==2.26.0
+openpyxl==3.0.9
+periodictable==1.6.0
+# fitlib==0.0.* # pip install git+https://github.com/nano-bio/fitlib.git@package
 
 # for snowball & surftof
-numpy>=1.19.5 # pip complains...
+numpy==1.21.4 # pip complains...
 
 # for wippi
-pytz>=2021.1
+pytz==2021.3

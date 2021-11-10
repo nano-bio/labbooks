@@ -1,0 +1,49 @@
+{% load image_urls %}
+
+<div class="card mb-3">
+    <div class="card-header d-flex">
+        <div class="me-auto">
+            {% if experiment %}{{ experiment }}{% elif entry.experiment %}{{ entry.experiment }}{% endif %}
+        </div>
+        <div>{{ entry.time }}</div>
+    </div>
+    <div class="row g-0">
+        <div class="col">
+            <div class="card-body">
+                <h5 class="card-title">{{ entry.title }}</h5>
+                {% if entry.comment %}
+                    <p class="card-text">{{ entry.comment|safe }}</p>
+                {% endif %}
+                {% if entry.file %}
+                    <a href="{{ entry.file.url }}" target="_blank">Download File</a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% get_image_urls entry as image_urls %}
+        {% if image_urls %}
+            <div class="col-md-4 col-lg-5">
+                {% include 'journal/journal_card_carousel.html' %}
+            </div>
+        {% endif %}
+    </div>
+    {% if not hide_buttons %}
+        <div class="card-footer">
+            {% if entry.measurement %}
+                <a href="{{ entry.url_mass_spec }}" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-graph-up"></i>
+                    Show Mass Spec
+                </a>
+                <a href="{{ entry.url_measurement_admin_change }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-eye"></i>
+                    Show related Measurement
+                </a>
+            {% endif %}
+            <a href="{{ entry.url_form_update }}" class="btn btn-outline-secondary btn-sm"><i
+                class="bi bi-pencil"></i>
+                Edit </a>
+            <a href="{{ entry.url_form_delete }}" class="btn btn-outline-danger btn-sm"><i
+                class="bi bi-trash"></i> Delete </a>
+        </div>
+    {% endif %}
+</div>

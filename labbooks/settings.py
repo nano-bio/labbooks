@@ -92,7 +92,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
 ROOT_URLCONF = 'labbooks.urls'
@@ -122,8 +121,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'django.contrib.flatpages',
 
+    'journal',
+    'massspectra',
     'vg',
     'clustof',
     'wippi',
@@ -137,9 +137,12 @@ INSTALLED_APPS = [
     # 'moses',
     'rest_framework',
     'crispy_forms',
+    "crispy_bootstrap5",
     'ckeditor',
 ]
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 LOGGING = {
     'version': 1,
@@ -164,3 +167,4 @@ LOGGING = {
         },
     }
 }
+CLUSTOF_FILES_ROOT = '/var/storage/clustof/'

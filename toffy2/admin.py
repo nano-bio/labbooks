@@ -1,10 +1,7 @@
-from urllib.parse import quote
-
-from django.contrib import admin, messages
-from django.http import HttpResponseRedirect
-from django.utils import http
+from django.contrib import admin
 import pytz
 
+from labbooks.admin_common import create_new_entry_based_on_existing_one
 from toffy2.models import Operator, Measurement
 
 
@@ -119,27 +116,12 @@ class MeasurementAdmin(admin.ModelAdmin):
     )
 
     def create_new_measurement_based_on_existing_one(self, request, queryset):
-        # we can only base it on one measurement
-        if len(queryset) == 1:
-            s = queryset.get()
-            # this variable will hold all the values and is the address to the new setting form
-            redirect_address = u'add/?'
-            # we don't want these to be adopted
-            forbidden_items = ['time', '_state']
-            # walk through all fields of the model
-            for item in s.__dict__:
-                if item not in forbidden_items:
-                    if s.__dict__[item] is not None:
-                        # ForeignKey fields have to be named without "_id", so the last 3 chars are truncated
-                        if "id" in quote(item) and len(quote(item)) > 2:
-                            redirect_address += quote(item)[:-3] + '=' + quote(str(s.__dict__[item])) + '&'
-                        else:
-                            redirect_address += quote(item) + '=' + quote(str(s.__dict__[item])) + '&'
-
-            # redirect to newly created address
-            return HttpResponseRedirect(redirect_address)
-        else:
-            messages.error(request, 'You can only base a new potential setting on ONE existing setting, stupid.')
+        forbidden_items = ['time', '_state']
+        return create_new_entry_based_on_existing_one(
+            request,
+            queryset,
+            forbidden_items
+        )
 
 
 admin.site.register(Measurement, MeasurementAdmin)

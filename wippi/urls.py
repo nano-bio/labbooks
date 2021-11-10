@@ -1,14 +1,14 @@
-from django.contrib import admin
-from django.urls import path
-from django.views.generic import ListView
 from django.http import HttpResponseRedirect
-from django.contrib.flatpages import views as flatpageviews
-from wippi.models import Measurement, Calibration, JournalEntry
+from django.urls import path
+from django.views.generic import ListView, RedirectView
+
 import wippi.views
+from wippi.models import Measurement, Calibration, JournalEntry
 
 urlpatterns = [
-    path('', flatpageviews.flatpage, {'url': '/wippi/'}, name='wippihome'),
-    path('view/', ListView.as_view(model=Measurement, template_name='wippi/measurement_list.html', paginate_by=100)),
+    path('', RedirectView.as_view(pattern_name="wippi-measurements"), name='wippihome'),
+    path('view/', ListView.as_view(model=Measurement, template_name='wippi/measurement_list.html', paginate_by=100),
+         name="wippi-measurements"),
     path('view/<int:id>/', wippi.views.showmeasurement),
     path('view/<int:m_id>/cal/<int:c_id>/', wippi.views.showcalibratedmeasurement),
     path('view/<int:m_id>/calexport/<int:c_id>/', wippi.views.exportcalibratedmeasurement),

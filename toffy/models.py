@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.safestring import mark_safe
 
+from journal.models import BasicJournalEntry
+
 
 class Operator(models.Model):
     firstname = models.CharField(max_length=50)
@@ -61,8 +63,12 @@ class Measurement(models.Model):
         return "{}...".format(self.short_description[:30])
 
     def __str__(self):
-        return u'%s, %s' % (self.time, self.operator)
+        return f"ID {self.id}, {self.time}, {self.short_description}"
 
     class Meta:
         ordering = ['-time']
         get_latest_by = 'time'
+
+
+class JournalEntry(BasicJournalEntry):
+    pass

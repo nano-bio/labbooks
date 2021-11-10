@@ -2,62 +2,67 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.generic import TemplateView
 
+import journal.views
+import massspectra.views
 import surftof.views as views
+from surftof.admin import MeasurementsAdmin
+from surftof.models import Measurement, JournalEntry
 
 urlpatterns = [
-    # overview
-    path('',
-         views.overview,
-         name="surftof-overview"),
-    path('journal/<int:year>/<int:month>/',
-         views.overview,
-         name="surftof-journal-page"),
-    path('journal-entry/add/',
-         login_required(views.JournalEntryCreate.as_view()),
-         name='surftof-journal-entry-add'),
-    path('journal-entry/<int:pk>/',
-         login_required(views.JournalEntryUpdate.as_view()),
-         name='surftof-journal-entry-update'),
-    path('journal-entry/<int:pk>/delete/',
-         login_required(views.JournalEntryDelete.as_view()),
-         name='surftof-journal-entry-delete'),
-    path('measurement/add/',
-         login_required(views.MeasurementCreate.as_view()),
-         name='surftof-measurement-add'),
-    path('measurement/<int:pk>/',
-         login_required(views.MeasurementUpdate.as_view()),
-         name='surftof-measurement-update'),
-    path('measurement/<int:pk>/delete/',
-         login_required(views.MeasurementDelete.as_view()),
-         name='surftof-measurement-delete'),
-    path('preview-image/<int:measurement_id>/',
-         views.mass_spec_preview_image,
-         name="surftof-mass-spec-preview-image"),
+    # Journal
+    path('journal/',
+         journal.views.JournalListView.as_view(
+             model=JournalEntry,
+             experiment='SurfTOF'),
+         name='surftof-journal'),
+    path('journal/add/',
+         journal.views.JournalEntryCreate.as_view(
+             model=JournalEntry,
+             experiment='SurfTOF'),
+         name='surftof-journal-add'),
+    path('journal/<int:pk>/',
+         journal.views.JournalEntryUpdate.as_view(
+             model=JournalEntry),
+         name='surftof-journal-update'),
+    path('journal/<int:pk>/delete/',
+         journal.views.JournalEntryDelete.as_view(
+             model=JournalEntry,
+             experiment='SurfTOF'),
+         name='surftof-journal-delete'),
 
-    # preview data
-    path('preview/',
-         views.preview,
-         name="surftof-preview"),
-    path('preview/file_list/',
-         views.preview_file_list,
-         name="surftof-preview-file-list"),
-    path('preview/data/',
-         views.preview_data,
-         name="surftof-preview-data"),
-    path('preview/file-info/<int:measurement_id>/',
-         views.preview_get_file_info,
-         name="surftof-preview-file-info"),
-    path('preview/trace/',
-         views.preview_trace,
-         name="surftof-preview-trace"),
-    path('preview/wait/',
-         views.preview_xkcd,
-         name="surftof-preview-xkcd"),
+    # mass spectra
+    path('mass-spectra/',
+         massspectra.views.MassSpectraView.as_view(
+             model=Measurement,
+             model_admin=MeasurementsAdmin,
+             experiment_name='SurfTOF'),
+         name="surftof-mass-spectra"),
+    path('mass-spectra/measurements/',
+         massspectra.views.MassSpectraMeasurementListJson.as_view(
+             measurement_model=Measurement),
+         name="surftof-mass-spectra-measurements"),
+    path('mass-spectra/data/',
+         views.get_mass_spectra_data,
+         name="surftof-mass-spectra-data"),
+
+    # mass spectra traces
+    path('mass-spectra/trace/',
+         views.mass_spectra_trace,
+         name="surftof-mass-spectra-trace"),
+    path('mass-spectra/wait/',
+         views.mass_spectra_xkcd,
+         name="surftof-mass-spectra-xkcd"),
 
     # json export
     path('<table>/<int:pk>.json',
          views.json_export,
          name="surftof-json-data"),
+
+    # json export measurement
+    path('measurement/<int:pk>.json',
+         massspectra.views.json_export,
+         {'model': Measurement},
+         name="surftof-measurement-json"),
 
     # table export
     path('<table>.html',

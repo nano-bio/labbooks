@@ -1,0 +1,10 @@
+{% load static %}
+
+<script src="{% static 'simple-lightbox/simple-lightbox.jquery.min.js' %}"></script>
+<script>
+  let boxes = [];
+  {#$('.simpleLightbox').simpleLightbox();#}
+  $(".simpleLightbox").each(function () {
+    boxes.push($(this).find('a').simpleLightbox());
+  });
+</script>

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container mb-4 mt-4">
+        <h4 class="border-bottom mb-4">
+            {% if object.id %}
+                Change Journal Entry with ID {{ object.pk }}
+            {% else %}
+                New Journal Entry
+            {% endif %}
+        </h4>
+        <form method="post" novalidate enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success">
+                {% if object.id %}
+                    Update
+                {% else %}
+                    Create
+                {% endif %}
+            </button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_head %}
+    {{ form.media }}
+    <style>
+        label[for=id_comment] {
+            display: block;
+        }
+
+        .django-ckeditor-widget {
+            width: 100%
+        }
+
+        .cke_chrome {
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block extra_js %}
+    {% if not object.id %}
+        <script>
+          const image1 = $("#id_image1");
+          const image2 = $("#id_image2");
+          const image3 = $("#id_image3");
+          const image4 = $("#id_image4");
+          const image5 = $("#id_image5");
+
+          function checkHideShowImageUploads() {
+            if ($.trim(image1.val()).length > 0) {
+              image2.parent().parent().parent().show()
+            } else {
+              if ($.trim(image2.val()).length === 0)
+                image2.parent().parent().parent().hide()
+            }
+            if ($.trim(image2.val()).length > 0) {
+              image3.parent().parent().parent().show()
+            } else {
+              if ($.trim(image3.val()).length === 0)
+                image3.parent().parent().parent().hide()
+            }
+            if ($.trim(image3.val()).length > 0) {
+              image4.parent().parent().parent().show()
+            } else {
+              if ($.trim(image4.val()).length === 0)
+                image4.parent().parent().parent().hide()
+            }
+            if ($.trim(image4.val()).length > 0) {
+              image5.parent().parent().parent().show()
+            } else {
+              if ($.trim(image5.val()).length === 0)
+                image5.parent().parent().parent().hide()
+            }
+          }
+
+          checkHideShowImageUploads()
+
+          $('input').change(function () {
+            checkHideShowImageUploads()
+          })
+        </script>
+    {% endif %}
+{% endblock %}

@@ -63,5 +63,5 @@ class MeasurementsAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(models.Measurement, MeasurementsAdmin)
-admin.site.register(models.Person)
+# admin.site.register(models.Measurement, MeasurementsAdmin)
+# admin.site.register(models.Person)

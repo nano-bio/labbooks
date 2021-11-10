@@ -2,10 +2,16 @@ labbooks
 ========
 
 The repo holds our labbook software (currently used by CLUSTOF, SURFTOF, TOFFY, TOFFY2).
-Requires django >= 3.0 (tested until 3.1.3)
+Requires django >= 3.0 (tested until 3.2.9)
 
 Changelog
 =========
+10.11.2021
+* ALL/MODIFY/Felix: New shared template (bootstrap 5)
+* CLUSTOF/ADD/Felix: Mass Spectra Viewer, Journal
+* TOFFY/ADD/Felix: Mass Spectra Viewer, Journal, Pressure Viewer
+* TOFFY2/ADD/Felix: Mass Spectra Viewer, Journal
+
 31.05.2021
 * CLUSTOF/MODIFY/Felix: Add pu3 to measurements
 

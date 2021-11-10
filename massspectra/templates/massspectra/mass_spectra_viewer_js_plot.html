@@ -1,0 +1,199 @@
+{% load static %}
+
+<script src="{% static 'dygraph/dygraph.min.js' %}"></script>
+<script src="{% static 'jquery.toast/jquery.toast.min.js' %}"></script>
+<script src="{% static 'js.cookie/js.cookie.min.js' %}"></script>
+<script>
+  let dataIdFile1 = {{ page_obj.0.id }};
+  let dataIdFile2 = null;
+  let diffPlot = false;
+  const scaleDataFile2 = $('#inputScaleFile2');
+  const fileInfoBody1 = $('#fileInfoBody1');
+  const fileInfoBody2 = $('#fileInfoBody2');
+  const inputBinning = $('#inputBinning');
+  const inputMaxMass = $('#inputMassMax');
+  const spinner = $('#loading');
+
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+    }
+  });
+
+  let cookie = Cookies.get('inputMaxMass');
+  if (cookie !== undefined)
+    inputMaxMass.val(cookie)
+  cookie = Cookies.get('inputBinning');
+  if (cookie !== undefined)
+    inputBinning.val(cookie)
+
+  inputMaxMass.change(function () {
+    Cookies.set('inputMaxMass', $(this).val());
+    plot();
+  });
+  inputBinning.change(function () {
+    Cookies.set('inputBinning', $(this).val())
+    plot();
+  });
+  scaleDataFile2.change(function () {
+    plot();
+  });
+
+  $('#button-lin-log-plot').click(function () {
+    if (g.getOption('logscale') === true) g.updateOptions({logscale: false});
+    else g.updateOptions({logscale: true});
+  });
+
+  let searchParams = new URLSearchParams(window.location.search)
+  if (searchParams.has('id')) {
+    dataIdFile1 = searchParams.get('id')
+  }
+  plot();
+
+  function show(dataId) {
+    dataIdFile2 = null;
+    diffPlot = false;
+    dataIdFile1 = dataId;
+    plot();
+  }
+
+  function sameIDs(dataId) {
+    if (dataId === dataIdFile1) {
+      $.toast({
+        heading: 'Error',
+        text: "You want to compare ID " + dataId + " with " + dataId + "? Sounds like a hard task!",
+        showHideTransition: 'fade',
+        icon: 'warning',
+        hideAfter: 8000,
+      })
+      return true
+    }
+  }
+
+  function compare(dataId) {
+    if (!sameIDs(dataId)) {
+      dataIdFile2 = dataId;
+      diffPlot = false;
+      plot();
+    }
+  }
+
+  function diff(dataId) {
+    if (!sameIDs(dataId)) {
+      dataIdFile2 = dataId;
+      diffPlot = true;
+      plot();
+    }
+  }
+
+  g = new Dygraph(
+    document.getElementById("graphdiv"),  // containing div
+    [[0, 0]],                             // data
+    {                                     // options
+      legend: 'always',
+      labels: ['m/z', 'ID ' + dataIdFile1],
+      ylabel: 'Counts per second',
+      xlabel: 'mass / z',
+      {# clickCallback: function (e, x, pts) {  // this has been removed, as it is for the traces of surftof only #}
+      {#  if (selectMassMinMax === 'min') {#}
+      {#    massMin.val(x);#}
+      {#    massMin.removeClass('active-input');#}
+      {#    massMax.addClass('active-input');#}
+      {#    selectMassMinMax = 'max';#}
+      {#  } else if (selectMassMinMax === 'max') {#}
+      {#    massMax.val(x);#}
+      {#    massMax.removeClass('active-input');#}
+      {#    selectMassMinMax = false;#}
+      {#  }#}
+      {# },#}
+    }
+  );
+
+  function plot() {
+    if (dataIdFile2)
+      scaleDataFile2.parent().show()
+    else
+      scaleDataFile2.parent().hide()
+    spinner.show('slow');
+    let binnedBy = parseInt(inputBinning.val());
+    let url = "{{ url_data }}";
+    $.post(url, {
+      dataIdFile1: dataIdFile1,
+      dataIdFile2: dataIdFile2,
+      scaleDataFile2: parseFloat(scaleDataFile2.val()).toFixed(3),
+      diffPlot: diffPlot,
+      binnedBy: binnedBy,
+      maxMass: inputMaxMass.val()
+    }).done(function (data) {
+      let labels = ['m/z']
+      if (dataIdFile2 && diffPlot)
+        labels.push('ID ' + dataIdFile1 + ' - ID ' + dataIdFile2)
+      else if (dataIdFile2)
+        labels.push('ID ' + dataIdFile1, 'ID ' + dataIdFile2)
+      else
+        labels.push('ID ' + dataIdFile1)
+      g.updateOptions({
+        'file': data.data,
+        'labels': labels
+      });
+      let urlJson1 = '{{ url_json_file_info }}'.replace('00', dataIdFile1);
+      $.getJSON(urlJson1).done(function (data) {
+        fileInfoBody1.html(
+          buildHtmlForFileInfo(data));
+        $('#fileInfoId1').html(data[0].pk)
+      });
+      if (dataIdFile2 != null) {
+        let urlJson2 = '{{ url_json_file_info }}'.replace('00', dataIdFile2);
+        $.getJSON(urlJson2).done(function (data) {
+          $('#col-card-file2-info').show()
+          $('.plot-indicator-green').show()
+          fileInfoBody2.html(
+            buildHtmlForFileInfo(data)
+          );
+          $('#fileInfoId2').html(data[0].pk)
+        });
+      } else {
+        $('#col-card-file2-info').hide()
+        $('.plot-indicator-green').hide()
+      }
+    }).fail(function () {
+      $.toast({
+        heading: 'Error',
+        text: 'Something went wrong',
+        showHideTransition: 'fade',
+        icon: 'warning'
+      })
+    }).always(function () {
+      spinner.hide();
+    });
+  }
+
+  const fields = {
+  {% for field in fields %}
+    {{ field.name }}: "{{ field.verbose_name }}",
+  {% endfor %}
+  }
+
+  function buildHtmlForFileInfo(data) {
+    let content = '<table class="table">';
+    $.each(data[0].fields, function (key, value) {
+      if (key in fields && value !== null && value !== '') {
+        if (value === 'NEG')
+          value = 'negative'
+        else if (value === 'POS')
+          value = 'positive'
+        else if (value === true)
+          value = '✓'
+        else if (value === false)
+          value = '✕'
+        let view = ''
+        if (key in switchStates && switchStates[key] !== 'true')
+          view = ' style="display: none;"'
+        content += '<tr class="fileInfoRow' + key + '"' + view + '><td title="' + key + '">' + fields[key] + '</td><td>' + value + '</td></tr>';
+      }
+    });
+    content += '</table>';
+    return content;
+  }
+
+</script>
