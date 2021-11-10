@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.utils.timezone import now
 
 from cheminventory import models as cheminventory_models
 from journal.models import BasicJournalEntry
@@ -36,7 +37,7 @@ class Operator(models.Model):
 
 
 class Measurement(models.Model):
-    time = models.DateTimeField(auto_now=False, auto_now_add=False)
+    time = models.DateTimeField(default=now)
     tof_settings_file = models.CharField(max_length=1500, verbose_name='TOF Settings File')
     laser_power_file = models.FileField(
         upload_to='clustof/powerfiles/', blank=True,

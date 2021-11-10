@@ -1,6 +1,5 @@
 import datetime
 import re
-from urllib.parse import quote
 
 import pytz
 from django.conf import settings
@@ -10,6 +9,7 @@ from django.template import Context
 from django.template.loader import get_template
 
 from clustof.models import Comment, Measurement, Operator, Turbopump, TurbopumpStatus, VacuumStatus
+from labbooks.admin_common import create_new_entry_based_on_existing_one
 
 
 class CommentInline(admin.TabularInline):
@@ -130,23 +130,12 @@ class MeasurementAdmin(admin.ModelAdmin):
         return HttpResponse(values)
 
     def create_new_measurement_based_on_existing_one(self, request, queryset):
-        # we can only base it on one measurement
-        if len(queryset) == 1:
-            s = queryset.get()
-            # this variable will hold all the values and is the address to the new measurement form
-            redirect_address = u'add/?'
-            # we don't want these to be adopted
-            forbidden_items = ['_state', 'time', 'data_filename', 'rating', '_state']
-            # walk through all fields of the model
-            for item in s.__dict__:
-                if item not in forbidden_items:
-                    if s.__dict__[item] is not None:
-                        redirect_address += quote(item) + '=' + quote(s.__dict__[item]) + '&'
-
-            # redirect to newly created address
-            return HttpResponseRedirect(redirect_address)
-        else:
-            messages.error(request, 'You can only base a new measurement on ONE existing measurement, stupid.')
+        forbidden_items = ['_state', 'time', 'data_filename', 'rating', '_state']
+        return create_new_entry_based_on_existing_one(
+            request,
+            queryset,
+            forbidden_items
+        )
 
     def scan_properties(self, request, queryset):
         measurements = queryset.all().order_by('id')
@@ -160,20 +149,6 @@ class MeasurementAdmin(admin.ModelAdmin):
     scan_properties.short_description = u'Export measurement properties'
 
 
-# class JournalEntryAdmin(admin.ModelAdmin):
-#     def propertime(self, obj):
-#         return obj.time.strftime('%d %m %Y, %H:%M')
-#
-#     propertime.short_description = 'Time and date'
-#
-#     list_display = ('propertime', 'operator', 'attachment', 'written_notes')
-#     list_filter = ('operator', 'time')
-#     search_fields = ('comment',)
-#     save_as = True
-#     save_on_top = True
-#     ordering = ('-time',)
-
-
 class CommentAdmin(admin.ModelAdmin):
     raw_id_fields = ('measurement',)
 
@@ -181,7 +156,6 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Measurement, MeasurementAdmin)
 admin.site.register(Operator)
-# admin.site.register(JournalEntry, JournalEntryAdmin)
 admin.site.register(Turbopump)
 admin.site.register(TurbopumpStatus)
 admin.site.register(VacuumStatus)

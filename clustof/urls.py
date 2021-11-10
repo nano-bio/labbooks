@@ -92,9 +92,9 @@ urlpatterns = [
                                           "secondary m-1'>Compare</button><button type='button' onclick='diff(${data[i"
                                           "].id})'class='btn btn-sm btn-outline-secondary m-1'>Diff</button><a href='/"
                                           "admin/clustof/measurement/${data[i].id}/change/'class='btn btn-sm btn-outli"
-                                          "ne-secondary m-1'>Show Measurement</a><a href='/clustof/laser-scan/1/' clas"
-                                          "s='btn btn-sm btn-outline-secondary m-1'>Laser Scan</a></li>`, active: true"
-                                          "}"},
+                                          "ne-secondary m-1'>Show Measurement</a><a href='/clustof/laser-scan/${data[i"
+                                          "].id}/' class='btn btn-sm btn-outline-secondary m-1'>Laser Scan</a></li>`, "
+                                          "active: true}"},
              experiment_name='ClusTOF'),
          name="clustof-mass-spectra"),
     path('mass-spectra/measurements/',
