@@ -157,7 +157,7 @@ class Measurement(models.Model):
     gas_setpoint_surf = models.FloatField(blank=True, null=True)
     projectile = models.CharField(max_length=50, blank=True, null=True)
     surface_material = models.ForeignKey(Surface, blank=True, null=True, on_delete=models.PROTECT)
-    surface_temperature = models.FloatField(blank=True, null=True)
+    surface_temperature = models.FloatField(blank=True, null=True,verbose_name="Surface Temperature (C)")
     tof_ions = models.CharField(max_length=3, choices=ION_POLARITIES, default='POS')
     quadrupole_mass = models.FloatField(blank=True, null=True)
     quadrupole_resolution = models.FloatField(blank=True, null=True)
