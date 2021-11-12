@@ -7,6 +7,7 @@ import cheminventory.urls
 import clustof.urls
 import journal.urls
 import labinventory.urls
+import nanoparticles.urls
 import snowball.urls
 import surftof.urls
 import toffy.urls
@@ -17,17 +18,21 @@ from journal.views import homepage
 
 urlpatterns = [
     path('', homepage, name='homepage'),
+    path('journal/', include(journal.urls)),
+
     path('admin/', admin.site.urls),
-    path('vg/', include(vg.urls)),
-    path('wippi/', include(wippi.urls)),
-    path('clustof/', include(clustof.urls)),
-    path('surftof/', include(surftof.urls)),
-    path('snowball/', include(snowball.urls)),
+
     path('cheminventory/', include(cheminventory.urls)),
     path('labinventory/', include(labinventory.urls)),
+
+    path('clustof/', include(clustof.urls)),
+    path('nanoparticles', include(nanoparticles.urls)),
+    path('snowball/', include(snowball.urls)),
+    path('surftof/', include(surftof.urls)),
     path('toffy/', include(toffy.urls)),
     path('toffy2/', include(toffy2.urls)),
-    path('journal/', include(journal.urls)),
+    path('vg/', include(vg.urls)),
+    path('wippi/', include(wippi.urls)),
 ]
 
 if settings.DEBUG:
