@@ -26,7 +26,7 @@ urlpatterns = [
     path('labinventory/', include(labinventory.urls)),
 
     path('clustof/', include(clustof.urls)),
-    path('nanoparticles', include(nanoparticles.urls)),
+    path('nanoparticles/', include(nanoparticles.urls)),
     path('snowball/', include(snowball.urls)),
     path('surftof/', include(surftof.urls)),
     path('toffy/', include(toffy.urls)),

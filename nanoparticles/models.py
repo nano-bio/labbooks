@@ -109,3 +109,15 @@ class Measurement(models.Model):
 
     def __str__(self):
         return f"{self.device}: {self.coating} on {self.substrate}"
+
+
+class MeasurementData(models.Model):
+    measurement = models.OneToOneField(
+        Measurement,
+        on_delete=models.CASCADE)
+    forward_phase = models.JSONField()
+    forward_amplitude = models.JSONField()
+    forward_z_axis = models.JSONField()
+    backward_phase = models.JSONField()
+    backward_amplitude = models.JSONField()
+    backward_z_axis = models.JSONField()
