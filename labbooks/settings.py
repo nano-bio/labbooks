@@ -17,7 +17,6 @@ SNOWBALLIP = '138.232.74.207'
 # snowball, josis computer
 PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 
-
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
 )
@@ -171,3 +170,4 @@ LOGGING = {
 CLUSTOF_FILES_ROOT = '/var/storage/clustof/'
 SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
 NANOPARTICLES_DATA_ROOT = "/mnt/bigshare/"
+NANOPARTICLES_PREVIEW_SIZE = 150

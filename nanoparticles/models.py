@@ -111,13 +111,22 @@ class Measurement(models.Model):
         return f"{self.device}: {self.coating} on {self.substrate}"
 
 
+# return mark_safe('<img src="/directory/%s" width="150" height="150" />' % (self.image))
+
 class MeasurementData(models.Model):
     measurement = models.OneToOneField(
         Measurement,
         on_delete=models.CASCADE)
-    forward_phase = models.JSONField()
-    forward_amplitude = models.JSONField()
-    forward_z_axis = models.JSONField()
-    backward_phase = models.JSONField()
-    backward_amplitude = models.JSONField()
-    backward_z_axis = models.JSONField()
+    forward_phase_data = models.JSONField()
+    forward_amplitude_data = models.JSONField()
+    forward_z_axis_data = models.JSONField()
+    backward_phase_data = models.JSONField()
+    backward_amplitude_data = models.JSONField()
+    backward_z_axis_data = models.JSONField()
+
+    forward_phase_image = models.ImageField()
+    forward_amplitude_image = models.ImageField()
+    forward_z_axis_image = models.ImageField()
+    backward_phase_image = models.ImageField()
+    backward_amplitude_image = models.ImageField()
+    backward_z_axis_image = models.ImageField()
