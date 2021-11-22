@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="btn-group" role="group">
+
+        {% with '1 2 4 8 16 32' as list %}
+            {% for i in list.split %}
+                <input type="radio" class="btn-check" name="btnradio-smoothing"
+                       id="btnradio-smoothing{{ i }}" autocomplete="off"
+                       {% if i == "8" %}checked{% endif %}>
+                <label class="btn btn-outline-primary"
+                       for="btnradio-smoothing{{ i }}">{{ i }}</label>
+            {% endfor %}
+        {% endwith %}
+    </div>
+    Smoothing: dropdown 1,2,4,8,16,32
+    Forward-Backward
+    z-Axis, Phase, Amplitude
+    2D, 3D
+
+    <div id="myDiv"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'plotly/plotly-2.6.3.min.js' %}"></script>
+    <script>
+      let measurementId = 2
+      $.getJSON(
+        "{% url 'nanoparticles-image-data' 1 %}".replace('1', measurementId.toString()),
+        function (data) {
+          const layout = {
+            title: 'Mt Bruno Elevation',
+            autosize: false,
+            width: 500,
+            boxmode: 'group',
+            height: 500,
+            hovermode: false,
+            margin: {
+              l: 65,
+              r: 50,
+              b: 65,
+              t: 90,
+            }
+          };
+
+          Plotly.newPlot(
+            'myDiv',
+            [{
+              z: data.data[2],
+              type: 'surface',
+              contours: {
+                x: {highlight: false},
+                y: {highlight: false},
+                z: {highlight: false}
+              },
+            }],
+            layout);
+        })
+    </script>
+{% endblock %}

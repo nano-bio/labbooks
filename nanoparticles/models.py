@@ -124,9 +124,14 @@ class MeasurementData(models.Model):
     backward_amplitude_data = models.JSONField()
     backward_z_axis_data = models.JSONField()
 
-    forward_phase_image = models.ImageField()
-    forward_amplitude_image = models.ImageField()
-    forward_z_axis_image = models.ImageField()
-    backward_phase_image = models.ImageField()
-    backward_amplitude_image = models.ImageField()
-    backward_z_axis_image = models.ImageField()
+    forward_phase_image = models.ImageField(upload_to='nanoparticles')
+    forward_amplitude_image = models.ImageField(upload_to='nanoparticles')
+    forward_z_axis_image = models.ImageField(upload_to='nanoparticles')
+    backward_phase_image = models.ImageField(upload_to='nanoparticles')
+    backward_amplitude_image = models.ImageField(upload_to='nanoparticles')
+    backward_z_axis_image = models.ImageField(upload_to='nanoparticles')
+
+
+class TestM(models.Model):
+    image = models.ImageField()
+

@@ -38,6 +38,18 @@ def get_data_from_measurement_data_object(measurement_id, measurement_type):
         raise Http404('wrong measurement type given!')
 
 
+
+def new_mage(request):
+    xvalues, yvalues = [1, 2, 3], [4, 6, 5]
+    figure = io.BytesIO()
+    plt.plot(xvalues, yvalues)
+    plt.savefig(figure, format="png")
+    content_file = ImageFile(figure)
+    m = TestM()
+    m.image.save('name_of_image.png', content_file)
+    m.save()
+
+# new_mage()
 def extract_data_from_nid_file(measurement_id):
     def get_data(direction, m_type):
         a= numpy.array(
@@ -48,7 +60,6 @@ def extract_data_from_nid_file(measurement_id):
     def create_image(data):
 
         image = BytesIO()
-        start = time()
         fig = Figure(figsize=(1, 1), dpi=len(data))
 
         ax = fig.add_subplot()
@@ -61,9 +72,7 @@ def extract_data_from_nid_file(measurement_id):
         # fig.add_axes(ax)
         # ax.set_cmap('hot')
         ax.imshow(data, aspect='equal', cmap='hot')
-        print(55, time() - start)
         FigureCanvasAgg(fig).print_png(image)
-
         return image
 
     m = Measurement.objects.get(id=measurement_id)
@@ -79,7 +88,6 @@ def extract_data_from_nid_file(measurement_id):
     ).replace(
         "\\",
         "/")
-    print(os.path.abspath(full_file_name))
     f = afmreader(full_file_name, verbose=False)
 
     forward_phase_data = get_data('Forward', 'Phase')
@@ -96,12 +104,12 @@ def extract_data_from_nid_file(measurement_id):
     md.backward_amplitude_data = backward_amplitude_data
     md.backward_z_axis_data = backward_z_axis_data
 
-    md.forward_phase_image = create_image(forward_phase_data)
-    md.forward_amplitude_image = create_image(forward_amplitude_data)
-    md.forward_z_axis_image = create_image(forward_z_axis_data)
-    md.backward_phase_image = create_image(backward_phase_data)
-    md.backward_amplitude_image = create_image(backward_amplitude_data)
-    md.backward_z_axis_image = create_image(backward_z_axis_data)
+    md.forward_phase_image.save('forward-phase.png',create_image(forward_phase_data))
+    md.forward_amplitude_image.save('forward-phase.png',create_image(forward_amplitude_data))
+    md.forward_z_axis_image.save('forward-phase.png',create_image(forward_z_axis_data))
+    md.backward_phase_image.save('forward-phase.png',create_image(backward_phase_data))
+    md.backward_amplitude_image.save('forward-phase.png',create_image(backward_amplitude_data))
+    md.backward_z_axis_image.save('forward-phase.png',create_image(backward_z_axis_data))
 
     md.save()
     return md
