@@ -17,8 +17,6 @@ SNOWBALLIP = '138.232.74.207'
 # snowball, josis computer
 PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
 
-SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
-
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
 )
@@ -122,23 +120,25 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
-    'journal',
-    'massspectra',
-    'vg',
-    'clustof',
-    'wippi',
-    'cheminventory',
-    'surftof',
-    'snowball',
-    'toffy',
-    'toffy2',
-    'labinventory',
-    'pulsetube',
-    # 'moses',
     'rest_framework',
     'crispy_forms',
     "crispy_bootstrap5",
     'ckeditor',
+
+    'cheminventory',
+    'journal',
+    'labinventory',
+    'massspectra',
+
+    'clustof',
+    'nanoparticles',
+    'pulsetube',
+    'surftof',
+    'snowball',
+    'toffy',
+    'toffy2',
+    'vg',
+    'wippi',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -168,3 +168,6 @@ LOGGING = {
     }
 }
 CLUSTOF_FILES_ROOT = '/var/storage/clustof/'
+SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
+NANOPARTICLES_DATA_ROOT = "/mnt/bigshare/"
+NANOPARTICLES_PREVIEW_SIZE = 150

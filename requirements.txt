@@ -26,3 +26,7 @@ numpy==1.19.5 # pip complains on server that a newer version does not exists
 
 # for wippi
 pytz==2021.3
+
+# for nanoparticles
+NSFopen==1.1.13
+pandas==1.3.4

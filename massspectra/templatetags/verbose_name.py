@@ -10,4 +10,4 @@ def get_verbose_field_name(instance, field_name):
 
 @register.filter
 def get_from_key(obj, key):
-    return getattr(obj,key)
+    return getattr(obj, key)

@@ -27,40 +27,7 @@
                 Show configuration
             </button>
 
-            {% if page_obj.has_other_pages %}
-                <nav class="float-left">
-                    <ul class="pagination">
-                        {% if page_obj.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" data-page="{{ page_obj.previous_page_number }}"
-                                   href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
-                            </li>
-                        {% else %}
-                            <li class="page-link disabled"><span>&laquo;</span></li>
-                        {% endif %}
-                        {% for i in page_obj.paginator.page_range %}
-                            {% if page_obj.number == i %}
-                                <li class="page-item active">
-                                    <a class="page-link" data-page="{{ page_obj.number }}"
-                                       href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
-                                </li>
-                            {% else %}
-                                <li class="page-item">
-                                    <a class="page-link" data-page="{{ i }}" href="?page={{ i }}">{{ i }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                        {% if page_obj.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" data-page="{{ page_obj.next_page_number }}"
-                                   href="?page={{ page_obj.next_page_number }}">&raquo;</a>
-                            </li>
-                        {% else %}
-                            <li class="page-link disabled"><span>&raquo;</span></li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% endif %}
+            {% include 'includes/pagination.html' %}
 
         </div>
 
@@ -101,40 +68,7 @@
             {% endfor %}
         </table>
 
-        {% if page_obj.has_other_pages %}
-            <nav class="float-left">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" data-page="{{ page_obj.previous_page_number }}"
-                               href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
-                        </li>
-                    {% else %}
-                        <li class="page-link disabled"><span>&laquo;</span></li>
-                    {% endif %}
-                    {% for i in page_obj.paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <li class="page-item active">
-                                <a class="page-link" data-page="{{ page_obj.number }}"
-                                   href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item">
-                                <a class="page-link" data-page="{{ i }}" href="?page={{ i }}">{{ i }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" data-page="{{ page_obj.next_page_number }}"
-                               href="?page={{ page_obj.next_page_number }}">&raquo;</a>
-                        </li>
-                    {% else %}
-                        <li class="page-link disabled"><span>&raquo;</span></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        {% endif %}
+        {% include 'includes/pagination.html' %}
 
     </div>
 {% endblock %}
@@ -143,21 +77,21 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-deparam@0.5.3/jquery-deparam.min.js"></script>
     <script>
-        $(function () {
-            let inputs = deparam(Cookies.get('surftofTableInputs'));
-            $.each(inputs, function (key, value) {
-                $("#checkbox-" + key).prop('checked', value === 'true');
-                $('.' + key).toggle(value === 'true');
-            });
-
-            $('input').change(function () {
-                inputs[$(this).attr('name')] = $(this).is(":checked")
-                Cookies.set('surftofTableInputs', $.param(inputs));
-            })
+      $(function () {
+        let inputs = deparam(Cookies.get('surftofTableInputs'));
+        $.each(inputs, function (key, value) {
+          $("#checkbox-" + key).prop('checked', value === 'true');
+          $('.' + key).toggle(value === 'true');
         });
 
-        $('.toggle-columns :checkbox').change(function () {
-            $('.' + $(this).data('key')).toggle(this.checked);
-        });
+        $('input').change(function () {
+          inputs[$(this).attr('name')] = $(this).is(":checked")
+          Cookies.set('surftofTableInputs', $.param(inputs));
+        })
+      });
+
+      $('.toggle-columns :checkbox').change(function () {
+        $('.' + $(this).data('key')).toggle(this.checked);
+      });
     </script>
 {% endblock %}

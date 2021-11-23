@@ -6,6 +6,9 @@ Requires django >= 3.0 (tested until 3.2.9)
 
 Changelog
 =========
+23.11.2021
+* NanoParticles/ADD/Felix: New Labbook for STM & AFM Images
+
 10.11.2021
 * ALL/MODIFY/Felix: New shared template (bootstrap 5)
 * CLUSTOF/ADD/Felix: Mass Spectra Viewer, Journal

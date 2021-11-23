@@ -1,0 +1,26 @@
+{% load verbose_name %}
+
+<div class="modal fade" id="modalSettingsFileInfo" tabindex="-1" aria-labelledby="modalSettingsFileInfoLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSettingsFileInfoLabel">Show / Hide Settings in File Info</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="toggle-values">
+                {% for field in fields %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheck{{ field }}"
+                               name="{{ field }}" checked>
+                        <label class="form-check-label" for="flexSwitchCheck{{ field }}">
+                            {% get_verbose_field_name object_list.0 field %} <span
+                            class="text-muted">({{ field }})</span>
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
