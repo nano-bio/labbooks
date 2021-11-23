@@ -1,0 +1,56 @@
+<div class="row g-3 align-items-center">
+
+    <div class="col-auto">
+        <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="btnradio-direction" value="forward"
+                   id="btnradio-direction-forward" autocomplete="off" checked>
+            <label class="btn btn-outline-primary"
+                   for="btnradio-direction-forward">Forward</label>
+            <input type="radio" class="btn-check" name="btnradio-direction" value="backward"
+                   id="btnradio-direction-backward" autocomplete="off">
+            <label class="btn btn-outline-primary"
+                   for="btnradio-direction-backward">Backward</label>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="btnradio-type" id="btnradio-type-z-axis"
+                   autocomplete="off" value="z_axis" checked>
+            <label class="btn btn-outline-primary" for="btnradio-type-z-axis">Z-Axis</label>
+
+            <input type="radio" class="btn-check" name="btnradio-type" id="btnradio-type-amplitude"
+                   autocomplete="off" value="amplitude">
+            <label class="btn btn-outline-primary" for="btnradio-type-amplitude">Amplitude</label>
+
+            <input type="radio" class="btn-check" name="btnradio-type" id="btnradio-type-phase"
+                   autocomplete="off" value="phase">
+            <label class="btn btn-outline-primary" for="btnradio-type-phase">Phase</label>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="btnradio-dimension" id="btnradio-dimension-2d"
+                   autocomplete="off" value="2d" checked>
+            <label class="btn btn-outline-primary" for="btnradio-dimension-2d">2D</label>
+
+            <input type="radio" class="btn-check" name="btnradio-dimension" id="btnradio-dimension-3d"
+                   autocomplete="off" value="3d">
+            <label class="btn btn-outline-primary" for="btnradio-dimension-3d">3D</label>
+        </div>
+    </div>
+    <div class="col-auto">
+        <label for="btnradio-smoothing" class="col-form-label">Smoothing</label>
+        <div class="btn-group ms-2" role="group">
+            {% with '1 2 4 8 16 32' as list %}
+                {% for i in list.split %}
+                    <input type="radio" class="btn-check" name="btnradio-smoothing"
+                           id="btnradio-smoothing{{ i }}" autocomplete="off" value="{{ i }}"
+                           {% if i == "8" %}checked{% endif %}>
+                    <label class="btn btn-outline-primary"
+                           for="btnradio-smoothing{{ i }}">{{ i }}</label>
+                {% endfor %}
+            {% endwith %}
+        </div>
+    </div>
+
+</div>

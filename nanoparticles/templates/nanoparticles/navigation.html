@@ -1,0 +1,19 @@
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+       data-bs-toggle="dropdown" aria-expanded="false">
+        NanoParticles
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <li>
+            <a class="dropdown-item" href="{% url "nanoparticles-journal" %}">Journal</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url "nanoparticles-measurements" %}">Measurements</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url 'admin:nanoparticles_measurement_changelist' %}">
+                Admin: Measurements
+            </a>
+        </li>
+    </ul>
+</li>
