@@ -1,7 +1,9 @@
 import pytz
 from django.contrib import admin
+from django.templatetags.static import static
+from django.utils.safestring import mark_safe
 
-from labbooks.admin_common import create_new_entry_based_on_existing_one
+from labbooks.admin_common import create_new_entry_based_on_existing_one, create_new_entry_based_on_existing_one_url
 from surftof.models import PotentialSettings, Measurement, Gas, Surface, MeasurementType, JournalEntry
 
 
@@ -77,9 +79,9 @@ class PotentialSettingsAdmin(admin.ModelAdmin):
 
 class MeasurementsAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'get_date', 'get_short_description', 'projectile', 'get_surface', 'get_impact_energy_surface',
-        'get_surface_temperature', 'gas_surf', 'get_rating_stars')
-    list_filter = ('measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf', 'short_description')
+        'id', 'create_new_measurement_based_on_existing_one_inline', 'get_short_description', 'projectile',
+        'get_surface', 'get_impact_energy_surface', 'get_surface_temperature', 'gas_surf', 'get_rating_stars')
+    list_filter = ('measurement_type', 'projectile', 'surface_material', 'gas_is', 'gas_surf')
     search_fields = ('comment', 'projectile', 'surface_material__name', 'gas_is__name', 'gas_surf__name', 'id',
                      'short_description')
     readonly_fields = ('id',)
@@ -113,13 +115,15 @@ class MeasurementsAdmin(admin.ModelAdmin):
         ('Comment', {'fields': ('comment',)})
     )
 
-    def create_new_measurement_based_on_existing_one(self, request, queryset):
+    def create_new_measurement_based_on_existing_one_inline(self, s):
         forbidden_items = ['time', '_state']
-        return create_new_entry_based_on_existing_one(
-            request,
-            queryset,
-            forbidden_items
-        )
+        url = create_new_entry_based_on_existing_one_url(s, forbidden_items)
+        return mark_safe(
+            f"<a href='{url}' title='Duplicate this measurement'>"
+            f"<img src='{static('images/clipboard-plus.svg')}'>"
+            f"</a>")
+
+    create_new_measurement_based_on_existing_one_inline.short_description = ""
 
 
 admin.site.register(PotentialSettings, PotentialSettingsAdmin)
