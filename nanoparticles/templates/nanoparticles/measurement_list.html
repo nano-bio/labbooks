@@ -2,60 +2,67 @@
 {% load static verbose_name %}
 
 {% block content %}
-    <div class="container-fluid pt-4 pb-5">
-        <div class="row">
+    {% if object_list %}
+        <div class="container-fluid pt-4 pb-5">
+            <div class="row">
 
-            <div class="col">
-                {# MEASUREMENT LIST #}
-                <div class="table-responsive">
-                    <table class="table table-hover table-sm">
-                        <tr>
-                            <th class="ps-3"><i class="bi bi-eye"></i></th>
-                            {% for field_name in fields %}
-                                <th class="{{ field_name }}">{% get_verbose_field_name object_list.0 field_name %}</th>
-                            {% endfor %}
-                        </tr>
-                        {% for row in object_list %}
+                <div class="col">
+                    {# MEASUREMENT LIST #}
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm">
                             <tr>
-                                <td>
-                                    <button class="btn btn-outline-primary" onclick="show({{ row.id }})">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                </td>
+                                <th class="ps-3"><i class="bi bi-eye"></i></th>
                                 {% for field_name in fields %}
-                                    {% if row|get_from_key:field_name == None %}
-                                        <td class="{{ field_name }}"></td>
-                                    {% else %}
-                                        <td class="{{ field_name }}">{{ row|get_from_key:field_name }}</td>
-                                    {% endif %}
+                                    <th class="{{ field_name }}">{% get_verbose_field_name object_list.0 field_name %}</th>
                                 {% endfor %}
                             </tr>
-                        {% endfor %}
-                    </table>
+                            {% for row in object_list %}
+                                <tr>
+                                    <td>
+                                        <button class="btn btn-outline-primary" onclick="show({{ row.id }})">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                    {% for field_name in fields %}
+                                        {% if row|get_from_key:field_name == None %}
+                                            <td class="{{ field_name }}"></td>
+                                        {% else %}
+                                            <td class="{{ field_name }}">{{ row|get_from_key:field_name }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-evenly mt-3">
+                        {% include 'includes/pagination.html' %}
+                        {# OPEN SETTINGS MODAL #}
+                        <button
+                            class="btn btn-outline-primary float-right" type="button" data-bs-toggle="modal"
+                            data-bs-target="#modalSettingsFileInfo">
+                            <i class="bi bi-gear"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="d-flex justify-content-evenly mt-3">
-                    {% include 'includes/pagination.html' %}
-                    {# OPEN SETTINGS MODAL #}
-                    <button
-                        class="btn btn-outline-primary float-right" type="button" data-bs-toggle="modal"
-                        data-bs-target="#modalSettingsFileInfo">
-                        <i class="bi bi-gear"></i>
-                    </button>
+                {# SETTINGS AND PREVIEW #}
+                <div class="col-6" style="max-width: 750px">
+                    {% include 'nanoparticles/viewer_settings.html' %}
+
+                    <img id="image" class="img-thumbnail mt-4" src="https://via.placeholder.com/1024" alt="preview">
+                    <div id="viewer3d" class="d-none"></div>
                 </div>
-            </div>
-
-            {# SETTINGS AND PREVIEW #}
-            <div class="col-6" style="max-width: 750px">
-                {% include 'nanoparticles/viewer_settings.html' %}
-
-                <img id="image" class="img-thumbnail mt-4" src="https://via.placeholder.com/1024" alt="preview">
-                <div id="viewer3d" class="d-none"></div>
             </div>
         </div>
-    </div>
 
-    {% include 'nanoparticles/viewer_modal.html' %}
+        {% include 'nanoparticles/viewer_modal.html' %}
+    {% else %}
+        <h1 class="mt-5 text-center">Oh, nothing here :-(</h1>
+        <h3 class="mt-5 text-center">
+            Let's <a href="{% url 'admin:nanoparticles_measurement_changelist' %}">add</a> something
+        </h3>
+    {% endif %}
 
 {% endblock %}
 
