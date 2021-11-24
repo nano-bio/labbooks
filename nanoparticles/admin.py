@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.contrib import admin
 from django.templatetags.static import static
+from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
 
 from labbooks.admin_common import create_new_entry_based_on_existing_one_url
-from nanoparticles.models import Measurement, Substrate, Coating, MeasurementData
+from nanoparticles.models import Measurement, Substrate, Coating
 
 
 class MeasurementAdmin(admin.ModelAdmin):
@@ -40,19 +41,7 @@ class MeasurementAdmin(admin.ModelAdmin):
     ]
 
     def preview_image(self, obj):
-        image_type = 'forward_z_axis_image'
-        m_data = MeasurementData.objects \
-            .filter(measurement_id=obj.id) \
-            .values(image_type)
-
-        if len(m_data) != 1:
-            url = static('img/worker.png')
-        else:
-            relative_url = m_data[0][image_type]
-            if relative_url:
-                url = settings.MEDIA_URL + relative_url
-            else:
-                url = static('img/worker.png')
+        url = reverse_lazy('nanoparticles-image', args=[obj.id, 'Forward', 'Z-Axis'])
 
         return_str = mark_safe(
             f'<a href"#">'

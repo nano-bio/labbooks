@@ -8,7 +8,7 @@
         <div class="container-fluid pt-4 pb-5">
             <div class="row">
 
-                <div class="col">
+                <div class="col-12 col-lg-6 col-xxl-7 mb-4">
                     {# MEASUREMENT LIST #}
                     <div class="table-responsive">
                         <table class="table table-hover table-sm">
@@ -49,10 +49,12 @@
                 </div>
 
                 {# SETTINGS AND PREVIEW #}
-                <div class="col-6" style="max-width: 750px">
+                <div class="col-12 col-lg-6 col-xxl-5" style="max-width: 750px">
                     {% include 'nanoparticles/viewer_settings.html' %}
 
-                    <img id="image" class="img-thumbnail mt-4" src="https://via.placeholder.com/1024" alt="preview">
+                    <img id="image" class="img-thumbnail mt-4 img-fluid"
+                         src="{% get_media_prefix %}nanoparticles/{{ object_list.0.id }}-Forward-Z-Axis.png"
+                         alt="preview">
                     <div id="viewer3d" class="d-none"></div>
                 </div>
             </div>
@@ -76,7 +78,7 @@
       const viewer3d = document.getElementById("viewer3d");
 
       let measurementId = {{ object_list.0.id }};
-      let imageUrl = "{% url 'nanoparticles-image' 1 'type' %}";
+      let imageUrl = "{% get_media_prefix %}nanoparticles/id-direction-type.png";
 
       function show(id) {
         measurementId = id;
@@ -93,9 +95,11 @@
           viewer3d.classList.add("d-none")
           image.show()
           setImageSrc(direction, type)
+          $('#smoothing-col').hide()
         } else {
           image.hide()
           viewer3d.classList.remove("d-none")
+          $('#smoothing-col').show()
           update3dViewer(direction, type, smoothing)
         }
       }
@@ -104,24 +108,20 @@
         image.attr(
           "src",
           imageUrl
-            .replace('1', measurementId.toString())
-            .replace('type', direction + '_' + type)
+            .replace('id', measurementId.toString())
+            .replace('direction', direction)
+            .replace('type', type)
         );
       }
-
-      setImageSrc(
-        $('input[name=btnradio-direction]:checked').val(),
-        $('input[name=btnradio-type]:checked').val()
-      )
 
       $(":input").click(reloadPreview)
 
       function update3dViewer(direction, type, smoothing) {
-
         $.getJSON(
-          "{% url 'nanoparticles-image-data' 1 'type' 2 %}"
+          "{% url 'nanoparticles-image-data' 1 'direction' 'type' 2 %}"
             .replace('1', measurementId.toString())
-            .replace('type', direction + '_' + type)
+            .replace('direction', direction)
+            .replace('type', type)
             .replace('2', smoothing), function ({data}) {
 
             let size = viewer3d.offsetWidth;
@@ -158,7 +158,6 @@
           }
         )
       }
-
     </script>
 
     <script src="{% static 'js.cookie/js.cookie.min.js' %}"></script>
@@ -172,7 +171,6 @@
         {# On initial set all input switches from cookie and hide all corresponding File Info Values #}
         $.each(switchStates, function (key, value) {
           $("#flexSwitchCheck" + key).prop('checked', value === 'true');
-          {#$('.fileInfoRow' + key).toggle(value === 'true');#}
           $('.' + key).toggle(value === 'true');
         });
       });

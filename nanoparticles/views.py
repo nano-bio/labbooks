@@ -1,14 +1,10 @@
-import base64
-import pickle
-
-from django.conf import settings
-from django.http import JsonResponse
-from django.shortcuts import redirect
-from django.templatetags.static import static
+import numpy
+from NSFopen.read import read as afmreader
+from django.http import JsonResponse, Http404
 from django.views.generic import ListView
 
 from nanoparticles.admin import MeasurementAdmin
-from nanoparticles.models import MeasurementData, Measurement
+from nanoparticles.models import Measurement
 
 
 class TableViewer(ListView):
@@ -40,37 +36,19 @@ def rebin(a, shape):
     return a.reshape(sh).mean(-1).mean(1)
 
 
-# new_mage()
-def image_data(request, measurement_id, measurement_type, smoothing):
-    m = MeasurementData.objects.filter(
-        measurement_id=measurement_id
-    ).values(
-        measurement_type + '_data'
-    )
-    np_bytes = base64.b64decode(m[0].get(measurement_type + '_data'))
+def image_data(request, measurement_id, direction, measurement_type, smoothing):
+    try:
+        file_name = Measurement.objects.get(id=measurement_id).nid_file.path
+        f = afmreader(file_name, verbose=False)
 
-    np_array = pickle.loads(np_bytes)
-    return JsonResponse({
-        'data': rebin(
-            np_array,
-            (int(1024 / smoothing), int(1024 / smoothing))
-        ).tolist()
-    })
-
-
-def redirect_image(request, measurement_id, measurement_type):
-    measurement_type += '_image'
-    m_data = MeasurementData.objects \
-        .filter(measurement_id=measurement_id) \
-        .values(measurement_type)
-
-    if len(m_data) != 1:
-        url = static('img/worker.png')
-    else:
-        relative_url = m_data[0][measurement_type]
-        if relative_url:
-            url = settings.MEDIA_URL + relative_url
-        else:
-            url = static('img/worker.png')
-
-    return redirect(url)
+        np_array = numpy.array(
+            f.data['Image'][direction][measurement_type],
+            dtype=float)
+        return JsonResponse({
+            'data': rebin(
+                np_array,
+                (int(1024 / smoothing), int(1024 / smoothing))
+            ).tolist()
+        })
+    except Exception as e:
+        return Http404(f'{e}')

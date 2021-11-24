@@ -2,7 +2,7 @@ from django.urls import path
 
 import journal.views
 from nanoparticles.models import JournalEntry
-from nanoparticles.views import image_data, TableViewer, redirect_image
+from nanoparticles.views import image_data, TableViewer
 
 urlpatterns = [
     # Journal
@@ -30,12 +30,7 @@ urlpatterns = [
     path('measurements/', TableViewer.as_view(), name='nanoparticles-measurements'),
 
     # Image DATA
-    path('image-data/<int:measurement_id>/<measurement_type>/<int:smoothing>/',
+    path('image-data/<int:measurement_id>/<direction>/<measurement_type>/<int:smoothing>/',
          image_data,
          name='nanoparticles-image-data'),
-
-    # IMAGE
-    path('image/<int:measurement_id>/<measurement_type>/',
-         redirect_image,
-         name='nanoparticles-image')
 ]

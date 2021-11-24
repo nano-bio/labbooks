@@ -2,11 +2,11 @@
 
     <div class="col-auto">
         <div class="btn-group" role="group">
-            <input type="radio" class="btn-check" name="btnradio-direction" value="forward"
+            <input type="radio" class="btn-check" name="btnradio-direction" value="Forward"
                    id="btnradio-direction-forward" autocomplete="off" checked>
             <label class="btn btn-outline-primary"
                    for="btnradio-direction-forward">Forward</label>
-            <input type="radio" class="btn-check" name="btnradio-direction" value="backward"
+            <input type="radio" class="btn-check" name="btnradio-direction" value="Backward"
                    id="btnradio-direction-backward" autocomplete="off">
             <label class="btn btn-outline-primary"
                    for="btnradio-direction-backward">Backward</label>
@@ -15,15 +15,15 @@
     <div class="col-auto">
         <div class="btn-group" role="group">
             <input type="radio" class="btn-check" name="btnradio-type" id="btnradio-type-z-axis"
-                   autocomplete="off" value="z_axis" checked>
+                   autocomplete="off" value="Z-Axis" checked>
             <label class="btn btn-outline-primary" for="btnradio-type-z-axis">Z-Axis</label>
 
             <input type="radio" class="btn-check" name="btnradio-type" id="btnradio-type-amplitude"
-                   autocomplete="off" value="amplitude">
+                   autocomplete="off" value="Amplitude">
             <label class="btn btn-outline-primary" for="btnradio-type-amplitude">Amplitude</label>
 
             <input type="radio" class="btn-check" name="btnradio-type" id="btnradio-type-phase"
-                   autocomplete="off" value="phase">
+                   autocomplete="off" value="Phase">
             <label class="btn btn-outline-primary" for="btnradio-type-phase">Phase</label>
         </div>
     </div>
@@ -38,7 +38,7 @@
             <label class="btn btn-outline-primary" for="btnradio-dimension-3d">3D</label>
         </div>
     </div>
-    <div class="col-auto">
+    <div class="col-auto" id="smoothing-col" style="display: none">
         <label for="btnradio-smoothing" class="col-form-label">Smoothing</label>
         <div class="btn-group ms-2" role="group">
             {% with '1 2 4 8 16 32' as list %}
