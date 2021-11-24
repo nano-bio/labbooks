@@ -41,7 +41,7 @@ class MeasurementAdmin(admin.ModelAdmin):
     ]
 
     def preview_image(self, obj):
-        url = reverse_lazy('nanoparticles-image', args=[obj.id, 'Forward', 'Z-Axis'])
+        url = settings.MEDIA_URL + f'nanoparticles/{obj.id}-Forward-Z-Axis.png"'
 
         return_str = mark_safe(
             f'<a href"#">'
