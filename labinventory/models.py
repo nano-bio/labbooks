@@ -10,8 +10,10 @@ MODE = (
 
 class Person(models.Model):
     name = models.CharField(max_length=200)
-    mobile = models.CharField(max_length=15, blank=True)
+    mobile = models.FloatField(null=True, blank=True, help_text="Use numbers only, i.e. 0043699123456789")
     email = models.EmailField(blank=True)
+    get_temperature_alarm = models.BooleanField(default=True)
+    get_power_alarm = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -59,17 +61,3 @@ class Temperature(models.Model):
     date_time = models.DateTimeField(auto_now=True)
     temp_sensor_1 = models.FloatField(blank=True, null=True, verbose_name='Temperature Prevacuum Room')
     temp_sensor_2 = models.FloatField(blank=True, null=True, verbose_name='Temperature Big Lab Room')
-
-
-ALARM_TYPES = (
-    ('poweralarm', 'Power alarm'),
-    ('tempalarm', 'Temperature alarm'),
-)
-
-
-class Alarm(models.Model):
-    persons = models.ManyToManyField(Person)
-    type = models.CharField(max_length=10, choices=ALARM_TYPES)
-
-    def __str__(self):
-        return self.type

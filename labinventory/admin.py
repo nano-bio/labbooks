@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.http import HttpResponse
 from openpyxl import load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
-from labinventory.models import PressureGaugeUsageRecord, PressureGauge, GaugeType, Alarm, Person, UsageLocation
+from labinventory.models import PressureGaugeUsageRecord, PressureGauge, GaugeType, Person, UsageLocation
 
 
 class PressureGaugeUsageRecordInline(admin.TabularInline):
@@ -45,13 +45,12 @@ class PressureGaugeAdmin(admin.ModelAdmin):
         return response
 
 
-class AlarmAdmin(admin.ModelAdmin):
-    list_display = ('type',)
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ['name', 'get_power_alarm', 'get_temperature_alarm', 'mobile', 'email']
 
 
 admin.site.register(PressureGauge, PressureGaugeAdmin)
 admin.site.register(GaugeType)
-admin.site.register(Person)
+admin.site.register(Person, PersonAdmin)
 admin.site.register(UsageLocation)
 admin.site.register(PressureGaugeUsageRecord)
-admin.site.register(Alarm, AlarmAdmin)

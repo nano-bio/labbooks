@@ -13,10 +13,7 @@ urlpatterns = [
     path('temperature/',
          TemplateView.as_view(template_name='labinventory/viewTemperature.html'),
          name="labinventory-temp"),
-    path('power-alarm/',
+    path('power-alarm/<fail_clear>/',
          views.power_alarm,
          name="labinventory-power-alarm"),
-    path('power-clear/',
-         views.power_clear,
-         name="labinventory-power-clear"),
 ]

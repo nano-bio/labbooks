@@ -1,34 +1,40 @@
+import os
 from datetime import timedelta
 from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from labinventory.models import Temperature, Alarm
+from labinventory.models import Temperature, Person
 
 
-# creates alarm script for experiment
-def command_line_creator(commandline_sms, commandline_email):
-    complete_command = ''
-    exp = get_object_or_404(Alarm, type='poweralarm')
-    for user in exp.persons.all():
-        if user.mobile is not None:
-            complete_command += commandline_sms.format(user.mobile.replace(' ', '').replace('/', ''))
+def power_alarm(request, fail_clear):
+    if request.user.username != 'gnooki':
+        raise Exception(f"Wrong user: {request.user}, must be 'gnooki'")
+    if fail_clear not in ['fail', 'clear']:
+        raise Exception("Alarm needs argument 'fail' or 'clear'!")
+    users = Person.objects.filter(get_power_alarm=True)
+
+    if fail_clear == "fail":
+        message = "Power failure in the lab!"
+    else:
+        message = "Power returned in the lab!"
+    send_sms = 0
+    send_mails = 0
+    for user in users:
+        if user.mobile:
+            try:
+                os.system(f'echo "{message}" | gnokii --sendsms {user.mobile}')
+                send_sms += 1
+            except:
+                pass
         if user.email:
-            complete_command += commandline_email.format(user.email)
-    return complete_command
+            try:
+                os.system(f'echo "{message}" | mail -s LabAlert {user.email}')
+                send_mails += 1
+            except:
+                pass
 
-
-def power_alarm(request):
-    commandline_sms = 'echo "Power failure alarm in the lab!" | gnokii --sendsms {}\n'
-    commandline_email = 'echo "Power failure alarm in the lab!" | mail -s LabAlert {}\n'
-    return HttpResponse(command_line_creator(commandline_sms, commandline_email))
-
-
-def power_clear(request):
-    commandline_sms = 'echo "Power returned in the lab!" | gnokii --sendsms {}\n'
-    commandline_email = 'echo "Power returned in the lab!" | mail -s LabAlert {}\n'
-    return HttpResponse(command_line_creator(commandline_sms, commandline_email))
+    return HttpResponse(f"Send {send_sms} SMS and {send_mails} Mails.")
 
 
 @csrf_exempt
@@ -87,8 +93,8 @@ def temperature_is_critical(request):
                            "temperature/' | mail -s LabAlert {}"
 
         commands = []
-        exp = get_object_or_404(Alarm, type="tempalarm")
-        for user in exp.persons.all():
+        users = Person.objects.filter(get_temperature_alarm=True)
+        for user in users:
             if user.mobile is not None:
                 commands.append(
                     commandline_sms.format(
