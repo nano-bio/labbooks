@@ -1,3 +1,6 @@
+from re import match
+
+from django.core.exceptions import ValidationError
 from django.db import models
 
 MODE = (
@@ -8,9 +11,15 @@ MODE = (
 )
 
 
+def mobile_validator(value):
+    if not match(r'^([+]|[0]{2}|[0])[1-9]\d+$', value):
+        raise ValidationError(f'{value} has not the format of 0043699123456789 or +43699123456789 or 0699123456789')
+
+
 class Person(models.Model):
     name = models.CharField(max_length=200)
-    mobile = models.IntegerField(null=True, blank=True, help_text="Use numbers only, i.e. 0043699123456789")
+    mobile = models.CharField(blank=True, validators=[mobile_validator], max_length=20,
+                              help_text="Allowed format: 0043699123456789, +43699123456789, 0699123456789")
     email = models.EmailField(blank=True)
     get_temperature_alarm = models.BooleanField(default=True)
     get_power_alarm = models.BooleanField(default=True)
