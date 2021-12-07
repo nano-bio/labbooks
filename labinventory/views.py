@@ -1,10 +1,15 @@
+import logging
 import os
 from datetime import timedelta
+
 from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
+
 from labinventory.models import Temperature, Person
+
+logger = logging.getLogger(__name__)
 
 
 def power_alarm(request, fail_clear):
@@ -23,8 +28,10 @@ def power_alarm(request, fail_clear):
     for user in users:
         if user.mobile:
             try:
-                os.system(f'echo "{message}" | gnokii --sendsms {user.mobile}')
+                command = f'echo "{message}" | gnokii --sendsms {user.mobile}'
+                c = os.system(command)
                 send_sms += 1
+                logger.error(f'\nSomething went wrong!\n{c}\n{command}\n\n')
             except:
                 pass
         if user.email:
