@@ -10,7 +10,7 @@ MODE = (
 
 class Person(models.Model):
     name = models.CharField(max_length=200)
-    mobile = models.FloatField(null=True, blank=True, help_text="Use numbers only, i.e. 0043699123456789")
+    mobile = models.IntegerField(null=True, blank=True, help_text="Use numbers only, i.e. 0043699123456789")
     email = models.EmailField(blank=True)
     get_temperature_alarm = models.BooleanField(default=True)
     get_power_alarm = models.BooleanField(default=True)
