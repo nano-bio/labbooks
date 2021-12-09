@@ -1,5 +1,6 @@
 from django.urls.conf import path
 from django.views.generic import TemplateView
+
 from labinventory import views
 
 urlpatterns = [

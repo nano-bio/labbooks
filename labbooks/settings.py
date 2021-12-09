@@ -1,6 +1,5 @@
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -147,15 +146,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    # 'filters': {
-    #     'require_debug_false': {
-    #         '()': 'django.utils.log.RequireDebugFalse'
-    #     }
-    # },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
-            # 'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },
@@ -167,6 +160,8 @@ LOGGING = {
         },
     }
 }
+DEFAULT_FROM_EMAIL = 'labbooks@uibk.ac.at'
+
 CLUSTOF_FILES_ROOT = '/var/storage/clustof/'
 SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
 NANOPARTICLES_DATA_ROOT = "/mnt/bigshare/"

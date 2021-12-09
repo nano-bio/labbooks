@@ -3,18 +3,19 @@ import os
 from datetime import timedelta
 
 from django.core.cache import cache
+from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 
 from labinventory.models import Temperature, Person
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('django')
 
 
 def power_alarm(request, fail_clear):
     if request.user.username != 'gnooki':
-        raise Exception(f"Wrong user: {request.user}, must be 'gnooki'")
+        return HttpResponse(status=403, content=f"Wrong user: '{request.user}', must be 'gnooki'")
     if fail_clear not in ['fail', 'clear']:
         raise Exception("Alarm needs argument 'fail' or 'clear'!")
     users = Person.objects.filter(get_power_alarm=True)
@@ -29,17 +30,16 @@ def power_alarm(request, fail_clear):
         if user.mobile:
             try:
                 command = f'echo "{message}" | gnokii --sendsms {user.mobile}'
-                c = os.system(command)
+                os.system(command)
                 send_sms += 1
-                logger.error(f'\nSomething went wrong!\n{c}\n{command}\n\n')
-            except:
-                pass
+            except Exception as e:
+                logger.error(f"PowerAlarm send sms failed: {e}")
         if user.email:
             try:
-                os.system(f'echo "{message}" | mail -s LabAlert {user.email}')
+                send_mail('LabAlert2', message, 'labbooks-server@uibk.ac.at', [user.email])
                 send_mails += 1
-            except:
-                pass
+            except Exception as e:
+                logger.error(f"PowerAlarm send mail failed: {e}")
 
     return HttpResponse(f"Send {send_sms} SMS and {send_mails} Mails.")
 
