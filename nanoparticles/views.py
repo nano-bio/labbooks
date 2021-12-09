@@ -51,4 +51,4 @@ def image_data(request, measurement_id, direction, measurement_type, smoothing):
             ).tolist()
         })
     except Exception as e:
-        return Http404(f'{e}')
+        raise Http404(f'{e}')
