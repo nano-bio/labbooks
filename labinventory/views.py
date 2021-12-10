@@ -21,9 +21,9 @@ def power_alarm(request, fail_clear):
     users = Person.objects.filter(get_power_alarm=True)
 
     if fail_clear == "fail":
-        message = "Power failure in the lab!"
+        message = "Power failure in the AG Scheier lab!"
     else:
-        message = "Power returned in the lab!"
+        message = "Power returned in the AG Scheier lab!"
     send_sms = 0
     send_mails = 0
     for user in users:
@@ -36,7 +36,7 @@ def power_alarm(request, fail_clear):
                 logger.error(f"PowerAlarm send sms failed: {e}")
         if user.email:
             try:
-                send_mail('LabAlert2', message, 'labbooks-server@uibk.ac.at', [user.email])
+                send_mail('LabAlert AG Scheier', message, 'labbooks-server@uibk.ac.at', [user.email])
                 send_mails += 1
             except Exception as e:
                 logger.error(f"PowerAlarm send mail failed: {e}")
