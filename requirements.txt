@@ -19,7 +19,7 @@ matplotlib==3.3.4 # pip complains on server that a newer version does not exists
 requests==2.26.0
 openpyxl==3.0.9
 periodictable==1.6.0
-# fitlib==0.0.* # pip install git+https://github.com/nano-bio/fitlib.git@package
+# fitlib==0.0.* # py -m pip install git+https://github.com/nano-bio/fitlib.git@package
 
 # for snowball & surftof
 numpy==1.19.5 # pip complains on server that a newer version does not exists
