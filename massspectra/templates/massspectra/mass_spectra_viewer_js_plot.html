@@ -125,6 +125,17 @@
       binnedBy: binnedBy,
       maxMass: inputMaxMass.val()
     }).done(function (data) {
+      if ('error' in data) {
+        console.log(5345)
+        $.toast({
+          heading: 'Error',
+          text: data.error,
+          showHideTransition: 'fade',
+          icon: 'warning',
+          hideAfter: 8000
+        })
+        return
+      }
       let labels = ['m/z']
       if (dataIdFile2 && diffPlot)
         labels.push('ID ' + dataIdFile1 + ' - ID ' + dataIdFile2)

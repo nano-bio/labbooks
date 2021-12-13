@@ -172,11 +172,14 @@ class MassSpectraView(ListView):
 def get_toffy_like_mass_spectra_data(request, measurement_model):
     data_id_file_1 = request.POST.get('dataIdFile1')
     data_id_file_2 = request.POST.get('dataIdFile2', None)
-    file_1 = measurement_model.objects.get(pk=int(data_id_file_1)).data_file.path
-    x_data1, y_data1 = get_mass_spectrum_from_csv(file_1)
-    if data_id_file_2:
-        file_2 = measurement_model.objects.get(pk=int(data_id_file_2)).data_file.path
-        x_data2, y_data2 = get_mass_spectrum_from_csv(file_2)
-        return mass_spectra_data(request, x_data1, y_data1, x_data2, y_data2)
-    else:
-        return mass_spectra_data(request, x_data1, y_data1)
+    try:
+        file_1 = measurement_model.objects.get(pk=int(data_id_file_1)).data_file.path
+        x_data1, y_data1 = get_mass_spectrum_from_csv(file_1)
+        if data_id_file_2:
+            file_2 = measurement_model.objects.get(pk=int(data_id_file_2)).data_file.path
+            x_data2, y_data2 = get_mass_spectrum_from_csv(file_2)
+            return mass_spectra_data(request, x_data1, y_data1, x_data2, y_data2)
+        else:
+            return mass_spectra_data(request, x_data1, y_data1)
+    except ValueError as e:
+        return JsonResponse({'error': str(e)})
