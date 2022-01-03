@@ -12,6 +12,12 @@ class Operator(models.Model):
     def __str__(self):
         return u'%s %s' % (self.firstname, self.lastname)
 
+class OvenType(models.Model):
+    oventype = models.CharField(max_length=50)
+
+    def __str__(self):
+        return u'%s' % (self.oventype)
+
 
 class Measurement(models.Model):
     time = models.DateTimeField()
@@ -27,6 +33,7 @@ class Measurement(models.Model):
 
     he_pressure = models.FloatField(verbose_name="He pressure [bar]", default=20, blank=True, null=True)
     nozzle_temperature = models.FloatField(verbose_name="Nozzle temperature [K]", blank=True, null=True)
+    quad_pressure = models.FloatField(verbose_name="Quad pressure [mbar]", default=0.000001, blank=True, null=True)
 
     ion_block_potential = models.FloatField(verbose_name="Ion block potential [V]", blank=True, null=True)
     ion_source_deflector_vertical = models.FloatField(verbose_name="Deflector vertical [V]", blank=True, null=True)
@@ -43,17 +50,22 @@ class Measurement(models.Model):
     deflector_u_y = models.FloatField(verbose_name="U Y [V]", blank=True, null=True)
     deflector_front_aperture = models.FloatField(verbose_name="Front aperture [V]", blank=True, null=True)
 
+    oventype = models.ForeignKey(OvenType, on_delete=models.PROTECT,default="Organic")
     oven_voltage = models.FloatField(verbose_name="Voltage [V]", blank=True, null=True)
     oven_current = models.FloatField(verbose_name="Current [I]", blank=True, null=True)
     oven_power = models.FloatField(verbose_name="Power [W]", blank=True, null=True)
     oven_temperature = models.FloatField(verbose_name="Temperature [C]", blank=True, null=True)
+    pickup_pressure = models.FloatField(verbose_name="Pickup pressure [mbar]", default=0.00001, blank=True, null=True)
+    pickup_bronk = models.FloatField(verbose_name="Pickup bronki [a.U.]", default=99, blank=True, null=True)
 
     evaporation_gas = models.CharField(verbose_name="Gas", max_length=100, blank=True, null=True, default="Helium")
-    evaporation_pressure = models.FloatField(verbose_name="Pressure [mbar]", blank=True, null=True)
+    evaporation_pressure = models.FloatField(verbose_name="Pressure [mbar]", default=0.0001, blank=True, null=True)
+    evap_bronk = models.FloatField(verbose_name="Evap bronki [a.U.]", default=99, blank=True, null=True)
 
     collision_gas = models.CharField(verbose_name="Gas", max_length=100, blank=True, null=True, default="Argon")
-    collision_pressure = models.FloatField(verbose_name="Pressure [mbar]", blank=True, null=True)
+    collision_pressure = models.FloatField(verbose_name="Pressure [mbar]", default=0.00001, blank=True, null=True)
     collision_energy = models.FloatField(verbose_name="Energy [eV]", blank=True, null=True)
+    coll_bronk = models.FloatField(verbose_name="Coll bronki [a.U.]", default=99, blank=True, null=True)
 
     # this provides a link to the data file in the admin interface
     def get_data_file(self):

@@ -2,7 +2,7 @@ from django.contrib import admin
 import pytz
 
 from labbooks.admin_common import create_new_entry_based_on_existing_one
-from toffy.models import Operator, Measurement
+from toffy.models import Operator, Measurement, OvenType
 
 
 class MeasurementAdmin(admin.ModelAdmin):
@@ -41,7 +41,8 @@ class MeasurementAdmin(admin.ModelAdmin):
         ('Cluster source', {
             'fields': (
                 'he_pressure',
-                'nozzle_temperature'
+                'nozzle_temperature',
+                'quad_pressure'
 
             )
         }),
@@ -70,22 +71,24 @@ class MeasurementAdmin(admin.ModelAdmin):
         }),
         ('Oven', {
             'fields': (
+                'oventype',
                 'oven_voltage',
                 'oven_current',
                 'oven_power',
-                'oven_temperature'
+                'oven_temperature',
+                ('pickup_pressure','pickup_bronk')
             )
         }),
         ('Evaporation gas', {
             'fields': (
                 'evaporation_gas',
-                'evaporation_pressure'
+                ('evaporation_pressure', 'evap_bronk')
             )
         }),
         ('Collision gas', {
             'fields': (
                 'collision_gas',
-                'collision_pressure',
+                ('collision_pressure','coll_bronk'),
                 'collision_energy'
             )
         }),
@@ -102,3 +105,4 @@ class MeasurementAdmin(admin.ModelAdmin):
 
 admin.site.register(Measurement, MeasurementAdmin)
 admin.site.register(Operator)
+admin.site.register(OvenType)
