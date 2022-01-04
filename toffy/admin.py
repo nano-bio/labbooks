@@ -76,7 +76,7 @@ class MeasurementAdmin(admin.ModelAdmin):
                 'oven_current',
                 'oven_power',
                 'oven_temperature',
-                ('pickup_pressure','pickup_bronk')
+                ('pickup_pressure', 'pickup_bronk')
             )
         }),
         ('Evaporation gas', {
@@ -88,7 +88,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         ('Collision gas', {
             'fields': (
                 'collision_gas',
-                ('collision_pressure','coll_bronk'),
+                ('collision_pressure', 'coll_bronk'),
                 'collision_energy'
             )
         }),

@@ -12,6 +12,7 @@ class Operator(models.Model):
     def __str__(self):
         return u'%s %s' % (self.firstname, self.lastname)
 
+
 class OvenType(models.Model):
     oventype = models.CharField(max_length=50)
 
@@ -50,7 +51,7 @@ class Measurement(models.Model):
     deflector_u_y = models.FloatField(verbose_name="U Y [V]", blank=True, null=True)
     deflector_front_aperture = models.FloatField(verbose_name="Front aperture [V]", blank=True, null=True)
 
-    oventype = models.ForeignKey(OvenType, on_delete=models.PROTECT,default="Organic")
+    oventype = models.ForeignKey(OvenType, on_delete=models.PROTECT)
     oven_voltage = models.FloatField(verbose_name="Voltage [V]", blank=True, null=True)
     oven_current = models.FloatField(verbose_name="Current [I]", blank=True, null=True)
     oven_power = models.FloatField(verbose_name="Power [W]", blank=True, null=True)

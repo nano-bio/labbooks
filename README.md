@@ -6,6 +6,9 @@ Requires django >= 3.0 (tested until 3.2.9)
 
 Changelog
 =========
+04.01.2022
+* TOFFY/ADD/Sigi: Add new Parametr fields to measurements
+
 23.11.2021
 * NanoParticles/ADD/Felix: New Labbook for STM & AFM Images
 
