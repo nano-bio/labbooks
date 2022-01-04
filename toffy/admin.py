@@ -2,7 +2,7 @@ from django.contrib import admin
 import pytz
 
 from labbooks.admin_common import create_new_entry_based_on_existing_one
-from toffy.models import Operator, Measurement, OvenType
+from toffy.models import Operator, Measurement
 
 
 class MeasurementAdmin(admin.ModelAdmin):
@@ -71,7 +71,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         }),
         ('Oven', {
             'fields': (
-                'oventype',
+                'oven_type',
                 'oven_voltage',
                 'oven_current',
                 'oven_power',
@@ -105,4 +105,3 @@ class MeasurementAdmin(admin.ModelAdmin):
 
 admin.site.register(Measurement, MeasurementAdmin)
 admin.site.register(Operator)
-admin.site.register(OvenType)

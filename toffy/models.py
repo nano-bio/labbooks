@@ -13,14 +13,13 @@ class Operator(models.Model):
         return u'%s %s' % (self.firstname, self.lastname)
 
 
-class OvenType(models.Model):
-    oventype = models.CharField(max_length=50)
-
-    def __str__(self):
-        return u'%s' % (self.oventype)
-
-
 class Measurement(models.Model):
+    OVEN_TYPE_CHOICES = (
+        ('organic', 'Organic'),
+        ('metal', 'Metal'),
+        ('external', 'External'),
+        ('description', 'See description'),
+    )
     time = models.DateTimeField()
     operator = models.ForeignKey(Operator, on_delete=models.PROTECT)
     short_description = models.CharField(max_length=500, blank=True)
@@ -51,7 +50,7 @@ class Measurement(models.Model):
     deflector_u_y = models.FloatField(verbose_name="U Y [V]", blank=True, null=True)
     deflector_front_aperture = models.FloatField(verbose_name="Front aperture [V]", blank=True, null=True)
 
-    oventype = models.ForeignKey(OvenType, on_delete=models.PROTECT)
+    oven_type = models.CharField(verbose_name="Oven type", max_length=20, blank=True, choices=OVEN_TYPE_CHOICES)
     oven_voltage = models.FloatField(verbose_name="Voltage [V]", blank=True, null=True)
     oven_current = models.FloatField(verbose_name="Current [I]", blank=True, null=True)
     oven_power = models.FloatField(verbose_name="Power [W]", blank=True, null=True)
@@ -59,11 +58,11 @@ class Measurement(models.Model):
     pickup_pressure = models.FloatField(verbose_name="Pickup pressure [mbar]", default=0.00001, blank=True, null=True)
     pickup_bronk = models.FloatField(verbose_name="Pickup bronki [a.U.]", default=99, blank=True, null=True)
 
-    evaporation_gas = models.CharField(verbose_name="Gas", max_length=100, blank=True, null=True, default="Helium")
+    evaporation_gas = models.CharField(verbose_name="Gas", max_length=100, blank=True, default="Helium")
     evaporation_pressure = models.FloatField(verbose_name="Pressure [mbar]", default=0.0001, blank=True, null=True)
     evap_bronk = models.FloatField(verbose_name="Evap bronki [a.U.]", default=99, blank=True, null=True)
 
-    collision_gas = models.CharField(verbose_name="Gas", max_length=100, blank=True, null=True, default="Argon")
+    collision_gas = models.CharField(verbose_name="Gas", max_length=100, blank=True, default="Argon")
     collision_pressure = models.FloatField(verbose_name="Pressure [mbar]", default=0.00001, blank=True, null=True)
     collision_energy = models.FloatField(verbose_name="Energy [eV]", blank=True, null=True)
     coll_bronk = models.FloatField(verbose_name="Coll bronki [a.U.]", default=99, blank=True, null=True)
