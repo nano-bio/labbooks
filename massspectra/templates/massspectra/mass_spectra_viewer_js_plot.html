@@ -167,12 +167,20 @@
         $('#col-card-file2-info').hide()
         $('.plot-indicator-green').hide()
       }
-    }).fail(function () {
+    }).fail(function (xhr, status, error) {
+      let errorMessage;
+      try {
+        errorMessage = 'Something went wrong: ' + xhr.responseJSON.error
+      } catch (e) {
+        console.log(e)
+        errorMessage = 'Something went wrong'
+      }
       $.toast({
         heading: 'Error',
-        text: 'Something went wrong',
+        text: errorMessage,
         showHideTransition: 'fade',
-        icon: 'warning'
+        icon: 'warning',
+        hideAfter: 8000
       })
     }).always(function () {
       spinner.hide();
