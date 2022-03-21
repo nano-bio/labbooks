@@ -2,7 +2,7 @@ import datetime
 import json
 import re
 import time
-from os.path import exists
+from os.path import exists, getsize
 from time import time
 
 import h5py
@@ -147,6 +147,19 @@ def exportfile(request, id):
     # this is a redirect to a URL handled by nginx
     return HttpResponseRedirect(
         '/clustof/export/files/' + m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\', ''))
+
+
+def export_file_size(request, pk):
+    m = get_object_or_404(Measurement, pk=pk)
+    file_name = m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\', '')
+    full_file_name = f"/var/storage/clustof/{file_name}"
+    if exists(full_file_name):
+        return JsonResponse({
+            'file_name': file_name,
+            'size': getsize(full_file_name)
+        })
+    else:
+        return Http404(f'File not found: {full_file_name}')
 
 
 # def exportfilesize(request, id):
