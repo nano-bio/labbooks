@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from glob import glob
+from time import sleep
 
 import h5py
 import numpy as np
@@ -88,6 +89,9 @@ def import_pico_log_and_median(measurement_id):
 def get_mass_spectrum(measurement_id, mass_max=None):
     def quadratic_fit_function(x, a, t0):
         return a * (x + t0) ** 2
+
+    if len(glob(f"{settings.SURFTOF_BIGSHARE_DATA_ROOT}*")) < 5:
+        sleep(3)  # sometimes the bigshare is not mounted properly
 
     with h5py.File(glob(f"{settings.SURFTOF_BIGSHARE_DATA_ROOT}{measurement_id}/*.h5")[0], 'r') as f:
         y_data = np.array(f['SPECdata']['AverageSpec'])
