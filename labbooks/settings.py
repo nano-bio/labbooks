@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'journal',
     'labinventory',
     'massspectra',
+    'mscpimporter',
 
     'clustof',
     'nanoparticles',

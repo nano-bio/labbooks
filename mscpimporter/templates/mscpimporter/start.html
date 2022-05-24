@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+    <div class="container mb-4 mt-4">
+
+        <h4 class="border-bottom mb-4">
+            Upload a measurement to <a href="https://ideadb.uibk.ac.at/mscp" target="_blank">MSCP <i
+            class="small bi bi-box-arrow-up-right"></i></a>
+        </h4>
+
+        {% if message %}
+            <div class="alert alert-{{ message.0 }}" role="alert">{{ message.1 }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <p>
+                If the token does not work, go to
+                <a href="{{ root_url }}api-token-show/"
+                   target="_blank">
+                    {{ root_url }}api-token-show/
+                </a>
+            </p>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+
+    </div>
+{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

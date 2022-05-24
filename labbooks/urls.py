@@ -7,6 +7,7 @@ import cheminventory.urls
 import clustof.urls
 import journal.urls
 import labinventory.urls
+import mscpimporter.urls
 import nanoparticles.urls
 import snowball.urls
 import surftof.urls
@@ -24,6 +25,7 @@ urlpatterns = [
 
     path('cheminventory/', include(cheminventory.urls)),
     path('labinventory/', include(labinventory.urls)),
+    path('mscpimporter/', include(mscpimporter.urls)),
 
     path('clustof/', include(clustof.urls)),
     path('nanoparticles/', include(nanoparticles.urls)),
