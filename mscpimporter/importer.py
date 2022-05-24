@@ -20,7 +20,7 @@ from toffy2.models import Measurement as MeasurementToffy2
 from .models import Experiment
 from .rsc_api import RscApi
 
-LOCAL = True
+LOCAL = False
 if LOCAL:
     ROOT_URL = "http://127.0.0.1:8000/mscp/"
 else:
