@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 
@@ -85,6 +86,10 @@ class Measurement(models.Model):
         if len(self.short_description) > 35:
             return f"{self.short_description[:30]}..."
         return self.short_description
+
+    def export_to_mscp(self):
+        return mark_safe(
+            f"<a href='{reverse('mscp-start-from-admin-measurements', args=('toffy2', self.pk))}'>MSCP-Upload</a>")
 
     def __str__(self):
         return f"{self.time}, {self.operator}"

@@ -5,6 +5,7 @@ from operator import attrgetter
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 
@@ -163,6 +164,10 @@ class Measurement(models.Model):
     # verbose name of 'comment'
     def short_description(self):
         return self.substance
+
+    def export_to_mscp(self):
+        return mark_safe(
+            f"<a href='{reverse('mscp-start-from-admin-measurements', args=('clustof', self.pk))}'>MSCP-Upload</a>")
 
     def chems(self):
         chems = [self.chem_pu1_oven, self.chem_pu1_gas, self.chem_pu2_oven, self.chem_pu2_gas, self.is_inlet_gas]

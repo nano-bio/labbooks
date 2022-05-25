@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from mscpimporter.models import MscpToken, Experiment
+from mscpimporter.models import Experiment
 
-admin.site.register(MscpToken)
 admin.site.register(Experiment)

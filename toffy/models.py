@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from journal.models import BasicJournalEntry
@@ -74,6 +75,10 @@ class Measurement(models.Model):
 
     def get_short_description(self):
         return "{}...".format(self.short_description[:30])
+
+    def export_to_mscp(self):
+        return mark_safe(
+            f"<a href='{reverse('mscp-start-from-admin-measurements', args=('toffy', self.pk))}'>MSCP-Upload</a>")
 
     def __str__(self):
         return f"ID {self.id}, {self.time}, {self.short_description}"

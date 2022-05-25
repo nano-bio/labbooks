@@ -10,11 +10,11 @@
             class="small bi bi-box-arrow-up-right"></i></a>
         </h4>
 
-        {% if message %}
-            <div class="alert alert-{{ message.0 }}" role="alert">{{ message.1 }}</div>
-        {% endif %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}" role="alert">{{ message }}</div>
+        {% endfor %}
 
-        <form method="post">
+        <form method="post" action="{% url 'mscpimporter-start' %}">
             {% csrf_token %}
             {{ form|crispy }}
             <p>

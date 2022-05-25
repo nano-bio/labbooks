@@ -40,7 +40,7 @@ class MeasurementAdmin(admin.ModelAdmin):
         return obj.elec_energy()
 
     list_display = ('propertime', 'id', 'marked', 'operator', 'scantype', 'chems', 'substance', 'polarity',
-                    'EE', 'temperature_he', 'data_file', 'has_comment', 'eval_by', 'eval_file')
+                    'EE', 'temperature_he', 'data_file', 'has_comment', 'eval_by', 'eval_file','export_to_mscp')
     list_filter = ('operator', 'time', 'scantype', 'polarity', 'evaluated_by', 'marked')
     search_fields = (
         'substance', 'data_filename', 'tof_settings_file', 'id', 'chem_pu1_oven__name',

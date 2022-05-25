@@ -1,5 +1,5 @@
-from django.contrib import admin
 import pytz
+from django.contrib import admin
 
 from labbooks.admin_common import create_new_entry_based_on_existing_one
 from toffy2.models import Operator, Measurement
@@ -14,7 +14,8 @@ class MeasurementAdmin(admin.ModelAdmin):
 
     list_display = (
         'proper_time', 'id', 'operator', 'get_short_description', 'get_data_file', 'cluster_source_nozzle_temperature',
-        'evaluated_by', 'evaporation_gas_bronkhorst_setpoint', 'collision_pressure', 'collision_energy')
+        'evaluated_by', 'evaporation_gas_bronkhorst_setpoint', 'collision_pressure', 'collision_energy',
+        'export_to_mscp')
     list_filter = ('operator',)
     search_fields = ('comment', 'data_file', 'short_description', 'id', 'evaporation_gas', 'collision_gas',
                      'oven_1_comment', 'oven_2_comment')

@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -8,7 +9,6 @@ from .models import MscpToken
 
 
 def start_import(request):
-    message = None
     if request.method == 'POST':
         form = ExperimentMeasurementSelectForm(request.POST)
         if form.is_valid():
@@ -29,13 +29,32 @@ def start_import(request):
                 return HttpResponseRedirect(
                     f"{ROOT_URL}admin/node/dataset/{mscp_data_set_id}/change/")
             except Exception as e:
-                message = ("danger", f"Error: {str(e)}")
+                messages.add_message(request, messages.ERROR, f"Error: {str(e)}")
         else:
-            message = ("danger", f"Form data not valid: {form.errors}")
+            messages.add_message(request, messages.ERROR, f"Form data not valid: {form.errors}")
     else:
         form = ExperimentMeasurementSelectForm(initial={'mscp_token': get_token()})
 
-    return render(request, 'mscpimporter/start.html', {'form': form, 'message': message, 'root_url': ROOT_URL})
+    return render(request, 'mscpimporter/start.html', {'form': form, 'root_url': ROOT_URL})
+
+
+def start_from_admin_measurements(request, experiment, measurement_id):
+    try:
+        li = LabbookImporter(
+            measurement_id=measurement_id,
+            token=get_token(),
+            experiment=experiment)
+        mscp_data_set_id = li.create_data_set()
+        return HttpResponseRedirect(
+            f"{ROOT_URL}admin/node/dataset/{mscp_data_set_id}/change/")
+    except Exception as e:
+        messages.add_message(request, messages.WARNING, f'Could not auto import: {str(e)}')
+        form = ExperimentMeasurementSelectForm(
+            initial={
+                'mscp_token': get_token(),
+                'measurement_id': measurement_id,
+                'experiment': experiment})
+        return render(request, 'mscpimporter/start.html', {'form': form, 'root_url': ROOT_URL})
 
 
 def get_token():

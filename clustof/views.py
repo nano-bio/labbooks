@@ -314,7 +314,7 @@ def get_mass_spectra_data(request):
     try:
         x_data1, y_data1 = get_mass_spectrum(data_id_file_1)
     except MassSpectraException as e:
-        return JsonResponse(status=404, data={'error': e.message})
+        return JsonResponse(status=404, data={'error': str(e)})
 
     if data_id_file_2:
         x_data2, y_data2 = get_mass_spectrum(data_id_file_2)
@@ -331,14 +331,13 @@ def get_measurement_file_name(measurement_id):
 
 
 class MassSpectraException(Exception):
-    def __init__(self, message):
-        self.message = message
+    pass
 
 
 def get_mass_spectrum(measurement_id, mass_max=None):
     file_name_full = get_measurement_file_name(measurement_id)
     if not exists(file_name_full):
-        raise MassSpectraException(message=f'File for this measurement not found on the server ({file_name_full})')
+        raise MassSpectraException(f'File for this measurement not found on the server ({file_name_full})')
     with h5py.File(file_name_full, 'r') as f:
         y_data = array(f['FullSpectra']['SumSpectrum'])
         x_data = array(f['FullSpectra']['MassAxis'])
