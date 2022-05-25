@@ -106,8 +106,8 @@ class LabbookImporter:
             'experiment_internal_id': str(self.measurement_id),
             'date_measurement': self.date_iso_format,
             'mass_spectrum_data': {
-                'x': list(self.mass_spectrum[0]),
-                'y': list(self.mass_spectrum[1])},
+                'x': list(map(float, self.mass_spectrum[0])),
+                'y': list(map(float, self.mass_spectrum[1]))},
             'comment': str(remove_empty_values_from_dict(
                 json.loads(self.measurement_data_for_comment)[0]['fields']))
         }, token=self.token)
