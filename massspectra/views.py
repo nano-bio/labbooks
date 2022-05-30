@@ -81,6 +81,18 @@ def interpolate_data(x1, y1, x2, y2):
     x_min = max(min(x1), min(x2))
     x_max = min(max(x1), max(x2))
     x_new = np.linspace(x_min, x_max, max(len(x1), len(x2)))
+
+    # add zero values to start and end of spectra for working interpolation
+    x1 = np.insert(x1, 0, [0], axis=0)
+    x2 = np.insert(x2, 0, [0], axis=0)
+    y1 = np.insert(y1, 0, [0], axis=0)
+    y2 = np.insert(y2, 0, [0], axis=0)
+
+    x1 = np.append(x1, [x1[-1] + 1])
+    x2 = np.append(x2, [x2[-1] + 1])
+    y1 = np.append(y1, [0])
+    y2 = np.append(y2, [0])
+
     f1 = interp1d(x1, y1)
     f2 = interp1d(x2, y2)
     y_new_1 = f1(x_new)
