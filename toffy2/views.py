@@ -37,4 +37,6 @@ def get_spectra_per_id(measurement_id):
         )
         if not unix_path.exists():
             raise Exception("Measurement has no 'data file' and the given h5 file does not exist!")
+        if not unix_path.is_file():
+            raise Exception("Measurement has no 'data file' and the given h5 file path is no file!")
         return get_mass_spectrum_tofwerk(unix_path)
