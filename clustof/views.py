@@ -20,11 +20,10 @@ from django.utils.timezone import utc, now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView
-from numpy import array
 
 import clustof.models as models
 from clustof.models import Measurement, Turbopump, TurbopumpStatus
-from massspectra.views import mass_spectra_data, slice_data
+from massspectra.views import mass_spectra_data, get_mass_spectrum_tofwerk
 
 
 def retrieve_plotable_parameters():
@@ -338,13 +337,7 @@ def get_mass_spectrum(measurement_id, mass_max=None):
     file_name_full = get_measurement_file_name(measurement_id)
     if not exists(file_name_full):
         raise MassSpectraException(f'File for this measurement not found on the server ({file_name_full})')
-    with h5py.File(file_name_full, 'r') as f:
-        y_data = array(f['FullSpectra']['SumSpectrum'])
-        x_data = array(f['FullSpectra']['MassAxis'])
-
-    if mass_max is None:
-        return x_data, y_data
-    return slice_data(x_data, y_data, 0, mass_max)
+    return get_mass_spectrum_tofwerk(file_name_full, mass_max)
 
 
 def laser_scan_data(request):

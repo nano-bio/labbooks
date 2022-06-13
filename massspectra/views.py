@@ -1,6 +1,7 @@
 import datetime
 from json import JSONEncoder
 
+import h5py
 import numpy as np
 from django.contrib.admin import ModelAdmin
 from django.core import serializers
@@ -12,6 +13,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
+from numpy import array
 from scipy.interpolate import interp1d
 
 
@@ -195,3 +197,13 @@ def get_toffy_like_mass_spectra_data(request, measurement_model):
             return mass_spectra_data(request, x_data1, y_data1)
     except ValueError as e:
         return JsonResponse({'error': str(e)})
+
+
+def get_mass_spectrum_tofwerk(file_name_full, mass_max=100):
+    with h5py.File(file_name_full, 'r') as f:
+        y_data = array(f['FullSpectra']['SumSpectrum'])
+        x_data = array(f['FullSpectra']['MassAxis'])
+
+    if mass_max is None:
+        return x_data, y_data
+    return slice_data(x_data, y_data, 0, mass_max)

@@ -310,16 +310,6 @@ def slice_data(x_data, y_data, x_min, x_max):
     return x_data, y_data
 
 
-def get_mass_spectrum(file_name_full, mass_max=100):
-    with h5py.File(file_name_full, 'r') as f:
-        y_data = array(f['FullSpectra']['SumSpectrum'])
-        x_data = array(f['FullSpectra']['MassAxis'])
-
-    if mass_max is None:
-        return x_data, y_data
-    return slice_data(x_data, y_data, 0, mass_max)
-
-
 # found = 0
 # root = "/var/storage/clustof/"
 # clustof_data = requests.get('http://138.232.74.41/clustof/json/60/').json()

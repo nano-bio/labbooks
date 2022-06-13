@@ -169,6 +169,7 @@ CLUSTOF_FILES_ROOT = '/var/storage/clustof/'
 SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
 NANOPARTICLES_DATA_ROOT = "/mnt/bigshare/"
 NANOPARTICLES_PREVIEW_SIZE = 150
+TOFFY2_REPLACE_H5_PATH = ('Z:/', "/mnt/bigshare/")
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',

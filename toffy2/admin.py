@@ -1,5 +1,7 @@
 import pytz
 from django.contrib import admin
+from django.db import models
+from django.forms import TextInput
 
 from labbooks.admin_common import create_new_entry_based_on_existing_one
 from toffy2.models import Operator, Measurement
@@ -33,6 +35,7 @@ class MeasurementAdmin(admin.ModelAdmin):
                 'time',
                 'operator',
                 'short_description',
+                'data_file_path_h5',
                 ('data_file', 'integration_start', 'integration_stop'),
                 'tof_settings_file',
                 'comment',
@@ -123,6 +126,10 @@ class MeasurementAdmin(admin.ModelAdmin):
             queryset,
             forbidden_items
         )
+
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '100'})},
+    }
 
 
 admin.site.register(Measurement, MeasurementAdmin)

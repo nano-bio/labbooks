@@ -21,6 +21,10 @@ class Measurement(models.Model):
     short_description = models.CharField(max_length=500, blank=True)
     integration_start = models.IntegerField(blank=True, null=True, verbose_name="Integration start [s]")
     integration_stop = models.IntegerField(blank=True, null=True, verbose_name="Integration stop [s]")
+    data_file_path_h5 = models.CharField(
+        max_length=150, blank=True,
+        help_text="The path must start with Z:\\, otherwise spectra viewer won't work!",
+        default="Z:\\Experiments\\Toffy2\\Measurements\\RAW-TOFWERK-Data\\", )
     data_file = models.FileField(upload_to='toffy2/dataFiles/', blank=True,
                                  help_text="Export massspecs and upload plain text files only.")
     tof_settings_file = models.FileField(upload_to='toffy2/settingsFiles/', blank=True,

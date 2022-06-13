@@ -2,6 +2,7 @@ from django.urls import path
 
 import journal.views
 import massspectra.views
+import toffy2.views
 from toffy2.admin import MeasurementAdmin
 from toffy2.models import Measurement, JournalEntry
 
@@ -37,8 +38,7 @@ urlpatterns = [
              measurement_model=Measurement),
          name="toffy2-mass-spectra-measurements"),
     path('mass-spectra/data/',
-         massspectra.views.get_toffy_like_mass_spectra_data,
-         {'measurement_model': Measurement},
+         toffy2.views.get_mass_spectra_data,
          name="toffy2-mass-spectra-data"),
 
     # json export
