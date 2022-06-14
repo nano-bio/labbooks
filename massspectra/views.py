@@ -199,7 +199,7 @@ def get_toffy_like_mass_spectra_data(request, measurement_model):
         return JsonResponse({'error': str(e)})
 
 
-def get_mass_spectrum_tofwerk(file_name_full, mass_max=100):
+def get_mass_spectrum_tofwerk(file_name_full, mass_max=None):
     with h5py.File(file_name_full, 'r') as f:
         y_data = array(f['FullSpectra']['SumSpectrum'])
         x_data = array(f['FullSpectra']['MassAxis'])
