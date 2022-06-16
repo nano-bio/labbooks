@@ -85,8 +85,9 @@ function plotLaserScan() {
   }).done(function (data) {
     gL.updateOptions({'file': data.data});
   }).fail(function () {
+    const text = (backgroundMode === 'divide') ? 'Maybe you try to divide by zero?' : 'Something went wrong'
     $.toast({
-      heading: 'Error', text: 'Something went wrong', showHideTransition: 'fade', icon: 'warning'
+      heading: 'Error', text, showHideTransition: 'fade', icon: 'warning'
     })
   }).always(function () {
     spinnerLS.hide();
