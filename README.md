@@ -6,6 +6,9 @@ Requires django >= 3.0 (tested until 3.2.9)
 
 Changelog
 =========
+16.06.2022
+* TOFFY2/ADD/Felix: Add laser scan viewer
+
 13.06.2022
 * TOFFY2/ADD/Felix: Add new .h5 path field and implement mass spectra viewer
 

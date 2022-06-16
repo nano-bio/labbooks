@@ -110,10 +110,10 @@ urlpatterns = [
 
     # laser scan
     path('laser-scan/<int:measurement_id>/',
-         clustof.views.laser_scan,
+         clustof.views.laser_scan_clustof,
          name="clustof-laser-scan"),
     path('laser-scan/data/',
-         clustof.views.laser_scan_data,
+         clustof.views.laser_scan_data_clustof,
          name="clustof-laser-scan-data"),
 
     # json export measurement

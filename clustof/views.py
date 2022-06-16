@@ -5,8 +5,6 @@ import time
 from os.path import exists, getsize
 from time import time
 
-import h5py
-import numpy
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -16,6 +14,7 @@ from django.db import models as djangomodels
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest, JsonResponse, \
     Http404
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from django.utils.timezone import utc, now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -23,7 +22,7 @@ from django.views.generic import ListView, DetailView
 
 import clustof.models as models
 from clustof.models import Measurement, Turbopump, TurbopumpStatus
-from massspectra.views import mass_spectra_data, get_mass_spectrum_tofwerk
+from massspectra.views import mass_spectra_data, get_mass_spectrum_tofwerk, laser_scan, laser_scan_data
 
 
 def retrieve_plotable_parameters():
@@ -340,47 +339,17 @@ def get_mass_spectrum(measurement_id, mass_max=None):
     return get_mass_spectrum_tofwerk(file_name_full, mass_max)
 
 
-def laser_scan_data(request):
+def laser_scan_data_clustof(request):
     measurement_id = int(request.POST.get('measurementId'))
-    mass_column = int(request.POST.get('massColumn'))
-    mode = request.POST.get('mode')
-    x_start = request.POST.get('xStart', None)
-    x_end = request.POST.get('xEnd', None)
-
     file_name_full = get_measurement_file_name(measurement_id)
-
-    with open(file_name_full, 'rb') as f:
-        hf = h5py.File(f, 'r')
-        laser_on_data = hf['PeakData']['PeakData'][:, 0, 0, mass_column]
-        laser_off_data = numpy.mean(hf['PeakData']['PeakData'][:, 0, 1:, mass_column], axis=1)
-    if mode == '-':
-        data = laser_on_data - laser_off_data
-    elif mode == '/':
-        data = laser_on_data / laser_off_data
-    else:
-        raise Http404('Provide either mode "-" or mode "/"')
-
-    try:
-        # when wavelength start and end is provided, return a xy array
-        if x_start and x_end:
-            x_start = float(x_start)
-            x_end = float(x_end)
-            xs = numpy.linspace(x_start, x_end, len(data))
-        else:
-            xs = range(len(data))
-
-        return JsonResponse({'data': numpy.stack([xs, data], axis=-1).tolist()})
-    except Exception as e:
-        raise Http404(f'xs problem: {e}')
+    return laser_scan_data(request=request, file_name_full=file_name_full)
 
 
-def laser_scan(request, measurement_id):
+def laser_scan_clustof(request, measurement_id):
     file_name_full = get_measurement_file_name(measurement_id)
-    with open(file_name_full, 'rb') as f:
-        hf = h5py.File(f, 'r')
-        k = hf['PeakData']['PeakTable'][()]
-    mass_list = [f"{int(row[1])} ({row[2]:.1f}-{row[3]:.1f})" for row in k]
-    return render(request, 'clustof/laser_scan.html', {
-        'measurement_id': measurement_id,
-        'mass_list': mass_list
-    })
+    return laser_scan(
+        request=request,
+        measurement_id=measurement_id,
+        file_name_full=file_name_full,
+        experiment='clustof',
+        url=reverse('clustof-laser-scan-data'))

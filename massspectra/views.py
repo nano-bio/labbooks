@@ -2,13 +2,13 @@ import datetime
 from json import JSONEncoder
 
 import h5py
-import numpy as np
+import numpy
 from django.contrib.admin import ModelAdmin
 from django.core import serializers
 from django.db.models import Model, F
 from django.db.models.functions import Substr
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, JsonResponse, Http404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -52,10 +52,10 @@ def field_names_verbose_names(model_admin, model):
 
 def get_mass_spectrum_from_csv(file_path):
     try:
-        data = np.genfromtxt(file_path, delimiter='\t')
+        data = numpy.genfromtxt(file_path, delimiter='\t')
         return data[:, 0], data[:, 1]
     except:
-        data = np.genfromtxt(file_path, delimiter=',')
+        data = numpy.genfromtxt(file_path, delimiter=',')
         return data[:, 0], data[:, 1]
 
 
@@ -66,9 +66,9 @@ def bin_array(arr, binning):
 def slice_data(x_data, y_data, x_min, x_max):
     # returns part of the x and y data as a function of
     # x min and x max
-    def find_index_of_nearest(array, value):
-        array = np.asarray(array)
-        return (np.abs(array - value)).argmin()
+    def find_index_of_nearest(array_in, value):
+        array_in = numpy.asarray(array_in)
+        return (numpy.abs(array_in - value)).argmin()
 
     x_min_index = find_index_of_nearest(x_data, x_min)
     x_max_index = find_index_of_nearest(x_data, x_max)
@@ -82,18 +82,18 @@ def slice_data(x_data, y_data, x_min, x_max):
 def interpolate_data(x1, y1, x2, y2):
     x_min = max(min(x1), min(x2))
     x_max = min(max(x1), max(x2))
-    x_new = np.linspace(x_min, x_max, max(len(x1), len(x2)))
+    x_new = numpy.linspace(x_min, x_max, max(len(x1), len(x2)))
 
     # add zero values to start and end of spectra for working interpolation
-    x1 = np.insert(x1, 0, [0], axis=0)
-    x2 = np.insert(x2, 0, [0], axis=0)
-    y1 = np.insert(y1, 0, [0], axis=0)
-    y2 = np.insert(y2, 0, [0], axis=0)
+    x1 = numpy.insert(x1, 0, [0], axis=0)
+    x2 = numpy.insert(x2, 0, [0], axis=0)
+    y1 = numpy.insert(y1, 0, [0], axis=0)
+    y2 = numpy.insert(y2, 0, [0], axis=0)
 
-    x1 = np.append(x1, [x1[-1] + 1])
-    x2 = np.append(x2, [x2[-1] + 1])
-    y1 = np.append(y1, [0])
-    y2 = np.append(y2, [0])
+    x1 = numpy.append(x1, [x1[-1] + 1])
+    x2 = numpy.append(x2, [x2[-1] + 1])
+    y1 = numpy.append(y1, [0])
+    y2 = numpy.append(y2, [0])
 
     f1 = interp1d(x1, y1)
     f2 = interp1d(x2, y2)
@@ -123,7 +123,7 @@ def mass_spectra_data(request, x_data1, y_data1, x_data2=None, y_data2=None):
         if scale_data_file_2 != 1:
             y_data2 *= scale_data_file_2
 
-        if not np.array_equal(x_data1, x_data2):
+        if not numpy.array_equal(x_data1, x_data2):
             masses, y_data1, y_data2 = interpolate_data(x_data1, y_data1, x_data2, y_data2)
         else:
             masses = x_data1
@@ -207,3 +207,69 @@ def get_mass_spectrum_tofwerk(file_name_full, mass_max=None):
     if mass_max is None:
         return x_data, y_data
     return slice_data(x_data, y_data, 0, mass_max)
+
+
+def laser_scan(request, measurement_id, file_name_full, experiment, url):
+    with open(file_name_full, 'rb') as f:
+        hf = h5py.File(f, 'r')
+        k = hf['PeakData']['PeakTable'][()]
+        sections = list(range(len(hf['PeakData']['PeakData'][0, 0])))
+        print(sections, hf['PeakData']['PeakData'].shape)
+    mass_list = [f"{int(row[1])} ({row[2]:.1f}-{row[3]:.1f})" for row in k]
+    return render(request, 'massspectra/laser_scan.html', {
+        'measurement_id': measurement_id,
+        'mass_list': mass_list,
+        'sections': sections,
+        'experiment': experiment,
+        'url': url
+    })
+
+
+def laser_scan_data(request, file_name_full):
+    mass_column = int(request.POST.get('massColumn'))
+    x_start = request.POST.get('xStart', None)
+    x_end = request.POST.get('xEnd', None)
+    background_mode = request.POST.get('backgroundMode', 'divide')
+    try:
+        sections_foreground = [int(i) for i in request.POST.get('sectionsForeground').split(',')]
+    except ValueError:
+        sections_foreground = [0]
+    try:
+        sections_background = [int(i) for i in request.POST.get('sectionsBackground', '1,2,3,4,5,6,7,8,9').split(',')]
+    except ValueError:
+        sections_background = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    with open(file_name_full, 'rb') as f:
+        hf = h5py.File(f, 'r')
+        if len(sections_foreground) == 1:
+            laser_on_data = hf['PeakData']['PeakData'][:, 0, sections_foreground[0], mass_column]
+        else:
+            laser_on_data = numpy.mean(hf['PeakData']['PeakData'][:, 0, sections_foreground, mass_column], axis=1)
+
+        if background_mode == 'none':
+            data = laser_on_data
+        else:
+            if len(sections_background) == 1:
+                laser_off_data = hf['PeakData']['PeakData'][:, 0, sections_background[0], mass_column]
+            else:
+                laser_off_data = numpy.mean(hf['PeakData']['PeakData'][:, 0, sections_background, mass_column], axis=1)
+
+            if background_mode == 'diff':
+                data = laser_on_data - laser_off_data
+            elif background_mode == 'divide':
+                data = laser_on_data / laser_off_data
+            else:
+                raise Http404('Provide either mode "diff" or mode "divide"')
+
+    try:
+        # when wavelength start and end is provided, return a xy array
+        if x_start and x_end:
+            x_start = float(x_start)
+            x_end = float(x_end)
+            xs = numpy.linspace(x_start, x_end, len(data))
+        else:
+            xs = range(len(data))
+
+        return JsonResponse({'data': numpy.stack([xs, data], axis=-1).tolist()})
+    except Exception as e:
+        raise Http404(f'xs problem: {e}')

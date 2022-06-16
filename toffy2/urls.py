@@ -31,7 +31,21 @@ urlpatterns = [
     path('mass-spectra/',
          massspectra.views.MassSpectraView.as_view(
              model=Measurement,
-             model_admin=MeasurementAdmin),
+             model_admin=MeasurementAdmin,
+             extra_context={
+                 "custom_clusterize_row": "{values: `${data[i].id}${data[i].time}${data[i].t}`.toLo"
+                                          "werCase(), markup: `<li class='list-group-item'><div class='m-1 mt-2'>"
+                                          "ID ${data[i].id} - ${dat"
+                                          "a[i].time}<br>${data[i].t}</div><button type='button' onclick='show(${data["
+                                          "i].id})'class='btn btn-sm btn-outline-secondary m-1'>Show</button><button t"
+                                          "ype='button' onclick='compare(${data[i].id})'class='btn btn-sm btn-outline-"
+                                          "secondary m-1'>Compare</button><button type='button' onclick='diff(${data[i"
+                                          "].id})'class='btn btn-sm btn-outline-secondary m-1'>Diff</button><a href='/"
+                                          "admin/toffy2/measurement/${data[i].id}/change/'class='btn btn-sm btn-outli"
+                                          "ne-secondary m-1'>Show Measurement</a><a href='/toffy2/laser-scan/${data[i"
+                                          "].id}/' class='btn btn-sm btn-outline-secondary m-1'>Laser Scan</a></li>`, "
+                                          "active: true}"},
+             experiment_name='Toffy2'),
          name="toffy2-mass-spectra"),
     path('mass-spectra/measurements/',
          massspectra.views.MassSpectraMeasurementListJson.as_view(
@@ -40,6 +54,14 @@ urlpatterns = [
     path('mass-spectra/data/',
          toffy2.views.get_mass_spectra_data,
          name="toffy2-mass-spectra-data"),
+
+    # laser scan
+    path('laser-scan/<int:measurement_id>/',
+         toffy2.views.laser_scan_toffy2,
+         name="toffy2-laser-scan"),
+    path('laser-scan/data/',
+         toffy2.views.laser_scan_data_toffy2,
+         name="toffy2-laser-scan-data"),
 
     # json export
     path('measurement/<int:pk>.json',
