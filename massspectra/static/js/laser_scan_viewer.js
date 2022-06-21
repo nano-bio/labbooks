@@ -16,13 +16,13 @@ let xEnd;
 
 initializeSectionsInputs()
 getInputValues()
-buildSectionsFormula()
-plotLaserScan()
+if (buildSectionsFormula())
+  plotLaserScan()
 
 $('#sectionsSettings').change(function () {
   getInputValues()
-  buildSectionsFormula()
-  plotLaserScan()
+  if (buildSectionsFormula())
+    plotLaserScan()
 })
 
 // Sections Settings
@@ -120,10 +120,14 @@ function getInputValues() {
 }
 
 function buildSectionsFormula() {
+  let noError = true;
 
   $('#result-formula').text(() => {
     let returnString = ""
-    if (sectionsForeground.length === 0) return "Select at least 1 section for the foreground!"
+    if (sectionsForeground.length === 0) {
+      noError = false;
+      return "Select at least 1 section for the foreground!"
+    }
     if (sectionsForeground.length === 1) {
       returnString = `Section(${sectionsForeground[0]})`
     } else {
@@ -144,8 +148,12 @@ function buildSectionsFormula() {
     }
     returnString += ` ${backgroundModeString} `
 
-    if (sectionsBackground.length === 0) return "Select at least 1 section for the background!"
+    if (sectionsBackground.length === 0) {
+      noError = false;
+      return "Select at least 1 section for the background!"
+    }
     if (sectionsBackground.length === 1) return returnString + `Section(${sectionsBackground[0]})`
     return returnString + `Mean(${sectionsBackground.map(el => `Section(${el})`).join(", ")})`
   })
+  return noError
 }
