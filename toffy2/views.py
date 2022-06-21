@@ -1,7 +1,9 @@
 from pathlib import Path
 
 from django.conf import settings
+from django.contrib import messages
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
@@ -52,17 +54,24 @@ def get_measurement_h5_file_name(measurement_id=None, measurement_obj=None):
 
 
 def laser_scan_data_toffy2(request):
-    measurement_id = int(request.POST.get('measurementId'))
-    file_name_full = get_measurement_h5_file_name(measurement_id=measurement_id)
-    return laser_scan_data(request=request, file_name_full=file_name_full)
+    try:
+        measurement_id = int(request.POST.get('measurementId'))
+        file_name_full = get_measurement_h5_file_name(measurement_id=measurement_id)
+        return laser_scan_data(request=request, file_name_full=file_name_full)
+    except Exception as e:
+        return JsonResponse(status=400, data={'error': str(e)})
 
 
 def laser_scan_toffy2(request, measurement_id):
-    file_name_full = get_measurement_h5_file_name(measurement_id=measurement_id)
-    print(file_name_full)
-    return laser_scan(
-        request=request,
-        measurement_id=measurement_id,
-        file_name_full=file_name_full,
-        experiment='toffy2',
-        url=reverse('toffy2-laser-scan-data'))
+    try:
+        file_name_full = get_measurement_h5_file_name(measurement_id=measurement_id)
+        print(file_name_full)
+        return laser_scan(
+            request=request,
+            measurement_id=measurement_id,
+            file_name_full=file_name_full,
+            experiment='toffy2',
+            url=reverse('toffy2-laser-scan-data'))
+    except Exception as e:
+        messages.error(request, f"Something went wrong: {str(e)}")
+        return redirect('toffy2-mass-spectra')
