@@ -1,47 +1,13 @@
 import logging
-import os
 from datetime import timedelta
 
-from django.core.cache import cache
-from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 
-from labinventory.models import Temperature, Person
+from labinventory.models import Temperature
 
 logger = logging.getLogger('django')
-
-
-def power_alarm(request, fail_clear):
-    if request.user.username != 'gnooki':
-        return HttpResponse(status=403, content=f"Wrong user: '{request.user}', must be 'gnooki'")
-    if fail_clear not in ['fail', 'clear']:
-        raise Exception("Alarm needs argument 'fail' or 'clear'!")
-    users = Person.objects.filter(get_power_alarm=True)
-
-    if fail_clear == "fail":
-        message = "Power failure in the AG Scheier lab!"
-    else:
-        message = "Power returned in the AG Scheier lab!"
-    send_sms = 0
-    send_mails = 0
-    for user in users:
-        if user.mobile:
-            try:
-                command = f'echo "{message}" | gnokii --sendsms {user.mobile}'
-                os.system(command)
-                send_sms += 1
-            except Exception as e:
-                logger.error(f"PowerAlarm send sms failed: {e}")
-        if user.email:
-            try:
-                send_mail('LabAlert AG Scheier', message, 'labbooks-server@uibk.ac.at', [user.email])
-                send_mails += 1
-            except Exception as e:
-                logger.error(f"PowerAlarm send mail failed: {e}")
-
-    return HttpResponse(f"Send {send_sms} SMS and {send_mails} Mails.")
 
 
 @csrf_exempt
@@ -86,36 +52,3 @@ def get_temp_data(request):
             point.temp_sensor_2])
 
     return JsonResponse(response)
-
-
-def temperature_is_critical(request):
-    if cache.get('send_temp_alert') is None and Temperature.objects \
-            .filter(date_time__gt=now() - timedelta(minutes=30)) \
-            .filter(temp_sensor_1__gt=30) \
-            .count() > 3:
-
-        commandline_sms = "echo 'Temperature alert for prevacuum room. Check http://138.232.74.41/labinventory/" \
-                          "temperature/' | gnokii --sendsms {}"
-        commandline_mail = "echo 'Temperature alert for prevacuum room. Check http://138.232.74.41/labinventory/" \
-                           "temperature/' | mail -s LabAlert {}"
-
-        commands = []
-        users = Person.objects.filter(get_temperature_alarm=True)
-        for user in users:
-            if user.mobile is not None:
-                commands.append(
-                    commandline_sms.format(
-                        user.mobile.replace(' ', '').replace('/', '')))
-            if user.email:
-                commands.append(
-                    commandline_mail.format(user.email))
-
-        response = {
-            'is_critical': True,
-            'commands': commands
-        }
-        cache.set('send_temp_alert', True, 3600 * 24)  # send alert only once in 24h
-    else:
-        response = {'is_critical': False}
-
-    return JsonResponse(data=response)

@@ -9,12 +9,7 @@ urlpatterns = [
          name='labinventory-temp-data'),
     path('temperature/put/',
          views.add_temperature),
-    path('temperature/is-critical/',
-         views.temperature_is_critical),
     path('temperature/',
          TemplateView.as_view(template_name='labinventory/viewTemperature.html'),
          name="labinventory-temp"),
-    path('power-alarm/<fail_clear>/',
-         views.power_alarm,
-         name="labinventory-power-alarm"),
 ]

@@ -6,6 +6,10 @@ Requires django >= 3.0 (tested until 3.2.9)
 
 Changelog
 =========
+06.07.2022
+* LABINVENTORY/REMOVE/Felix: Removed all the SMS notification related stuff, as we have now a 
+separate device therefor.
+
 16.06.2022
 * TOFFY2/ADD/Felix: Add laser scan viewer
 

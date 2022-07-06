@@ -45,12 +45,8 @@ class PressureGaugeAdmin(admin.ModelAdmin):
         return response
 
 
-class PersonAdmin(admin.ModelAdmin):
-    list_display = ['name', 'get_power_alarm', 'get_temperature_alarm', 'mobile', 'email']
-
-
 admin.site.register(PressureGauge, PressureGaugeAdmin)
 admin.site.register(GaugeType)
-admin.site.register(Person, PersonAdmin)
+admin.site.register(Person)
 admin.site.register(UsageLocation)
 admin.site.register(PressureGaugeUsageRecord)
