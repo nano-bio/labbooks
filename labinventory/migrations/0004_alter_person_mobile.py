@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='person',
             name='mobile',
-            field=models.CharField(blank=True, default='0', help_text='Allowed format: 0043699123456789, +43699123456789, 0699123456789', max_length=20, validators=[labinventory.models.mobile_validator]),
+            field=models.CharField(blank=True, default='0', help_text='Allowed format: 0043699123456789, +43699123456789, 0699123456789', max_length=20, validators=[]),
             preserve_default=False,
         ),
     ]
