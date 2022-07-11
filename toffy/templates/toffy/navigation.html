@@ -25,5 +25,17 @@
         <li>
             <a class="dropdown-item" href="{% url 'admin:app_list' 'toffy' %}">Admin: Toffy</a>
         </li>
+
+        <li class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item" href="#" onclick="sigiMe()">Sigi Me</a>
+        </li>
     </ul>
 </li>
+<script>
+  function sigiMe() {
+    document.documentElement.style.transitionDuration = "200s";
+    document.documentElement.style.transform = "rotate(36000deg)";
+  }
+</script>
