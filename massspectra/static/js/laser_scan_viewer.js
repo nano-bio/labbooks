@@ -13,6 +13,7 @@ let sectionsBackground = [];
 let massColumn;
 let xStart;
 let xEnd;
+let trace;
 
 initializeSectionsInputs()
 getInputValues()
@@ -83,6 +84,7 @@ function plotLaserScan() {
     sectionsBackground: sectionsBackground.join(','),
     backgroundMode: backgroundMode
   }).done(function (data) {
+    trace = data.data;
     gL.updateOptions({'file': data.data});
   }).fail(function () {
     const text = (backgroundMode === 'divide') ? 'Maybe you try to divide by zero?' : 'Something went wrong'
@@ -156,4 +158,48 @@ function buildSectionsFormula() {
     return returnString + `Mean(${sectionsBackground.map(el => `Section(${el})`).join(", ")})`
   })
   return noError
+}
+
+function exportTrace() {
+  const massText = $('#laser-scan-input-mass option:selected').text().replaceAll(' ', '')
+  let filename = `id_${measurementId}-mass_${massText}.csv`
+  const processRow = function (row) {
+    let finalVal = '';
+    for (let j = 0; j < row.length; j++) {
+      let innerValue = row[j] === null ? '' : row[j].toString();
+      if (row[j] instanceof Date) {
+        innerValue = row[j].toLocaleString();
+      }
+
+      let result = innerValue.replace(/"/g, '""');
+      if (result.search(/([",\n])/g) >= 0)
+        result = '"' + result + '"';
+      if (j > 0)
+        finalVal += ',';
+      finalVal += result;
+    }
+    return finalVal + '\n';
+  };
+
+  let csvFile = '';
+  for (let i = 0; i < trace.length; i++) {
+    csvFile += processRow(trace[i]);
+  }
+
+  let blob = new Blob([csvFile], {type: 'text/csv;charset=utf-8;'});
+  if (navigator.msSaveBlob) { // IE 10+
+    navigator.msSaveBlob(blob, filename);
+  } else {
+    const link = document.createElement("a");
+    if (link.download !== undefined) { // feature detection
+      // Browsers that support HTML5 download attribute
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
 }
