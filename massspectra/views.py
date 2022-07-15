@@ -228,7 +228,7 @@ def laser_scan(request, measurement_id, file_name_full, experiment, url):
 def laser_scan_data(request, file_name_full):
     mass_column = int(request.POST.get('massColumn'))
     x_start = request.POST.get('xStart', None)
-    x_end = request.POST.get('xEnd', None)
+    step_width = request.POST.get('stepWidth', None)
     background_mode = request.POST.get('backgroundMode', 'divide')
     try:
         sections_foreground = [int(i) for i in request.POST.get('sectionsForeground').split(',')]
@@ -263,10 +263,10 @@ def laser_scan_data(request, file_name_full):
 
     try:
         # when wavelength start and end is provided, return a xy array
-        if x_start and x_end:
+        if x_start and step_width and float(step_width) != 0:
             x_start = float(x_start)
-            x_end = float(x_end)
-            xs = numpy.linspace(x_start, x_end, len(data))
+            step_width = float(step_width)
+            xs = numpy.arange(0, len(data)) * step_width + x_start
         else:
             xs = range(len(data))
 

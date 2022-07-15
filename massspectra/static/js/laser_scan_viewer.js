@@ -12,7 +12,7 @@ let sectionsForeground = [];
 let sectionsBackground = [];
 let massColumn;
 let xStart;
-let xEnd;
+let stepWidth;
 let trace;
 
 initializeSectionsInputs()
@@ -37,8 +37,8 @@ function initializeSectionsInputs() {
   // x start & x end
   xStart = Cookies.get(experiment + 'LaserScanXStart')
   if (xStart && typeof xStart === "string") $('#laser-scan-input-x-start').val(xStart)
-  xEnd = Cookies.get(experiment + 'LaserScanXEnd')
-  if (xEnd && typeof xEnd === "string") $('#laser-scan-input-x-end').val(xEnd)
+  stepWidth = Cookies.get(experiment + 'LaserScanStepWidth')
+  if (stepWidth && typeof stepWidth === "string") $('#laser-scan-input-step-width').val(stepWidth)
 
   // background mode
   backgroundMode = Cookies.get(experiment + 'LaserScanBackgroundMode') || 'divide';
@@ -79,7 +79,7 @@ function plotLaserScan() {
     massColumn: massColumn,
     measurementId: measurementId,
     xStart: xStart,
-    xEnd: xEnd,
+    stepWidth: stepWidth,
     sectionsForeground: sectionsForeground.join(','),
     sectionsBackground: sectionsBackground.join(','),
     backgroundMode: backgroundMode
@@ -99,7 +99,7 @@ function plotLaserScan() {
 function getInputValues() {
   massColumn = $('#laser-scan-input-mass').val();
   xStart = $('#laser-scan-input-x-start').val();
-  xEnd = $('#laser-scan-input-x-end').val();
+  stepWidth = $('#laser-scan-input-step-width').val();
 
   sectionsForeground = []
   $("input[name=sectionsForeground]:checkbox:checked").each(function () {
@@ -115,7 +115,7 @@ function getInputValues() {
 
   Cookies.set(experiment + 'LaserScanMass', massColumn, {expires: 365})
   Cookies.set(experiment + 'LaserScanXStart', xStart, {expires: 365})
-  Cookies.set(experiment + 'LaserScanXEnd', xEnd, {expires: 365})
+  Cookies.set(experiment + 'LaserScanStepWidth', stepWidth, {expires: 365})
   Cookies.set(experiment + 'LaserScanBackgroundMode', backgroundMode, {expires: 365})
   Cookies.set(experiment + 'LaserScanSectionsForeground', sectionsForeground.join(','), {expires: 365})
   Cookies.set(experiment + 'LaserScanSectionsBackground', sectionsBackground.join(','), {expires: 365})
