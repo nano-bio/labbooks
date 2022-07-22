@@ -1,14 +1,16 @@
 import datetime
 from json import JSONEncoder
+from os.path import exists
 
 import h5py
 import numpy
+from django.contrib import messages
 from django.contrib.admin import ModelAdmin
 from django.core import serializers
 from django.db.models import Model, F
 from django.db.models.functions import Substr
 from django.http import HttpResponse, JsonResponse, Http404
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -210,6 +212,10 @@ def get_mass_spectrum_tofwerk(file_name_full, mass_max=None):
 
 
 def laser_scan(request, measurement_id, file_name_full, experiment, url):
+    if not exists(file_name_full):
+        messages.error(request, f"The file '{file_name_full}' does not exists (ID {measurement_id})")
+        return redirect(f'{experiment}-mass-spectra')
+
     with open(file_name_full, 'rb') as f:
         hf = h5py.File(f, 'r')
         k = hf['PeakData']['PeakTable'][()]
