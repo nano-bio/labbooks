@@ -61,10 +61,11 @@ class Measurement(models.Model):
         (1, '1 - Trash')
     )
     SPUTTER_METHODS = (
-        ('magnetronTi', 'Magnetron Titan'),
+        ('magnetronTi', 'Magnetron'),
         ('magnetronAu', 'Magnetron Gold'),
         ('snowball', 'Snowball'),
         ('toffy', 'Toffy'),
+        ('hollowCathode', 'Hollow Cathode'),
     )
 
     # General
