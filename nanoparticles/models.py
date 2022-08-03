@@ -70,13 +70,6 @@ class Measurement(models.Model):
         (2, '2 - Not interesting'),
         (1, '1 - Trash')
     )
-    SPUTTER_METHODS = (
-        ('magnetronTi', 'Magnetron'),
-        ('magnetronAu', 'Magnetron Gold'),
-        ('snowball', 'Snowball'),
-        ('toffy', 'Toffy'),
-        ('hollowCathode', 'Hollow Cathode'),
-    )
 
     # General
     time = models.DateTimeField(
@@ -105,14 +98,7 @@ class Measurement(models.Model):
         null=True,
         blank=True,
         verbose_name="Sputter Time (min)")
-    sputter_method = models.CharField(
-        max_length=20,
-        null=True,
-        blank=True,
-        choices=SPUTTER_METHODS,
-        default='magnetronTi'
-    )
-    sputter_method_link = models.ForeignKey(
+    sputter_method = models.ForeignKey(
         SputterMethod,
         on_delete=models.SET_NULL,
         null=True,
