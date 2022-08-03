@@ -1,11 +1,10 @@
 from django.conf import settings
 from django.contrib import admin
 from django.templatetags.static import static
-from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
 
 from labbooks.admin_common import create_new_entry_based_on_existing_one_url
-from nanoparticles.models import Measurement, Substrate, Coating
+from nanoparticles.models import Measurement, Substrate, Coating, SputterMethod
 
 
 class MeasurementAdmin(admin.ModelAdmin):
@@ -41,14 +40,16 @@ class MeasurementAdmin(admin.ModelAdmin):
     ]
 
     def preview_image(self, obj):
-        url = settings.MEDIA_URL + f'nanoparticles/{obj.id}-Forward-Z-Axis.png"'
+        if obj.nid_file:
+            url = settings.MEDIA_URL + f'nanoparticles/{obj.id}-Forward-Z-Axis.png"'
 
-        return_str = mark_safe(
-            f'<a href"#">'
-            f'<img src="{url}" width="{settings.NANOPARTICLES_PREVIEW_SIZE}" '
-            f'height="{settings.NANOPARTICLES_PREVIEW_SIZE}">'
-            f'</a>')
-        return return_str
+            return mark_safe(
+                f'<a href"#">'
+                f'<img src="{url}" width="{settings.NANOPARTICLES_PREVIEW_SIZE}" '
+                f'height="{settings.NANOPARTICLES_PREVIEW_SIZE}">'
+                f'</a>')
+        else:
+            return "No file uploaded."
 
     def create_new_measurement_based_on_existing_one_inline(self, s):
         forbidden_items = ['time', '_state']
@@ -64,3 +65,4 @@ class MeasurementAdmin(admin.ModelAdmin):
 admin.site.register(Measurement, MeasurementAdmin)
 admin.site.register(Substrate)
 admin.site.register(Coating)
+admin.site.register(SputterMethod)

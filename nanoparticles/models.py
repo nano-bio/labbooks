@@ -48,6 +48,16 @@ class Coating(models.Model):
         return self.name
 
 
+class SputterMethod(models.Model):
+    name = models.CharField(
+        max_length=100)
+    description = models.TextField(
+        blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Measurement(models.Model):
     DEVICES = (
         ('AFM', 'AFM'),
@@ -102,6 +112,11 @@ class Measurement(models.Model):
         choices=SPUTTER_METHODS,
         default='magnetronTi'
     )
+    sputter_method_link = models.ForeignKey(
+        SputterMethod,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True)
     comment = models.TextField(
         blank=True)
 
@@ -117,8 +132,7 @@ class Measurement(models.Model):
     image_size = models.FloatField(
         null=True,
         blank=True,
-        verbose_name="Image Size in µm"
-    )
+        verbose_name="Image Size in µm")
 
     def save(self, *args, **kwargs):
         super(Measurement, self).save(*args, **kwargs)
