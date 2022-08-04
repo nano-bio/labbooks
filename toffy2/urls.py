@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 import journal.views
@@ -68,4 +69,10 @@ urlpatterns = [
          massspectra.views.json_export,
          {'model': Measurement},
          name="toffy2-measurement-json"),
+
+    # admin update rating in measurements
+    path('update-measurement-rating',
+         login_required(
+             toffy2.views.update_measurement_rating),
+         name="toffy2-update-measurement-rating"),
 ]

@@ -1,0 +1,40 @@
+{% extends 'admin/change_list.html' %}
+{% load static %}
+
+{% block content %}
+    {{ block.super }}
+
+    <script>
+      (function ($) {
+        $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+          }
+        });
+        const thumbUp = "{% static "images/hand-thumbs-up.svg" %}"
+        const thumbUpFill = "{% static "images/hand-thumbs-up-fill.svg" %}"
+        const thumbDown = "{% static "images/hand-thumbs-down.svg" %}"
+        const thumbDownFill = "{% static "images/hand-thumbs-down-fill.svg" %}"
+        const thumb = $('.thumb')
+
+        thumb.each(function () {
+          updateThumbImages($(this), $(this).data('rating'))
+        })
+
+        function updateThumbImages(el, rating) {
+          el.empty()
+          el.append(`<img class="thumb-img" data-rating-new="${rating === 1 ? 2 : 1}" src="${rating === 1 ? thumbUpFill : thumbUp}" alt="">`)
+          el.append(`<img class="thumb-img" data-rating-new="${rating === 3 ? 2 : 3}" src="${rating === 3 ? thumbDownFill : thumbDown}" alt="">`)
+        }
+
+        thumb.on('click', '.thumb-img', function () {
+          $.post("{% url 'toffy2-update-measurement-rating' %}", {
+            id: $(this).parent().data('id'),
+            rating: $(this).data('rating-new')
+          }, function ({id, rating}) {
+            updateThumbImages($('#rating-container-' + id), rating)
+          });
+        })
+      })(django.jQuery);
+    </script>
+{% endblock %}

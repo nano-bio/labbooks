@@ -15,10 +15,10 @@ class MeasurementAdmin(admin.ModelAdmin):
     proper_time.short_description = 'Time and date'
 
     list_display = (
-        'proper_time', 'id', 'operator', 'get_short_description', 'get_data_file', 'cluster_source_nozzle_temperature',
-        'evaluated_by', 'evaporation_gas_bronkhorst_setpoint', 'collision_pressure', 'collision_energy',
-        'export_to_mscp')
-    list_filter = ('operator',)
+        'proper_time', 'id', 'rating_buttons', 'operator', 'get_short_description', 'get_data_file',
+        'cluster_source_nozzle_temperature', 'evaluated_by', 'evaporation_gas_bronkhorst_setpoint',
+        'collision_pressure', 'collision_energy', 'export_to_mscp')
+    list_filter = ('operator', 'rating')
     search_fields = ('comment', 'data_file', 'short_description', 'id', 'evaporation_gas', 'collision_gas',
                      'oven_1_comment', 'oven_2_comment')
     readonly_fields = ('id',)
@@ -34,6 +34,7 @@ class MeasurementAdmin(admin.ModelAdmin):
                 'id',
                 'time',
                 'operator',
+                'rating',
                 'short_description',
                 'data_file_path_h5',
                 ('data_file', 'integration_start', 'integration_stop'),

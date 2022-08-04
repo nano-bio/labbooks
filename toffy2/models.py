@@ -19,6 +19,7 @@ class Measurement(models.Model):
     time = models.DateTimeField(default=now)
     operator = models.ForeignKey(Operator, on_delete=models.PROTECT, related_name='operator')
     short_description = models.CharField(max_length=500, blank=True)
+    rating = models.IntegerField(choices=((1, 'good'), (2, 'neutral'), (3, 'bad')), default=2)
     integration_start = models.IntegerField(blank=True, null=True, verbose_name="Integration start [s]")
     integration_stop = models.IntegerField(blank=True, null=True, verbose_name="Integration stop [s]")
     data_file_path_h5 = models.CharField(
@@ -90,6 +91,17 @@ class Measurement(models.Model):
         if len(self.short_description) > 35:
             return f"{self.short_description[:30]}..."
         return self.short_description
+
+    def rating_buttons(self):
+        return mark_safe(f"""<div
+            id='rating-container-{self.id}'
+            style='white-space: nowrap; cursor: pointer;'
+            class='thumb'
+            data-id='{self.id}'
+            data-rating='{self.rating}'
+            ></div>""")
+
+    rating_buttons.short_description = ''
 
     def export_to_mscp(self):
         return mark_safe(

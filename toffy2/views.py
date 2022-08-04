@@ -3,12 +3,13 @@ from pathlib import Path
 from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from massspectra.views import get_mass_spectrum_from_csv, get_mass_spectrum_tofwerk, mass_spectra_data, laser_scan, \
     laser_scan_data
+from toffy2.forms import UpdateMeasurementRatingForm
 from toffy2.models import Measurement
 
 
@@ -75,3 +76,15 @@ def laser_scan_toffy2(request, measurement_id):
     except Exception as e:
         messages.error(request, f"Something went wrong: {str(e)}")
         return redirect('toffy2-mass-spectra')
+
+
+def update_measurement_rating(request):
+    if request.method == 'POST':
+        form = UpdateMeasurementRatingForm(request.POST)
+        if form.is_valid():
+            measurement = get_object_or_404(Measurement, pk=form.cleaned_data['id'])
+            measurement.rating = form.cleaned_data['rating']
+            measurement.save()
+            return JsonResponse({
+                'id': form.cleaned_data['id'],
+                'rating': form.cleaned_data['rating']})
