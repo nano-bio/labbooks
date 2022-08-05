@@ -20,8 +20,18 @@
                             </tr>
                             {% for row in object_list %}
                                 <tr>
-                                    <td>
-                                        <button class="btn btn-outline-primary" onclick="show({{ row.id }})">
+                                    <td
+                                        {% if not row.nid_file %}
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="right"
+                                            title="No .nid file uploaded!"
+                                        {% endif %}
+                                    >
+                                        <button
+                                            class="btn btn-outline-primary"
+                                            onclick="show({{ row.id }})"
+                                            {% if not row.nid_file %}disabled{% endif %}
+                                        >
                                             <i class="bi bi-eye"></i>
                                         </button>
                                     </td>
@@ -73,6 +83,9 @@
 {% block extra_js %}
     <script src="{% static 'plotly/plotly-2.6.3.min.js' %}"></script>
     <script>
+      $(document).ready(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+      });
 
       const image = $('#image');
       const viewer3d = document.getElementById("viewer3d");
