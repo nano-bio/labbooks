@@ -36,7 +36,7 @@ DATABASES = {
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-ALLOWED_HOSTS = ['138.232.74.41', 'ideadb.uibk.ac.at']  # ideadb see clustof -> views
+ALLOWED_HOSTS = ['138.232.74.41', 'ideadb.uibk.ac.at', 'labbooks.at']  # ideadb see clustof -> views
 
 SITE_ID = 1
 
