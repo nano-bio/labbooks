@@ -1,19 +1,19 @@
-Django==3.2.15
-gunicorn==20.1.0
-mysqlclient==2.1.1 # install this with --no-cache-dir --upgrade
-crispy-bootstrap5==0.6
+Django==3.2.16
+
+# for form templates
+django-crispy-forms==1.14.0
+crispy-bootstrap5==0.7
 
 # for surftof
-djangorestframework==3.13.1
+djangorestframework==3.14.0
 
 # for mass-spectra
-scipy==1.9.0 # pip complains on server that a newer version does not exists
-h5py==3.7.0 # v3 doesnt work on windows
+scipy==1.9.3
+h5py==3.7.0 # v3 doesn't work on windows
 
 # for journal
-django-crispy-forms==1.14.0
-django-ckeditor==6.4.2
-matplotlib==3.5.2 # pip complains on server that a newer version does not exists
+django-ckeditor==6.5.1
+matplotlib==3.6.2
 
 # for cheminventory
 requests==2.28.1
@@ -22,15 +22,19 @@ periodictable==1.6.1
 # fitlib==0.0.* # py -m pip install git+https://github.com/nano-bio/fitlib.git@package
 
 # for snowball & surftof
-numpy==1.23.1 # pip complains on server that a newer version does not exists
+numpy==1.23.5
 
 # for wippi
-pytz==2022.1
+pytz==2022.6
 
 # for nanoparticles
-NSFopen==1.1.13
-pandas==1.4.3
+NSFopen==1.1.14
+pandas==1.5.1
 
 # for mscp importer
 python-dateutil==2.8.2
-molmass==2021.6.18
+molmass==2022.10.18
+
+# not used for development
+psycopg2==2.9.5
+gunicorn==20.1.0

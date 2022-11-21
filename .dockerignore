@@ -1,0 +1,9 @@
+node_modules/
+src/media/
+src/_vendor/
+src/static-serve/
+src/db.sqlite3
+.git/
+.idea/
+**/*.pyc
+**/__pycache__/
