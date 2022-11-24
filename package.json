@@ -1,0 +1,28 @@
+{
+  "name": "labbooks",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nano-bio/labbooks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nano-bio/labbooks/issues"
+  },
+  "homepage": "https://github.com/nano-bio/labbooks#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "clusterize.js": "^0.19.0",
+    "dygraphs": "^2.1.0",
+    "flot": "~0.8.3",
+    "gulp": "^4.0.2",
+    "jquery": "^3.6.1",
+    "jquery-deparam": "^0.5.3",
+    "jquery-toast-plugin": "^1.3.2",
+    "js-cookie": "^3.0.1",
+    "plotly.js": "^2.6.3",
+    "simplelightbox": "^2.11.0"
+  },
+  "scripts": {
+    "install": "gulp"
+  }
+}

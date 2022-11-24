@@ -11,7 +11,7 @@ COPY ./config/pip/requirements.txt .
 RUN pip install -r requirements.txt
 RUN pip install git+https://github.com/nano-bio/fitlib.git@package
 
-COPY ./src .
+COPY . .
 
 ADD /entrypoint.sh /etc/entrypoint.sh
 ENTRYPOINT ["/bin/sh", "/etc/entrypoint.sh"]

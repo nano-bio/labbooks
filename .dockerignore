@@ -1,9 +1,12 @@
 node_modules/
-src/media/
-src/_vendor/
-src/static-serve/
-src/db.sqlite3
+media/
+_vendor/
+static-serve/
+db.sqlite3
 .git/
 .idea/
 **/*.pyc
 **/__pycache__/
+*.Dockerfile
+docker-compose.yml
+README.md

@@ -51,10 +51,13 @@ LOGIN_URL = '/admin/login/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediaroot/')
 MEDIA_URL = '/files/'
 
-STATIC_URL = '/staticfiles/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, "static"),
+    os.path.join(BASE_DIR, "_vendor"),
 )
+
+# The absolute path to the directory where collectstatic will collect static files for deployment
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # List of finder classes that know how to find static files in

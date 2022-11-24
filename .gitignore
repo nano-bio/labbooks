@@ -19,3 +19,6 @@ surftof/cpm-export/
 /.cache/
 testfiles/
 venv/
+/_vendor/
+node_modules/
+/package-lock.json

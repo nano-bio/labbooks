@@ -8,11 +8,11 @@ services:
             context: .
             dockerfile: nginx.Dockerfile
         ports:
-            - "80:80"
+            - "8012:80"
         #        volumes:
         #            - maybe nginx should also serve the media files... much faster
-        depends_on:
-            - django
+#        depends_on:
+#            - django
 
     django:
         image: labbooks-django
