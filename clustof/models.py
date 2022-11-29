@@ -2,6 +2,7 @@ import datetime
 import re
 from operator import attrgetter
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -34,19 +35,23 @@ class Operator(models.Model):
     email = models.EmailField(max_length=254)
 
     def __str__(self):
-        return u'%s %s' % (self.firstname, self.lastname)
+        return f"{self.firstname} {self.lastname}"
 
 
 class Measurement(models.Model):
     time = models.DateTimeField(default=now)
     tof_settings_file = models.CharField(max_length=1500, verbose_name='TOF Settings File')
     laser_power_file = models.FileField(
-        upload_to='clustof/powerfiles/', blank=True,
+        blank=True,
+        upload_to=settings.MEDIA_ROOT_CLUSTOF / 'powerfiles',
         verbose_name='Laser Power Measurement File')
     cluster_size_distribution = models.FileField(
-        upload_to='clustof/clusterSizeDistribution/',
+        upload_to=settings.MEDIA_ROOT_CLUSTOF / 'clusterSizeDistribution',
         blank=True, null=True)
-    data_filename = models.CharField(max_length=1500, verbose_name='Filename', default='D:\\Data\\')
+    data_filename = models.CharField(
+        max_length=1500,
+        verbose_name='Filename',
+        default='Z:\\Labbooks\\clustof\\tof\\')
     operator = models.ForeignKey('Operator', related_name='op1',
                                  on_delete=models.PROTECT)
     operator2 = models.ForeignKey('Operator', related_name='op2', blank=True, null=True,
@@ -121,7 +126,7 @@ class Measurement(models.Model):
         on_delete=models.PROTECT)
     polarity = models.CharField(max_length=3, choices=POLARITIES, default='NEG')
     evaluated_by = models.CharField(max_length=20, blank=True)
-    evaluation_file = models.FileField(upload_to='clustof/evaluations/', blank=True, default='')
+    evaluation_file = models.FileField(upload_to=settings.MEDIA_ROOT_CLUSTOF / 'evaluations', blank=True)
     marked = models.BooleanField(default=False)
     lis_filament_current = models.FloatField(verbose_name="Filament current", blank=True, null=True)
     lis_trap_current = models.FloatField(verbose_name="Trap current", blank=True, null=True)

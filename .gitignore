@@ -1,12 +1,11 @@
 *.log
 *.pot
 *.pyc
-/labbooks/settings_local.py
 /mediaroot/
+/media/
 /static/
 .matplotlib/
 chemspider_token.txt
-database*
 .idea/
 bin/
 lib/

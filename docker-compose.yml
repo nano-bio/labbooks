@@ -9,10 +9,10 @@ services:
             dockerfile: nginx.Dockerfile
         ports:
             - "8012:80"
-        #        volumes:
-        #            - maybe nginx should also serve the media files... much faster
-#        depends_on:
-#            - django
+        volumes:
+            - ./media:/src/media:ro
+        depends_on:
+            - django
 
     django:
         image: labbooks-django
@@ -21,19 +21,23 @@ services:
             dockerfile: django.Dockerfile
         restart: always
         volumes:
-            - media:/src/media
+            - ./media:/src/media
         expose:
             - "8000"
-#        depends_on:
-#            - postgres
+        depends_on:
+            - postgres
 
     postgres:
         image: postgres:15-alpine
         restart: always
+        environment:
+            POSTGRES_PASSWORD: P5VINNAZVh2W6luqSvDQOTCQA5NqLgb5n5KMPM3F3rgfo0cjOi5kaDs3n0sfsn
+            POSTGRES_USER: labbooks
+            POSTGRES_DB: labbooks
+
         volumes:
             - postgres-data:/var/lib/postgresql/data/
 
 volumes:
-    media:
-    # todo: add cifs mount
+    # media:    # todo: add cifs mount
     postgres-data:

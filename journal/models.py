@@ -1,4 +1,5 @@
 from ckeditor.fields import RichTextField
+from django.conf import settings
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.timezone import now
@@ -17,27 +18,27 @@ class BasicJournalEntry(models.Model):
     image1 = models.ImageField(
         blank=True,
         null=True,
-        upload_to='journal/journalImage/')
+        upload_to=settings.MEDIEA_ROOT_JOURNAL / 'journalImage/')
     image2 = models.ImageField(
         blank=True,
         null=True,
-        upload_to='journal/journalImage/')
+        upload_to=settings.MEDIEA_ROOT_JOURNAL / 'journalImage/')
     image3 = models.ImageField(
         blank=True,
         null=True,
-        upload_to='journal/journalImage/')
+        upload_to=settings.MEDIEA_ROOT_JOURNAL / 'journalImage/')
     image4 = models.ImageField(
         blank=True,
         null=True,
-        upload_to='journal/journalImage/')
+        upload_to=settings.MEDIEA_ROOT_JOURNAL / 'journalImage/')
     image5 = models.ImageField(
         blank=True,
         null=True,
-        upload_to='journal/journalImage/')
+        upload_to=settings.MEDIEA_ROOT_JOURNAL / 'journalImage/')
     file = models.FileField(
         blank=True,
         null=True,
-        upload_to='journal/journalFiles/',
+        upload_to=settings.MEDIEA_ROOT_JOURNAL / 'journalFiles/',
         verbose_name='File which can be downloaded')
     measurement = models.ForeignKey(
         'Measurement',
