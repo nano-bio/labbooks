@@ -1,10 +1,7 @@
-import sys
-
-sys.path.append('/var/opt')
-
-from django.db import models
-from django.core.exceptions import ValidationError
 import fitlib.chemlib
+from django.core.exceptions import ValidationError
+from django.db import models
+
 import cheminventory.validations as validations
 from cheminventory.inchivalidation import inchi2chemicalformula as inchi2chemicalformula
 
@@ -45,7 +42,7 @@ class StorageLocation(models.Model):
     h2o_reactivity_allowed = models.BooleanField(default=False)
 
     def __str__(self):
-        return u'%s' % (self.name)
+        return self.name
 
     def clean(self):
         params2check = ['oxidizing', 'irritant', 'explosive', 'flammable', 'corrosive', 'environmentally_damaging']
@@ -65,7 +62,7 @@ class Person(models.Model):
     email = models.EmailField(blank=True)
 
     def __str__(self):
-        return u'%s' % (self.name)
+        return self.name
 
 
 class UsageLocation(models.Model):

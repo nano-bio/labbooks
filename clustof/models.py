@@ -144,7 +144,7 @@ class Measurement(models.Model):
 
     # same for the actual data file
     def data_file(self):
-        return mark_safe("<a href='/clustof/export/{}'>Data file</a>".format(self.id))
+        return mark_safe(f"<a href='{settings.MEDIA_URL}/clustof/{self.data_filename}'>Data file</a>")  # todo
 
     def __str__(self):
         return '{}, {}: {} ...'.format(self.time, self.operator, self.substance[0:80])
