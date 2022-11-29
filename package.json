@@ -11,6 +11,7 @@
   "homepage": "https://github.com/nano-bio/labbooks#readme",
   "dependencies": {
     "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.10.2",
     "clusterize.js": "^0.19.0",
     "dygraphs": "^2.1.0",
     "flot": "~0.8.3",

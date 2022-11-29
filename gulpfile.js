@@ -17,7 +17,7 @@ function clusterize() {
 
 function dygraphs() {
   return src('node_modules/dygraphs/dist/**/*')
-    .pipe(dest('_vendor/dygraphs'))
+    .pipe(dest('_vendor/dygraph'))
 }
 
 function flot() {
