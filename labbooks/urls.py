@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 
 import cheminventory.urls
@@ -16,6 +17,7 @@ import toffy2.urls
 import vg.urls
 import wippi.urls
 from journal.views import homepage
+from labbooks.admin_common import export_tables_csv_view
 
 urlpatterns = [
     path('', homepage, name='homepage'),
@@ -35,6 +37,11 @@ urlpatterns = [
     path('toffy2/', include(toffy2.urls)),
     path('vg/', include(vg.urls)),
     path('wippi/', include(wippi.urls)),
+
+    # csv export tables to netshare folders
+    path('export-csv/',
+         login_required(export_tables_csv_view),
+         name='export-csv-files'),
 ]
 
 if settings.DEBUG:

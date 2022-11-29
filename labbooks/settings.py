@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     "crispy_bootstrap5",
     'ckeditor',
+    'django_crontab',
 
     'cheminventory',
     'journal',
@@ -175,3 +176,7 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+CRONJOBS = [
+    ('42 * * * *', 'labbooks.admin_common.export_tables_csv_all', '>> /src/media/cron.log 2>&1')
+]

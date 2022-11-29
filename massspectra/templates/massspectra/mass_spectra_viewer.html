@@ -32,9 +32,11 @@
 {% endblock %}
 
 {% block extra_js %}
-    {# All the plotting things #}
-    {% include 'massspectra/mass_spectra_viewer_js_plot.html' %}
+    {% if page_obj %}
+        {# All the plotting things #}
+        {% include 'massspectra/mass_spectra_viewer_js_plot.html' %}
 
-    {# Download plot as csv #}
-    {% include 'massspectra/mass_spectra_viewer_js_download_csv.html' %}
+        {# Download plot as csv #}
+        {% include 'massspectra/mass_spectra_viewer_js_download_csv.html' %}
+    {% endif %}
 {% endblock %}

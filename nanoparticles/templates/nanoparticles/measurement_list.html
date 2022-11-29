@@ -81,120 +81,121 @@
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'plotly/plotly.min.js' %}"></script>
-    <script>
-      $(document).ready(function () {
-        $('[data-bs-toggle="tooltip"]').tooltip();
-      });
+    {% if object_list %}
+        <script src="{% static 'plotly/plotly.min.js' %}"></script>
+        <script>
+          $(document).ready(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+          });
 
-      const image = $('#image');
-      const viewer3d = document.getElementById("viewer3d");
+          const image = $('#image');
+          const viewer3d = document.getElementById("viewer3d");
 
-      let measurementId = {{ object_list.0.id }};
-      let imageUrl = "{% get_media_prefix %}nanoparticles/id-direction-type.png";
+          let measurementId = {{ object_list.0.id }};
+          let imageUrl = "{% get_media_prefix %}nanoparticles/id-direction-type.png";
 
-      function show(id) {
-        measurementId = id;
-        reloadPreview();
-      }
-
-      function reloadPreview() {
-        let direction = $('input[name=btnradio-direction]:checked').val()
-        let type = $('input[name=btnradio-type]:checked').val()
-        let dimension = $('input[name=btnradio-dimension]:checked').val()
-        let smoothing = $('input[name=btnradio-smoothing]:checked').val()
-
-        if (dimension === '2d') {
-          viewer3d.classList.add("d-none")
-          image.show()
-          setImageSrc(direction, type)
-          $('#smoothing-col').hide()
-        } else {
-          image.hide()
-          viewer3d.classList.remove("d-none")
-          $('#smoothing-col').show()
-          update3dViewer(direction, type, smoothing)
-        }
-      }
-
-      function setImageSrc(direction, type) {
-        image.attr(
-          "src",
-          imageUrl
-            .replace('id', measurementId.toString())
-            .replace('direction', direction)
-            .replace('type', type)
-        );
-      }
-
-      $(":input").click(reloadPreview)
-
-      function update3dViewer(direction, type, smoothing) {
-        $.getJSON(
-          "{% url 'nanoparticles-image-data' 1 'direction' 'type' 2 %}"
-            .replace('1', measurementId.toString())
-            .replace('direction', direction)
-            .replace('type', type)
-            .replace('2', smoothing), function ({data}) {
-
-            let size = viewer3d.offsetWidth;
-
-            const layout = {
-              autosize: true,
-              width: size,
-              height: size,
-              boxmode: 'group',
-              hovermode: false,
-              margin: {
-                l: 65,
-                r: 50,
-                b: 65,
-                t: 90,
-              },
-              scene: {
-                xaxis_nticks: 20,
-                zaxis_nticks: 4,
-                camera_eye: {x: 0, y: -1, z: 0.5},
-                aspectratio: {x: 1, y: 1, z: 0.2}
-              }
-            };
-
-            Plotly.react(viewer3d, [{
-              z: data,
-              type: 'surface',
-              contours: {
-                x: {highlight: false},
-                y: {highlight: false},
-                z: {highlight: false}
-              },
-            }], layout);
+          function show(id) {
+            measurementId = id;
+            reloadPreview();
           }
-        )
-      }
-    </script>
 
-    <script src="{% static 'js.cookie/js.cookie.min.js' %}"></script>
-    <script src="{% static 'jquery.deparam/jquery-deparam.js' %}"></script>
-    <script>
-      const cookieName = 'nanoparticlesFileInfoValues';
-      let switchStates = {};
-      $(function () {
-        switchStates = deparam(Cookies.get(cookieName));
+          function reloadPreview() {
+            let direction = $('input[name=btnradio-direction]:checked').val()
+            let type = $('input[name=btnradio-type]:checked').val()
+            let dimension = $('input[name=btnradio-dimension]:checked').val()
+            let smoothing = $('input[name=btnradio-smoothing]:checked').val()
 
-        {# On initial set all input switches from cookie and hide all corresponding File Info Values #}
-        $.each(switchStates, function (key, value) {
-          $("#flexSwitchCheck" + key).prop('checked', value === 'true');
-          $('.' + key).toggle(value === 'true');
-        });
-      });
-      {# When a switch is clicked, Cookie gets updated and File Info Value toggled #}
-      $('#toggle-values :checkbox').change(function () {
-        $('.' + $(this).attr('name')).toggle($(this).is(":checked"));
-        switchStates[$(this).attr('name')] = $(this).is(":checked")
-        Cookies.set(cookieName, $.param(switchStates));
-      });
-    </script>
+            if (dimension === '2d') {
+              viewer3d.classList.add("d-none")
+              image.show()
+              setImageSrc(direction, type)
+              $('#smoothing-col').hide()
+            } else {
+              image.hide()
+              viewer3d.classList.remove("d-none")
+              $('#smoothing-col').show()
+              update3dViewer(direction, type, smoothing)
+            }
+          }
 
+          function setImageSrc(direction, type) {
+            image.attr(
+              "src",
+              imageUrl
+                .replace('id', measurementId.toString())
+                .replace('direction', direction)
+                .replace('type', type)
+            );
+          }
+
+          $(":input").click(reloadPreview)
+
+          function update3dViewer(direction, type, smoothing) {
+            $.getJSON(
+              "{% url 'nanoparticles-image-data' 1 'direction' 'type' 2 %}"
+                .replace('1', measurementId.toString())
+                .replace('direction', direction)
+                .replace('type', type)
+                .replace('2', smoothing), function ({data}) {
+
+                let size = viewer3d.offsetWidth;
+
+                const layout = {
+                  autosize: true,
+                  width: size,
+                  height: size,
+                  boxmode: 'group',
+                  hovermode: false,
+                  margin: {
+                    l: 65,
+                    r: 50,
+                    b: 65,
+                    t: 90,
+                  },
+                  scene: {
+                    xaxis_nticks: 20,
+                    zaxis_nticks: 4,
+                    camera_eye: {x: 0, y: -1, z: 0.5},
+                    aspectratio: {x: 1, y: 1, z: 0.2}
+                  }
+                };
+
+                Plotly.react(viewer3d, [{
+                  z: data,
+                  type: 'surface',
+                  contours: {
+                    x: {highlight: false},
+                    y: {highlight: false},
+                    z: {highlight: false}
+                  },
+                }], layout);
+              }
+            )
+          }
+        </script>
+
+        <script src="{% static 'js.cookie/js.cookie.min.js' %}"></script>
+        <script src="{% static 'jquery.deparam/jquery-deparam.js' %}"></script>
+        <script>
+          const cookieName = 'nanoparticlesFileInfoValues';
+          let switchStates = {};
+          $(function () {
+            switchStates = deparam(Cookies.get(cookieName));
+
+            {# On initial set all input switches from cookie and hide all corresponding File Info Values #}
+            $.each(switchStates, function (key, value) {
+              $("#flexSwitchCheck" + key).prop('checked', value === 'true');
+              $('.' + key).toggle(value === 'true');
+            });
+          });
+          {# When a switch is clicked, Cookie gets updated and File Info Value toggled #}
+          $('#toggle-values :checkbox').change(function () {
+            $('.' + $(this).attr('name')).toggle($(this).is(":checked"));
+            switchStates[$(this).attr('name')] = $(this).is(":checked")
+            Cookies.set(cookieName, $.param(switchStates));
+          });
+        </script>
+    {% endif %}
 {% endblock %}
 
 {% block extra_head %}

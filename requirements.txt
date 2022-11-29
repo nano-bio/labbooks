@@ -4,6 +4,9 @@ Django==3.2.16
 django-crispy-forms==1.14.0
 crispy-bootstrap5==0.7
 
+# for regulary tasks like exporting data to csv
+django-crontab==0.7.1
+
 # for surftof
 djangorestframework==3.14.0
 
@@ -19,7 +22,8 @@ matplotlib==3.6.2
 requests==2.28.1
 openpyxl==3.0.10
 periodictable==1.6.1
-# fitlib==0.0.* # py -m pip install git+https://github.com/nano-bio/fitlib.git@package
+# fitlib==0.0.*
+# pip install git+https://github.com/nano-bio/fitlib.git@package
 
 # for snowball & surftof
 numpy==1.23.5
@@ -29,7 +33,7 @@ pytz==2022.6
 
 # for nanoparticles
 NSFopen==1.1.14
-pandas==1.5.1
+pandas==1.5.2
 
 # for mscp importer
 python-dateutil==2.8.2

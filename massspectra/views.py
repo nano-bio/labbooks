@@ -15,7 +15,6 @@ from django.urls import reverse
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
-from numpy import array
 from scipy.interpolate import interp1d
 
 
@@ -203,8 +202,8 @@ def get_toffy_like_mass_spectra_data(request, measurement_model):
 
 def get_mass_spectrum_tofwerk(file_name_full, mass_max=None):
     with h5py.File(file_name_full, 'r') as f:
-        y_data = array(f['FullSpectra']['SumSpectrum'])
-        x_data = array(f['FullSpectra']['MassAxis'])
+        y_data = numpy.array(f['FullSpectra']['SumSpectrum'])
+        x_data = numpy.array(f['FullSpectra']['MassAxis'])
 
     if mass_max is None:
         return x_data, y_data
