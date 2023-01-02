@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    # 'django.contrib.sites',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
@@ -109,18 +109,18 @@ STATICFILES_DIRS = [
     BASE_DIR / '_vendor',
 ]
 
-MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
-MEDIA_ROOT_CLUSTOF = MEDIA_ROOT / 'clustof'
-MEDIA_ROOT_JOURNAL = MEDIA_ROOT / 'journal'
-MEDIA_ROOT_NANOPARTICLES = MEDIA_ROOT / 'nanoparticles'
-MEDIA_ROOT_PULSETUBE = MEDIA_ROOT / 'pulsetube'
-MEDIA_ROOT_SNOWBALL = MEDIA_ROOT / 'snowball'
-MEDIA_ROOT_SURFTOF = MEDIA_ROOT / 'surftof'
-MEDIA_ROOT_TOFFY = MEDIA_ROOT / 'toffy'
-MEDIA_ROOT_TOFFY2 = MEDIA_ROOT / 'toffy2'
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_ROOT_VG = MEDIA_ROOT / 'vg'
 MEDIA_ROOT_WIPPI = MEDIA_ROOT / 'wippi'
+MEDIA_ROOT_TOFFY = MEDIA_ROOT / 'toffy'
+MEDIA_ROOT_TOFFY2 = MEDIA_ROOT / 'toffy2'
+MEDIA_ROOT_CLUSTOF = MEDIA_ROOT / 'clustof'
+MEDIA_ROOT_JOURNAL = MEDIA_ROOT / 'journal'
+MEDIA_ROOT_SURFTOF = MEDIA_ROOT / 'surftof'
+MEDIA_ROOT_SNOWBALL = MEDIA_ROOT / 'snowball'
+MEDIA_ROOT_PULSETUBE = MEDIA_ROOT / 'pulsetube'
+MEDIA_ROOT_NANOPARTICLES = MEDIA_ROOT / 'nanoparticles'
 
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
@@ -128,19 +128,7 @@ ADMINS = (
 
 LOGIN_URL = '/admin/login/'
 
-# BEGIN: UNUSED
-# # set the IP for CLUSTOF here
-# CLUSTOFIP = '138.232.74.13'
-#
-# # set the IP for SNOWBALL here
-# SNOWBALLIP = '138.232.74.207'
-#
-# # set IPS for all pressure writing devices here
-# # snowball, josis computer
-# PRESSUREIPS = ['138.232.74.145', '138.232.74.103', '138.232.74.207']
-#
-# SITE_ID = 1
-# END: UNUSED
+SITE_ID = 1
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -165,8 +153,12 @@ LOGGING = {
 DEFAULT_FROM_EMAIL = 'labbooks@uibk.ac.at'
 
 SURFTOF_BIGSHARE_DATA_ROOT = "/mnt/bigshare/Experiments/SurfTOF/Measurements/rawDATA/"
+
+# NANOPARTICLES
 NANOPARTICLES_DATA_ROOT = "/mnt/bigshare/"
 NANOPARTICLES_PREVIEW_SIZE = 150
+
+# TOFFY2
 TOFFY2_REPLACE_H5_PATH = ('Z:/', "/mnt/bigshare/")
 
 MESSAGE_TAGS = {

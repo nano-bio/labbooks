@@ -49,9 +49,10 @@ class Measurement(models.Model):
         upload_to=settings.MEDIA_ROOT_CLUSTOF / 'clusterSizeDistribution',
         blank=True, null=True)
     data_filename = models.CharField(
+        blank=True,
         max_length=1500,
         verbose_name='Filename',
-        default='Z:\\Labbooks\\clustof\\tof\\')
+        help_text="Files must be stored in Z:\\Labbooks\\clustof\\tof\\. Here, save the FILENAME ONLY!")
     operator = models.ForeignKey('Operator', related_name='op1',
                                  on_delete=models.PROTECT)
     operator2 = models.ForeignKey('Operator', related_name='op2', blank=True, null=True,

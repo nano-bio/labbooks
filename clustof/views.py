@@ -322,10 +322,17 @@ def get_mass_spectra_data(request):
         return mass_spectra_data(request, x_data1, y_data1)
 
 
-def get_measurement_file_name(measurement_id):
-    m = Measurement.objects.get(pk=int(measurement_id))
-    file_name = m.data_filename.replace('D:\\Data\\', '').replace('G:\\Data\\', '')
-    return f"{settings.CLUSTOF_FILES_ROOT}{file_name}"
+def get_measurement_file_name(measurement_id: int) -> str:
+    m = Measurement.objects.get(pk=measurement_id)
+    file_name = m.data_filename \
+        .replace('D:\\Data\\', '') \
+        .replace('G:\\Data\\', '') \
+        .replace('Z:\\Labbooks\\clustof', '') \
+        .replace('\\', '/')
+    file_name_absolute = settings.MEDIA_ROOT_CLUSTOF / file_name
+    if not file_name_absolute.exists():
+        raise FileNotFoundError()
+    return file_name_absolute.as_posix()
 
 
 class MassSpectraException(Exception):
