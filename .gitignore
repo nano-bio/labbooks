@@ -1,9 +1,8 @@
 *.log
 *.pot
 *.pyc
-/mediaroot/
-/media/
-/static/
+/src/media/
+/src/static/
 .matplotlib/
 chemspider_token.txt
 .idea/
@@ -11,13 +10,8 @@ bin/
 lib/
 lib64/
 lib64
-nginx*
-pip-selfcheck.json
 db.sqlite3
-surftof/cpm-export/
-/.cache/
-testfiles/
 venv/
-/_vendor/
+_vendor/
 node_modules/
-/package-lock.json
+package-lock.json
