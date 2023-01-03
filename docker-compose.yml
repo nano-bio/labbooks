@@ -10,7 +10,7 @@ services:
         ports:
             - "8012:80"
         volumes:
-            - ./media:/src/media:ro
+            - media:/src/media:ro
         depends_on:
             - django
 
@@ -21,7 +21,7 @@ services:
             dockerfile: django.Dockerfile
         restart: always
         volumes:
-            - ./media:/src/media
+            - media:/src/media:ro
         expose:
             - "8000"
         depends_on:
@@ -39,5 +39,10 @@ services:
             - postgres-data:/var/lib/postgresql/data/
 
 volumes:
-    # media:    # todo: add cifs mount
     postgres-data:
+    media:
+        driver: local
+        driver_opts:
+            type: cifs
+            device: "//${NETSHARE_DOMAIN}/${NETSHARE_PATH}"
+            o: "addr=${NETSHARE_DOMAIN},username=${NETSHARE_USER},password=${NETSHARE_PW},domain=${NETSHARE_AD_DOMAIN},file_mode=0775,dir_mode=0775"

@@ -45,7 +45,7 @@ def create_new_entry_based_on_existing_one(request, queryset, forbidden_items):
 def export_tables_csv(experiment_media_root, model):
     def is_not_empty_foreignkey(obj, field):
         return obj.__getattribute__(field.name) and \
-               isinstance(field, ForeignKey)
+            isinstance(field, ForeignKey)
 
     def str_foreignkey_with_id(obj, field):
         return f"#{obj.__getattribute__(field.name).pk} {obj.__getattribute__(field.name).__str__()}"
@@ -74,7 +74,7 @@ def export_tables_csv_all():
         clustof_models.Operator,
         clustof_models.JournalEntry,
     ]:
-        export_tables_csv(settings.MEDIA_ROOT_CLUSTOF, model)
+        export_tables_csv(settings.MEDIA_ROOT / 'clustof', model)
 
     # TOFFY
     for model in [
@@ -82,7 +82,7 @@ def export_tables_csv_all():
         toffy_models.Operator,
         toffy_models.JournalEntry,
     ]:
-        export_tables_csv(settings.MEDIA_ROOT_TOFFY, model)
+        export_tables_csv(settings.MEDIA_ROOT / 'toffy', model)
 
     # TOFFY2
     for model in [
@@ -90,7 +90,7 @@ def export_tables_csv_all():
         toffy2_models.Operator,
         toffy2_models.JournalEntry,
     ]:
-        export_tables_csv(settings.MEDIA_ROOT_TOFFY2, model)
+        export_tables_csv(settings.MEDIA_ROOT / 'toffy2', model)
 
 
 def export_tables_csv_view(request):

@@ -108,7 +108,7 @@ class Measurement(models.Model):
 
     nid_file = models.FileField(
         blank=True,
-        upload_to='nanoparticles')
+        upload_to='nanoparticles/nidfiles/')
     spectroscopy = models.BooleanField(
         default=False)
     conductivity = models.BooleanField(
@@ -145,5 +145,5 @@ def create_or_update_images(measurement_id, file_name):
             fig.subplots_adjust(
                 top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
             ax.imshow(a, aspect='equal', cmap='hot')
-            fig.savefig(
-                f"{settings.MEDIA_ROOT}nanoparticles/{measurement_id}-{direction}-{measurement_type}.png", dpi=len(a))
+            file_name_preview = f"{measurement_id}-{direction}-{measurement_type}.png"
+            fig.savefig(settings.MEDIA_ROOT / 'nanoparticles' / 'previews' / file_name_preview, dpi=len(a))

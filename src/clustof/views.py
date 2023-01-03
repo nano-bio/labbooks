@@ -329,7 +329,7 @@ def get_measurement_file_name(measurement_id: int) -> str:
         .replace('G:\\Data\\', '') \
         .replace('Z:\\Labbooks\\clustof', '') \
         .replace('\\', '/')
-    file_name_absolute = settings.MEDIA_ROOT_CLUSTOF / file_name
+    file_name_absolute = settings.MEDIA_ROOT / file_name
     if not file_name_absolute.exists():
         raise FileNotFoundError()
     return file_name_absolute.as_posix()

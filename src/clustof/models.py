@@ -43,10 +43,10 @@ class Measurement(models.Model):
     tof_settings_file = models.CharField(max_length=1500, verbose_name='TOF Settings File')
     laser_power_file = models.FileField(
         blank=True,
-        upload_to=settings.MEDIA_ROOT_CLUSTOF / 'powerfiles',
+        upload_to='clustof/powerfiles/',
         verbose_name='Laser Power Measurement File')
     cluster_size_distribution = models.FileField(
-        upload_to=settings.MEDIA_ROOT_CLUSTOF / 'clusterSizeDistribution',
+        upload_to='clustof/clusterSizeDistribution/',
         blank=True, null=True)
     data_filename = models.CharField(
         blank=True,
@@ -127,7 +127,7 @@ class Measurement(models.Model):
         on_delete=models.PROTECT)
     polarity = models.CharField(max_length=3, choices=POLARITIES, default='NEG')
     evaluated_by = models.CharField(max_length=20, blank=True)
-    evaluation_file = models.FileField(upload_to=settings.MEDIA_ROOT_CLUSTOF / 'evaluations', blank=True)
+    evaluation_file = models.FileField(upload_to='clustof/evaluations/', blank=True)
     marked = models.BooleanField(default=False)
     lis_filament_current = models.FloatField(verbose_name="Filament current", blank=True, null=True)
     lis_trap_current = models.FloatField(verbose_name="Trap current", blank=True, null=True)

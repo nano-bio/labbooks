@@ -6,11 +6,11 @@ RUN apt-get install --no-install-recommends -y cron
 
 WORKDIR /src
 
-COPY ./requirements.txt .
+COPY ./src/requirements.txt .
 RUN pip install -r requirements.txt
 RUN pip install git+https://github.com/nano-bio/fitlib.git@package
 
-COPY . .
+COPY ./src .
 
 ADD /entrypoint.sh /etc/entrypoint.sh
 ENTRYPOINT ["/bin/sh", "/etc/entrypoint.sh"]
