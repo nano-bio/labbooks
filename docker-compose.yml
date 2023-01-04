@@ -22,6 +22,8 @@ services:
         restart: always
         volumes:
             - media:/src/media:ro
+            - media-toffy2-tofwerk-data:/src/media_toffy2_tofwerk_data:ro
+            - media-surftof-data:/src/media_surftof_data:ro
         expose:
             - "8000"
         depends_on:
@@ -45,4 +47,18 @@ volumes:
         driver_opts:
             type: cifs
             device: "//${NETSHARE_DOMAIN}/${NETSHARE_PATH}"
+            o: "addr=${NETSHARE_DOMAIN},username=${NETSHARE_USER},password=${NETSHARE_PW},domain=${NETSHARE_AD_DOMAIN},file_mode=0775,dir_mode=0775"
+
+    media-toffy2-tofwerk-data:
+        driver: local
+        driver_opts:
+            type: cifs
+            device: "//${NETSHARE_DOMAIN}/${NETSHARE_PATH_TOFFY2_TOFWERK_DATA}"
+            o: "addr=${NETSHARE_DOMAIN},username=${NETSHARE_USER},password=${NETSHARE_PW},domain=${NETSHARE_AD_DOMAIN},file_mode=0775,dir_mode=0775"
+
+    media-surftof-data:
+        driver: local
+        driver_opts:
+            type: cifs
+            device: "//${NETSHARE_DOMAIN}/${NETSHARE_PATH_SURFTOF_DATA}"
             o: "addr=${NETSHARE_DOMAIN},username=${NETSHARE_USER},password=${NETSHARE_PW},domain=${NETSHARE_AD_DOMAIN},file_mode=0775,dir_mode=0775"
