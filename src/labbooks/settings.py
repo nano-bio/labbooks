@@ -146,7 +146,7 @@ SURFTOF_BIGSHARE_DATA_ROOT = "/src/media_surftof_data/"
 
 # # NANOPARTICLES
 # NANOPARTICLES_DATA_ROOT = "/mnt/bigshare/"
-# NANOPARTICLES_PREVIEW_SIZE = 150
+NANOPARTICLES_PREVIEW_SIZE = 150
 
 # TOFFY2
 TOFFY2_REPLACE_H5_PATH = ('Z:/Experiments/Toffy2/Measurements/RAW-TOFWERK-Data/', "/src/media_toffy2_tofwerk_data/")
