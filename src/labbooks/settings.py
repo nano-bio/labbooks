@@ -107,6 +107,7 @@ STATIC_ROOT = BASE_DIR / 'static'
 # STATIC_ROOT = The absolute path to the directory where collectstatic will collect static files for deployment
 STATICFILES_DIRS = [
     BASE_DIR / '_vendor',
+    BASE_DIR / 'labbooks' / 'static',
 ]
 
 MEDIA_URL = '/media/'
