@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib import admin
-from django.templatetags.static import static
 from django.utils.safestring import mark_safe
 
 from labbooks.admin_common import create_new_entry_based_on_existing_one_url
@@ -56,10 +55,15 @@ class MeasurementAdmin(admin.ModelAdmin):
         url = create_new_entry_based_on_existing_one_url(s, forbidden_items)
         return mark_safe(
             f"<a href='{url}' title='Duplicate this measurement'>"
-            f"<img src='{static('images/clipboard-plus.svg')}'>"
+            f"<span class='bi bi-plus-circle-fill'></span>"
             f"</a>")
 
     create_new_measurement_based_on_existing_one_inline.short_description = ""
+
+    class Media:
+        css = {
+            "all": ("bootstrap-icons/bootstrap-icons.css",)
+        }
 
 
 admin.site.register(Measurement, MeasurementAdmin)

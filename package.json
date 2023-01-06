@@ -16,7 +16,7 @@
     "dygraphs": "^2.1.0",
     "flot": "~0.8.3",
     "gulp": "^4.0.2",
-    "jquery": "^3.6.1",
+    "jquery": "^3.6.3",
     "jquery-deparam": "^0.5.3",
     "jquery-toast-plugin": "^1.3.2",
     "js-cookie": "^3.0.1",
