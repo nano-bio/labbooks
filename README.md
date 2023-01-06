@@ -63,7 +63,9 @@ We are using a _service_ with 3 containers:
 - Postgres, the database
 - nginx, as an entry point and static files server
 
-You need to learn and install Docker and Docker-Compose. Then, a simple
+Mount the netshare (see `.smbcredentials`).
+
+Install Docker and Docker-Compose. Then, a simple
 
 ```shell
 docker-compose up -d

@@ -15,5 +15,5 @@ venv/
 _vendor/
 node_modules/
 package-lock.json
-.env
+.smbcredentials
 /tmp_*
