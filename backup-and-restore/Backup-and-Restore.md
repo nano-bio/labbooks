@@ -35,8 +35,8 @@ Add the following line to `/etc/crontab`:
 
 ```shell
 MAILTO=labbooks # see /etc/aliases
-42 1 * * * root /srv/labbooks/backup-and-restore/backup-daily.sh >> /log/backup-labbooks.log
-42 2 7 * * root /srv/labbooks/backup-and-restore/backup-monthly.sh >> /log/backup-labbooks.log
+42 1 * * * root /srv/labbooks/backup-and-restore/backup-daily.sh >> /var/log/backup-labbooks.log
+42 2 7 * * root /srv/labbooks/backup-and-restore/backup-monthly.sh >> /var/log/backup-labbooks.log
 
 ```
 

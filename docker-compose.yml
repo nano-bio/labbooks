@@ -21,7 +21,7 @@ services:
             dockerfile: django.Dockerfile
         restart: always
         volumes:
-            - /media/netshare/Temp/labbooks:/src/media:ro
+            - /media/netshare/Temp/labbooks:/src/media
             - /media/netshare/Experiments/Toffy2/Measurements/RAW-TOFWERK-Data:/src/media_toffy2_tofwerk_data:ro
             - /media/netshare/Experiments/SurfTOF/Measurements/rawDATA:/src/media_surftof_data:ro
         expose:
