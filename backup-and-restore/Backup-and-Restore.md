@@ -41,3 +41,18 @@ MAILTO=labbooks # see /etc/aliases
 ```
 
 ## Restore
+
+
+## Useful commands
+
+```shell
+# Copy files from server to current folder:
+scp root@138.232.74.41:/var/opt/labbooks/db-dump-for-transfer.json.gz .
+
+# Copy Dump to django service
+docker compose cp db-dump-for-transfer.json.gz django:/src/.
+
+# Run command in a docker service: django load database
+docker compose exec django python3 manage.py loaddata db-dump-for-transfer.json
+
+```

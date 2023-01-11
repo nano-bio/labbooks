@@ -1,5 +1,9 @@
 Changelog
 =========
+09.01.2023
+* ALL/CHANGE/Felix: Replaced old physical server with a virtual server of ZID. Therefor,
+  this project was containerized.
+
 06.07.2022
 * LABINVENTORY/REMOVE/Felix: Removed all the SMS notification related stuff, as we have now a 
 separate device therefor.

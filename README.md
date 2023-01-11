@@ -43,7 +43,7 @@ npm install
 python manage.py migrate --settings=labbooks.settings_local
 
 # create a superuser (for you!, follow instructions)
-python manage.py migrate --settings=labbooks.settings_local
+python manage.py createsuperuser --settings=labbooks.settings_local
 ```
 
 ### Start
@@ -54,7 +54,7 @@ python manage.py runserver --settings=labbooks.settings_local
 
 ## Build & Deploy
 
-Nowadays, projects like this are build inside containers (think of them like virtual machines but
+This project is build for using containers (think of them like virtual machines but
 lighter). These containers can be tested on your local machine and then copied to the server.
 
 We are using a _service_ with 3 containers:
@@ -63,12 +63,20 @@ We are using a _service_ with 3 containers:
 - Postgres, the database
 - nginx, as an entry point and static files server
 
-Mount the netshare (see `.smbcredentials`).
+Copy `.smbcredentials.example` to `.smbcredentials` and modify the file to your needs. Append
+
+```shell
+//netshare.uibk.ac.at/nanobio /media/netshare cifs credentials=/srv/.smbcredentials  0 0
+```
+
+to the end of `/etc/fstab`. Install `cifs-utils` if needed.
+
+Mount the netshare (see ).
 
 Install Docker and Docker-Compose. Then, a simple
 
 ```shell
-docker-compose up -d
+docker compose up -d
 ```
 
 should do the job.
