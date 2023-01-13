@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}MassSpectra - {{ experiment }} - {% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'dygraph/dygraph.min.css' %}">
+    <link rel="stylesheet" href="{% static 'jquery.toast/jquery.toast.min.css' %}">
+    {% include 'massspectra/mass_spectra_viewer_style.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 col-xl-9 col-md-7">
+                <button type="button" class="btn btn-secondary" id="button-lin-log-plot">lin / log</button>
+                <div id="graphdiv"></div>
+                {% include 'massspectra/mass_spectra_viewer_measurement_infos.html' %}
+            </div>
+
+            <div class="col-lg-4 col-xl-3 col-md-5 vh-100">
+                {% include 'massspectra/mass_spectra_viewer_accordion.html' %}
+            </div>
+
+        </div>
+    </div>
+    <div id="loading" class="spinner">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {% if page_obj %}
+        {# All the plotting things #}
+        {% include 'massspectra/mass_spectra_viewer_js_plot.html' %}
+
+        {# Download plot as csv #}
+        {% include 'massspectra/mass_spectra_viewer_js_download_csv.html' %}
+    {% endif %}
+{% endblock %}

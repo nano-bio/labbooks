@@ -1,0 +1,41 @@
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+       data-bs-toggle="dropdown" aria-expanded="false">
+        Toffy
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <li>
+            <a class="dropdown-item" href="{% url 'toffy-journal' %}">Journal</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url 'toffy-mass-spectra' %}">Mass Specs</a>
+        </li>
+
+        <li class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item" href="http://138.232.74.63:8000" target="_blank">Pressures</a>
+        </li>
+
+        <li class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item" href="{% url 'admin:toffy_measurement_changelist' %}">Admin: Measurements</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{% url 'admin:app_list' 'toffy' %}">Admin: Toffy</a>
+        </li>
+
+        <li class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item" href="#" onclick="sigiMe()">Sigi Me</a>
+        </li>
+    </ul>
+</li>
+<script>
+  function sigiMe() {
+    document.documentElement.style.transitionDuration = "200s";
+    document.documentElement.style.transform = "rotate(36000deg)";
+  }
+</script>

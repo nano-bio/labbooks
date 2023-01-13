@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container pt-4">
+
+        <h3>Creating new .csv files...</h3>
+
+        <div class="progress my-3" style="height: 40px">
+            {% if running %}
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                     aria-label="Animated striped example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"
+                     style="width: 50%">
+                </div>
+            {% else %}
+                <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+                     aria-label="Success striped example" style="width: 100%" aria-valuenow="100" aria-valuemin="0"
+                     aria-valuemax="100"><span class="fs-3">Finished!</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <p>
+            When finished, files will be saved on the NetShare:<br/>
+            Z:\labbooks\&lt;experiment&gt;\measurements.csv
+        </p>
+
+        {% if not running %}
+            <h4 class="mt-4">Download</h4>
+            <ul>
+                <li><a href="/media/clustof/export-measurement.csv">Clustof: Measurements</a></li>
+                <li><a href="/media/clustof/export-measurement.csv">Toffy: Measurements</a></li>
+                <li><a href="/media/clustof/export-measurement.csv">Toffy2: Measurements</a></li>
+            </ul>
+        {% endif %}
+
+    </div>
+{% endblock %}
+
+{% block extra_head %}
+    {% if running %}
+        <meta http-equiv="refresh" content="3">
+    {% endif %}
+{% endblock %}
