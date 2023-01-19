@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetView
 from django.urls import path, include
 
 import cheminventory.urls
@@ -22,6 +23,8 @@ from labbooks.admin_common import export_tables_csv_view
 urlpatterns = [
     path('', homepage, name='homepage'),
     path('journal/', include(journal.urls)),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('password_reset/', PasswordResetView.as_view(), name='admin_password_reset'),
 
     path('admin/', admin.site.urls),
 

@@ -102,7 +102,6 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-
 STATIC_ROOT = BASE_DIR / 'static'
 # STATIC_ROOT = The absolute path to the directory where collectstatic will collect static files for deployment
 STATICFILES_DIRS = [
@@ -115,6 +114,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 ADMINS = (
     ('FelixD', 'felix.duensing@uibk.ac.at'),
+    ('JanM', 'Jan.Mayerhofer@uibk.ac.at'),
 )
 
 LOGIN_URL = '/admin/login/'
@@ -124,32 +124,30 @@ SITE_ID = 1
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
-DEFAULT_FROM_EMAIL = 'labbooks@uibk.ac.at'
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'mail_admins': {
+#             'level': 'ERROR',
+#             'class': 'django.utils.log.AdminEmailHandler'
+#         }
+#     },
+#     'loggers': {
+#         'django.request': {
+#             'handlers': ['mail_admins'],
+#             'level': 'ERROR',
+#             'propagate': True,
+#         },
+#     }
+# }
 
+DEFAULT_FROM_EMAIL = 'c744-labbooks@uibk.ac.at'
+EMAIL_HOST = 'smtp.uibk.ac.at'
+
+# EXPERIMENTS
 SURFTOF_BIGSHARE_DATA_ROOT = "/src/media_surftof_data/"
-
-# # NANOPARTICLES
-# NANOPARTICLES_DATA_ROOT = "/mnt/bigshare/"
 NANOPARTICLES_PREVIEW_SIZE = 150
-
-# TOFFY2
 TOFFY2_REPLACE_H5_PATH = ('Z:/Experiments/Toffy2/Measurements/RAW-TOFWERK-Data/', "/src/media_toffy2_tofwerk_data/")
 
 MESSAGE_TAGS = {

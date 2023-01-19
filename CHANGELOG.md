@@ -1,5 +1,8 @@
 Changelog
 =========
+19.01.2023
+* ADMIN/ADD/Felix: Add a password reset form.
+
 09.01.2023
 * ALL/CHANGE/Felix: Replaced old physical server with a virtual server of ZID. Therefor,
   this project was containerized.
