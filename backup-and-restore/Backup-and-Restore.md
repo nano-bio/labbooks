@@ -42,8 +42,7 @@ MAILTO=labbooks # see /etc/aliases
 
 ## Restore
 
-
-## Useful commands
+### Useful commands
 
 ```shell
 # Copy files from server to current folder:
