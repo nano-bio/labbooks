@@ -182,13 +182,8 @@ class Measurement(models.Model):
         return chem_string
 
     def clean(self):
-        # cleaning method. first thing, check if file extension is there
-        try:
-            fn = self.data_filename.split('\\')[2]
-        except IndexError:
-            raise ValidationError('Something is odd about this filename. Did you forget the path?')
 
-        if re.match('^DataFile_20[0-2][0-9].[0|1][0-9].[0-3][0-9]-[0-9]{2}h[0-9]{2}m[0-9]{2}s_AS$', fn):
+        if re.match('^DataFile_20[0-2][0-9].[0|1][0-9].[0-3][0-9]-[0-9]{2}h[0-9]{2}m[0-9]{2}s_AS$', self.data_filename):
             # if this matches, its a TOF-file, but without the extension
             # --> somebody (Paul) forgot the file extension.
             self.data_filename = self.data_filename + '.h5'
