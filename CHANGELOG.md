@@ -1,5 +1,8 @@
 Changelog
 =========
+27.02.2023
+* Journal/CHange/Jan: deleted the extra parents
+
 19.01.2023
 * ADMIN/ADD/Felix: Add a password reset form.
 
