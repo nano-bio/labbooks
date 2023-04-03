@@ -11,7 +11,7 @@ services:
         ports:
             - "80:80"
         volumes:
-            - /media/netshare/labbooks:/src/media:ro
+            - ./test_volume:/src/media:ro
         depends_on:
             - django
 
@@ -22,9 +22,9 @@ services:
             dockerfile: django.Dockerfile
         restart: always
         volumes:
-            - /media/netshare/labbooks:/src/media
-            - /media/netshare/Experiments/Toffy2/Measurements/RAW-TOFWERK-Data:/src/media_toffy2_tofwerk_data:ro
-            - /media/netshare/Experiments/SurfTOF/Measurements/rawDATA:/src/media_surftof_data:ro
+            - ./test_volume:/src/media
+            - ./test_volume:/src/media_toffy2_tofwerk_data:ro
+            - ./test_volume:/src/media_surftof_data:ro
         expose:
             - "8000"
         depends_on:
@@ -34,7 +34,7 @@ services:
         image: postgres:15-alpine
         restart: always
         environment:
-            POSTGRES_PASSWORD: P5VINNAZVh2W6luqSvDQOTCQA5NqLgb5n5KMPM3F3rgfo0cjOi5kaDs3n0sfsn
+
             POSTGRES_USER: labbooks
             POSTGRES_DB: labbooks
 
