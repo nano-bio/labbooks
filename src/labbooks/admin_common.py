@@ -14,7 +14,7 @@ from django.utils.text import slugify
 from clustof import models as clustof_models
 from toffy import models as toffy_models
 from toffy2 import models as toffy2_models
-
+from MRTOF import models as MRTOF_models
 
 def create_new_entry_based_on_existing_one_url(s, forbidden_items):
     # this variable will hold all the values and is the address to the new setting form
@@ -91,6 +91,14 @@ def export_tables_csv_all():
         toffy2_models.JournalEntry,
     ]:
         export_tables_csv(settings.MEDIA_ROOT / 'toffy2', model)
+
+    # MRTOF
+    for model in [
+        MRTOF_models.Measurement,
+        MRTOF_models.Operator,
+        MRTOF_models.JournalEntry,
+    ]:
+        export_tables_csv(settings.MEDIA_ROOT / 'MRTOF', model)
 
 
 def export_tables_csv_view(request):

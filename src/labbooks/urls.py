@@ -14,9 +14,11 @@ import nanoparticles.urls
 import snowball.urls
 import surftof.urls
 import toffy.urls
+import MRTOF.urls
 import toffy2.urls
 import vg.urls
 import wippi.urls
+import game.urls
 from journal.views import homepage
 from labbooks.admin_common import export_tables_csv_view
 
@@ -37,9 +39,11 @@ urlpatterns = [
     path('snowball/', include(snowball.urls)),
     path('surftof/', include(surftof.urls)),
     path('toffy/', include(toffy.urls)),
+    path('MRTOF/', include(MRTOF.urls)),
     path('toffy2/', include(toffy2.urls)),
     path('vg/', include(vg.urls)),
     path('wippi/', include(wippi.urls)),
+    path('game/', include(game.urls)),
 
     # csv export tables to netshare folders
     path('export-csv/',

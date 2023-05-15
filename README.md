@@ -1,4 +1,5 @@
-labbooks
+\labbooks
+\labbooks
 ========
 
 The repo holds our labbook software (currently used by CLUSTOF, TOFFY, TOFFY2).

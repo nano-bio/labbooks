@@ -12,7 +12,7 @@ djangorestframework==3.14.0
 
 # for mass-spectra
 scipy==1.9.3
-h5py==3.7.0 # v3 doesn't work on windows
+h5py # ==2.9.0  v3 doesn't work on windows
 
 # for journal
 django-ckeditor==6.5.1
