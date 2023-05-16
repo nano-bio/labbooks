@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "i=d0pz8apxr+0!25lwozu)e$)q*^1k4x=494ga6xi-++67d_*&amp;"
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*'] if DEBUG else ['138.232.74.41', 'labbooks.at']
 
@@ -112,7 +112,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 ADMINS = (
-    ('FelixD', 'felix.duensing@uibk.ac.at'),
+    ('ServerAccount', 'c7441148@uibk.ac.at'),
     ('JanM', 'Jan.Mayerhofer@uibk.ac.at'),
 )
 
