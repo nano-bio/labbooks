@@ -6,8 +6,6 @@ from pathlib import Path
 
 from django.contrib.messages import constants as messages
 
-import os
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "i=d0pz8apxr+0!25lwozu)e$)q*^1k4x=494ga6xi-++67d_*&amp;"
@@ -35,7 +33,6 @@ INSTALLED_APPS = [
     'labinventory',
     'massspectra',
     'mscpimporter',
-    'game',
 
     'MRTOF',
     'clustof',
@@ -110,7 +107,6 @@ STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [
     BASE_DIR / '_vendor',
     BASE_DIR / 'labbooks' / 'static',
-    os.path.join(BASE_DIR, 'game', 'static')
 ]
 
 MEDIA_URL = '/media/'

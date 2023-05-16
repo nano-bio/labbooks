@@ -18,7 +18,6 @@ import MRTOF.urls
 import toffy2.urls
 import vg.urls
 import wippi.urls
-import game.urls
 from journal.views import homepage
 from labbooks.admin_common import export_tables_csv_view
 
@@ -43,7 +42,6 @@ urlpatterns = [
     path('toffy2/', include(toffy2.urls)),
     path('vg/', include(vg.urls)),
     path('wippi/', include(wippi.urls)),
-    path('game/', include(game.urls)),
 
     # csv export tables to netshare folders
     path('export-csv/',
