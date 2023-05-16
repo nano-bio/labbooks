@@ -12,7 +12,7 @@ SECRET_KEY = "i=d0pz8apxr+0!25lwozu)e$)q*^1k4x=494ga6xi-++67d_*&amp;"
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['*'] if DEBUG else ['138.232.74.41', 'labbooks.at']
+ALLOWED_HOSTS = ['*'] if DEBUG else ['138.232.74.41', 'labbooks.at', 'c744-labbooks.uibk.ac.at']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
