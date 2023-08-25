@@ -3,25 +3,23 @@ version: '3.8'
 services:
 
     nginx:
-        image: labbooks-nginx
-        build:
-            context: .
-            dockerfile: nginx.Dockerfile
+        image: nginx:1.23-alpine
         restart: always
         ports:
             - "80:80"
         volumes:
+            - ./src/static:/src/static
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf
             - /media/netshare/labbooks:/src/media:ro
         depends_on:
             - django
 
     django:
         image: labbooks-django
-        build:
-            context: .
-            dockerfile: django.Dockerfile
+        build: .
         restart: always
         volumes:
+            - ./src/static:/src/static
             - /media/netshare/labbooks:/src/media
             - /media/netshare/Experiments/Toffy2/Measurements/RAW-TOFWERK-Data:/src/media_toffy2_tofwerk_data:ro
             - /media/netshare/Experiments/SurfTOF/Measurements/rawDATA:/src/media_surftof_data:ro
