@@ -71,7 +71,10 @@ class Measurement(models.Model):
 
     # this provides a link to the data file in the admin interface
     def get_data_file(self):
-        return mark_safe(f"<a href='{self.data_file.url}' download>Data file</a>")
+        if self.data_file:
+            return mark_safe(f"<a href='{self.data_file.url}' download>Data file</a>")
+        else:
+            return "No data file"
 
     def get_short_description(self):
         return "{}...".format(self.short_description[:30])
