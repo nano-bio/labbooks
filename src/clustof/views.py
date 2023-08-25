@@ -331,8 +331,8 @@ def get_measurement_file_name(measurement_id: int) -> str:
         .replace('Z:\\labbooks\\clustof\\tof\\', '') \
         .replace('\\', '/')
     file_name_absolute = settings.MEDIA_ROOT / 'clustof' / 'tof' / file_name
-    if not file_name_absolute.exists():
-        raise FileNotFoundError()
+    if not file_name_absolute.exists() or Path(file_name_absolute).is_dir():
+        raise MassSpectraException(f'File for this measurement not found on the server ({file_name_absolute})')
     return file_name_absolute.as_posix()
 
 
