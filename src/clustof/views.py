@@ -3,6 +3,7 @@ import json
 import re
 import time
 from os.path import exists, getsize
+from pathlib import Path
 from time import time
 
 from django import forms
@@ -341,7 +342,7 @@ class MassSpectraException(Exception):
 
 def get_mass_spectrum(measurement_id, mass_max=None):
     file_name_full = get_measurement_file_name(measurement_id)
-    if not exists(file_name_full):
+    if not exists(file_name_full) or Path(file_name_full).is_dir():
         raise MassSpectraException(f'File for this measurement not found on the server ({file_name_full})')
     return get_mass_spectrum_tofwerk(file_name_full, mass_max)
 
