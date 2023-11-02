@@ -1,4 +1,4 @@
-Django==3.2.20
+Django==3.2.23
 
 # for form templates
 django-crispy-forms==1.14.0
